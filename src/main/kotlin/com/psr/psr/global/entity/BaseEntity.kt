@@ -19,7 +19,7 @@ abstract class BaseEntity{
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.MIN
 
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
-    var status: Boolean = true
+    @Column(nullable = false, columnDefinition = "varchar(10) default 'active'")
+    var status: String = "active"
 
 }
