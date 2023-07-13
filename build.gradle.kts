@@ -6,6 +6,8 @@ plugins {
 	kotlin("jvm") version "1.8.21"
 	kotlin("plugin.spring") version "1.8.21"
 	kotlin("plugin.jpa") version "1.8.21"
+	kotlin("plugin.allopen") version "1.6.21"
+	kotlin("plugin.noarg") version "1.6.21"
 }
 
 group = "com.psr"
@@ -33,6 +35,13 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation ("mysql:mysql-connector-java:8.0.32")
+}
+
+allOpen {
+	annotation("javax.persistence.Entity")
+	annotation("javax.persistence.MappedSuperclass")
+	annotation("javax.persistence.Embeddable")
 }
 
 tasks.withType<KotlinCompile> {
