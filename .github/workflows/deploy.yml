@@ -22,6 +22,10 @@ jobs:
         with:
           java-version: 17
 
+      - run: touch ./src/main/resources/application-secret.yaml
+      - run: echo "${{ secrets.DB_SECRET }}" > ./src/main/resources/application-secret.yaml
+      - run: cat ./src/main/resources/application-secret.yaml
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
         shell: bash
