@@ -36,6 +36,9 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation ("mysql:mysql-connector-java:8.0.32")
+
+	// jasypt 암호화
+	implementation ("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
 }
 
 allOpen {
