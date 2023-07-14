@@ -11,12 +11,12 @@ CURRENT_PID=$(pgrep -f $APP_NAME)
 
 if [ -z $CURRENT_PID ]
 then
-  echo "> 종료할 애플리케이션이 없습니다."
+  echo "> 종료할 애플리케이션이 없습니다." >> $REPOSITORY/deploy.log
 else
-  echo "> kill -9 $CURRENT_PID"
+  echo "> kill -9 $CURRENT_PID" >> $REPOSITORY/deploy.log
   kill -15 $CURRENT_PID
   sleep 5
 fi
 
-echo "> Deploy - $JAR_PATH "
+echo "> Deploy - $JAR_PATH " >> $REPOSITORY/deploy.log
 nohup java -jar $JAR_PATH
