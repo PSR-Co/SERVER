@@ -39,6 +39,9 @@ dependencies {
 
 	// jasypt 암호화
 	implementation ("com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5")
+
+	// spring security
+	implementation("org.springframework.boot:spring-boot-starter-security")
 }
 
 allOpen {
