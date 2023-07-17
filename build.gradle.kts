@@ -42,6 +42,14 @@ dependencies {
 
 	// spring security
 	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	// jwt
+	implementation ("io.jsonwebtoken:jjwt-api:0.11.2")
+	runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.2")
+	runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.2")
+
+	//log
+	implementation ("io.github.microutils:kotlin-logging:3.0.5")
 }
 
 allOpen {

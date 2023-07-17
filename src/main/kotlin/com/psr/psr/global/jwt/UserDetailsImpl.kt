@@ -1,4 +1,4 @@
-package com.psr.psr.user.jwt
+package com.psr.psr.global.jwt
 
 import com.psr.psr.user.entity.User
 import org.springframework.security.core.GrantedAuthority

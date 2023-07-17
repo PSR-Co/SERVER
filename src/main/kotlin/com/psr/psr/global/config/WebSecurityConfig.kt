@@ -1,6 +1,6 @@
 package com.psr.psr.global.config
 
-import com.psr.psr.user.jwt.UserDetailsServiceImpl
+import com.psr.psr.global.jwt.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -15,7 +15,8 @@ class WebSecurityConfig(
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http.csrf().disable()
+        http.
+        csrf{c -> c.disable()}
         return http.build()
     }
 
