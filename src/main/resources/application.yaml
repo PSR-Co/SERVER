@@ -20,3 +20,5 @@ spring:
 
   profiles:
     include: secret
+jwt:
+  secret: ENC(D/J3tK1EsFjPnY9dcx50UUSzNzB5tTleAlexxN3r3wkA8sqpgJRMI2FLQ42o2ULv4yRTpdHetU+chCDq6VyHldYOLo7dW2J9gtM2kRERjRhDxczv4yBK2mpVrfp5/q5KdCGqitwAjP0qWi5vX4ho6VUIoMaMiCocHDZeBCn7nWs=)
