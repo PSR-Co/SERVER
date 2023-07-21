@@ -16,6 +16,26 @@ data class User(
         var email: String,
 
         @NotNull
-        var password:String
+        var password:String,
+
+        @NotNull
+        var type:Type,
+
+        @NotNull
+        var nickname:String,
+
+        @NotNull
+        var phone:String,
+
+        var profileImgKey: String,
+
+        @NotNull
+        var provider: Provider,
+
+        @NotNull
+        var marketing: Boolean,
+
+        @NotNull
+        var notification: Boolean
 
 ): BaseEntity()
