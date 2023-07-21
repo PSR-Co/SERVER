@@ -28,5 +28,6 @@ data class Product(
         @NotNull
         var description: String,
 
-        var likeNum: Int
+        var likeNum: Int = 0
+
 ): BaseEntity()
