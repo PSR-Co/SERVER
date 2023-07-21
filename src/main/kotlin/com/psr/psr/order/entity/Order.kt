@@ -20,6 +20,7 @@ data class Order(
         var user: User,
 
         @NotNull
+        @Column(length = 100)
         var ordererName: String,
 
         @NotNull

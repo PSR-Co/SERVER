@@ -15,6 +15,7 @@ data class Inquiry(
         var user: User,
 
         @NotNull
+        @Column(length = 100)
         var title: String,
 
         @NotNull

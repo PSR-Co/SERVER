@@ -16,6 +16,7 @@ data class Product(
         var user: User,
 
         @NotNull
+        @Column(length = 50)
         var name: String,
 
         @NotNull

@@ -16,4 +16,5 @@ data class ProductLike(
         @ManyToOne
         @JoinColumn(nullable = false, name = "user_idx")
         var user: User
+
 ): BaseEntity()

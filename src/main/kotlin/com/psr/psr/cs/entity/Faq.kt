@@ -1,10 +1,7 @@
 package com.psr.psr.cs.entity
 
 import com.psr.psr.global.entity.BaseEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
@@ -13,6 +10,7 @@ data class Faq(
         var id: Long,
 
         @NotNull
+        @Column(length = 100)
         var title: String,
 
         @NotNull
