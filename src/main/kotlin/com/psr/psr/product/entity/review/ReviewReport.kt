@@ -11,11 +11,11 @@ data class ReviewReport(
         var id: Long,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "review_idx")
+        @JoinColumn(nullable = false, name = "review_id")
         var review: Review,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "user_idx")
+        @JoinColumn(nullable = false, name = "user_id")
         var user: User,
 
         var category: ReportCategory

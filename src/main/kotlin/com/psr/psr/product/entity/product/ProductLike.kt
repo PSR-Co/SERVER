@@ -10,11 +10,11 @@ data class ProductLike(
         var id: Long,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "product_idx")
+        @JoinColumn(nullable = false, name = "product_id")
         var product: Product,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "user_idx")
+        @JoinColumn(nullable = false, name = "user_id")
         var user: User
 
 ): BaseEntity()

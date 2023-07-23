@@ -10,11 +10,11 @@ data class ChatRoom(
         var id: Long,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "sender_user_idx")
+        @JoinColumn(nullable = false, name = "sender_user_id")
         var senderUser: User,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "receiver_user_idx")
+        @JoinColumn(nullable = false, name = "receiver_user_id")
         var receiverUser: User
 
 ): BaseEntity()

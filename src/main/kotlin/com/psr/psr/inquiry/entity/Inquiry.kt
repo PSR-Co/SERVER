@@ -11,7 +11,7 @@ data class Inquiry(
         var id: Long,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "user_idx")
+        @JoinColumn(nullable = false, name = "user_id")
         var user: User,
 
         @NotNull
