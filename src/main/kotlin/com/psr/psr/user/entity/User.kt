@@ -1,10 +1,7 @@
 package com.psr.psr.user.entity
 
 import com.psr.psr.global.entity.BaseEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
@@ -13,9 +10,35 @@ data class User(
         var id: Long,
 
         @NotNull
+        @Column(length = 100)
         var email: String,
 
         @NotNull
-        var password:String
+        @Column(length = 300)
+        var password:String,
+
+        @NotNull
+        @Enumerated(EnumType.STRING)
+        var type:Type,
+
+        @NotNull
+        @Column(length = 30)
+        var nickname:String,
+
+        @NotNull
+        @Column(length = 15)
+        var phone:String,
+
+        var imgKey: String,
+
+        @NotNull
+        @Enumerated(EnumType.STRING)
+        var provider: Provider,
+
+        @NotNull
+        var marketing: Boolean,
+
+        @NotNull
+        var notification: Boolean
 
 ): BaseEntity()

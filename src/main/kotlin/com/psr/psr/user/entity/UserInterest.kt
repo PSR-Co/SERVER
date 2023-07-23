@@ -1,13 +1,20 @@
 package com.psr.psr.user.entity
 
 import com.psr.psr.global.entity.BaseEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
+import jakarta.persistence.*
+import org.jetbrains.annotations.NotNull
 
 @Entity
 data class UserInterest(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long
+        var id: Long,
+
+        @ManyToOne
+        @JoinColumn(nullable = false, name = "user_id")
+        var user: User,
+
+        @NotNull
+        @Enumerated(EnumType.STRING)
+        var category: Category
+
 ): BaseEntity()
