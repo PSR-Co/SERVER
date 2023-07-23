@@ -14,6 +14,7 @@ data class UserInterest(
         var user: User,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var category: Category
 
 ): BaseEntity()

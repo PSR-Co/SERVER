@@ -22,6 +22,7 @@ data class Inquiry(
         var content: String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var inquiryStatus: InquiryStatus,
 
         var answer: String

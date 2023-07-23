@@ -20,6 +20,7 @@ data class Product(
         var name: String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var category: Category,
 
         @NotNull

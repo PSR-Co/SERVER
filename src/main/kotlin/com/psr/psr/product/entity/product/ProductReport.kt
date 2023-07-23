@@ -20,6 +20,7 @@ data class ProductReport(
         var user: User,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var category: ReportCategory
 
 ): BaseEntity()

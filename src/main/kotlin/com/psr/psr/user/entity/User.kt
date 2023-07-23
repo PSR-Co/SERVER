@@ -18,6 +18,7 @@ data class User(
         var password:String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var type:Type,
 
         @NotNull
@@ -31,6 +32,7 @@ data class User(
         var profileImgKey: String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var provider: Provider,
 
         @NotNull

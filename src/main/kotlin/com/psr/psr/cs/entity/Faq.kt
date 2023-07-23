@@ -17,6 +17,7 @@ data class Faq(
         var content: String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var type: FaqType
 
 ): BaseEntity()

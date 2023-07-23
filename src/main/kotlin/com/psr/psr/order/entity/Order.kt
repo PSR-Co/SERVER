@@ -27,6 +27,7 @@ data class Order(
         var websiteUrl: String,
 
         @NotNull
+        @Enumerated(EnumType.STRING)
         var orderStatus: OrderStatus,
 
         @NotNull
