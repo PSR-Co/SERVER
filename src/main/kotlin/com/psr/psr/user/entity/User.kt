@@ -29,7 +29,7 @@ data class User(
         @Column(length = 15)
         var phone:String,
 
-        var profileImgKey: String,
+        var imgKey: String,
 
         @NotNull
         @Enumerated(EnumType.STRING)
