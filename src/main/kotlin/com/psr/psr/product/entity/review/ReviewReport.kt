@@ -19,6 +19,7 @@ data class ReviewReport(
         @JoinColumn(nullable = false, name = "user_id")
         var user: User,
 
+        @NotNull
         @Enumerated(EnumType.STRING)
         var category: ReportCategory
 
