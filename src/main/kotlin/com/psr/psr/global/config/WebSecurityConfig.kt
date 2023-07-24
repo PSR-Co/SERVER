@@ -1,6 +1,8 @@
 package com.psr.psr.global.config
 
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
+import com.psr.psr.global.jwt.exception.JwtAccessDeniedHandler
+import com.psr.psr.global.jwt.exception.JwtAuthenticationEntryPoint
 import com.psr.psr.global.jwt.utils.JwtUtils
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,7 +15,9 @@ import org.springframework.security.web.SecurityFilterChain
 @EnableWebSecurity
 class WebSecurityConfig(
     private val userDetailsService: UserDetailsServiceImpl,
-    private val jwtUtils: JwtUtils
+    private val jwtUtils: JwtUtils,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
 ) {
 
     @Bean
@@ -21,6 +25,12 @@ class WebSecurityConfig(
         http
             .csrf { c -> c.disable() }
             .cors { c -> c.disable() }
+            .exceptionHandling {
+                e ->
+                e.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                e.accessDeniedHandler(jwtAccessDeniedHandler)
+
+            }
             .sessionManagement{c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
             // token 없이 사용이 가능한 api url 작성
             .authorizeHttpRequests { c ->
