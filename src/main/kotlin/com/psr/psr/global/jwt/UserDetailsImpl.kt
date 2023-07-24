@@ -9,8 +9,7 @@ class UserDetailsImpl(val user:User) :UserDetails {
 
     var enabled: Boolean = true
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        // todo: user role entity 생기면 넣어두기
-        val grantedAuthority = SimpleGrantedAuthority("user.role.name")
+        val grantedAuthority = SimpleGrantedAuthority(user.type.name)
         return mutableListOf(grantedAuthority)
     }
 
