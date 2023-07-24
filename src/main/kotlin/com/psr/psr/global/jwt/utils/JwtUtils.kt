@@ -1,6 +1,9 @@
 package com.psr.psr.global.jwt.utils
 
 import com.psr.psr.global.Constant.JWT.BEARER_PREFIX
+import com.psr.psr.global.Constant.JWT.AUTHORIZATION_HEADER
+import com.psr.psr.global.exception.BaseException
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
 import com.psr.psr.global.jwt.dto.TokenRes
 import io.jsonwebtoken.*
@@ -25,8 +28,6 @@ class JwtUtils(
     @Value("\${jwt.secret}") private val secret: String
 ) {
     val logger = KotlinLogging.logger {}
-    private final val AUTHORITIES_KEY: String = "auth"
-    private final val BEARER_TYPE: String = "bearer"
 
     // todo: 암호화시켜 yaml 파일에 넣어두기
     private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 30 // 30 분
@@ -46,7 +47,7 @@ class JwtUtils(
         val now = Date().time
         val accessToken: String = Jwts.builder()
             .setSubject(authentication.name)
-            .claim(AUTHORITIES_KEY, authorities)
+            .claim(AUTHORIZATION_HEADER, authorities)
             .setExpiration(Date(now + ACCESS_TOKEN_EXPIRE_TIME))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
@@ -67,17 +68,16 @@ class JwtUtils(
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
             return true
         } catch (e: SecurityException) {
-            logger.info("Invalid JWT Token", e)
+            throw BaseException(BaseResponseCode.INVALID_TOKEN)
         } catch (e: MalformedJwtException) {
-            logger.info("Invalid JWT Token", e)
+            throw BaseException(BaseResponseCode.MALFORMED_TOKEN)
         } catch (e: ExpiredJwtException) {
-            logger.info("Expired JWT Token", e)
+            throw BaseException(BaseResponseCode.EXPIRED_TOKEN)
         } catch (e: UnsupportedJwtException) {
-            logger.info("Unsupported JWT Token", e)
+            throw BaseException(BaseResponseCode.UNSUPPORTED_TOKEN)
         } catch (e: IllegalArgumentException) {
-            logger.info("JWT claims string is empty.", e)
+            throw BaseException(BaseResponseCode.NULL_TOKEN)
         }
-        return false
     }
 
 
@@ -87,7 +87,7 @@ class JwtUtils(
     fun getAuthentication(accessToken: String): Authentication {
         val claims = parseClaims(accessToken)
         // todo: 에러 추가
-        if (claims.get(AUTHORITIES_KEY) == null) logger.info("토큰 복호화 error")
+        if (claims[AUTHORIZATION_HEADER] == null) logger.info("토큰 복호화 error")
         val userDetails: UserDetails = userDetailsService.loadUserByUsername(claims.subject)
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }

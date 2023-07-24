@@ -8,7 +8,7 @@ import org.springframework.security.web.access.AccessDeniedHandler
 import org.springframework.stereotype.Component
 
 @Component
-class JwtAccessDeniedHandler(objectMapper: ObjectMapper) : AccessDeniedHandler {
+class JwtAccessDeniedHandler(private val objectMapper: ObjectMapper) : AccessDeniedHandler {
 
     /**
      * 403 code error
@@ -19,6 +19,11 @@ class JwtAccessDeniedHandler(objectMapper: ObjectMapper) : AccessDeniedHandler {
         response: HttpServletResponse?,
         accessDeniedException: AccessDeniedException?
     ) {
-        response!!.status = HttpServletResponse.SC_FORBIDDEN
+        response!!.contentType = "application/json;charset=UTF-8"
+        response.status = HttpServletResponse.SC_FORBIDDEN
+        val exception = request?.getAttribute("exception")
+        val writer = response.writer
+        writer.println(objectMapper.writeValueAsString(exception))
+        writer.flush()
     }
 }
