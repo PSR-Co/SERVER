@@ -85,11 +85,13 @@ class JwtUtils(
      * 토큰 복호화
      */
     fun getAuthentication(accessToken: String): Authentication {
-        val claims = parseClaims(accessToken)
-        // todo: 에러 추가
-        if (claims[AUTHORIZATION_HEADER] == null) logger.info("토큰 복호화 error")
-        val userDetails: UserDetails = userDetailsService.loadUserByUsername(claims.subject)
+        val userId = getUserIdFromJWT(accessToken)
+        val userDetails: UserDetails = userDetailsService.loadUserById(userId)
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+    }
+
+    fun getUserIdFromJWT(token: String): Long {
+        return parseClaims(token).subject.toLong()
     }
 
     private fun parseClaims(token: String): Claims {

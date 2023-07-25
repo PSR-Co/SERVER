@@ -12,7 +12,7 @@ class UserDetailsImpl(val user:User) :UserDetails {
         val grantedAuthority = SimpleGrantedAuthority(user.type.name)
         return mutableListOf(grantedAuthority)
     }
-
+    fun getUserId() : Long = user.id
     override fun getPassword(): String = user.password
 
     override fun getUsername(): String = user.id.toString()
