@@ -1,11 +1,12 @@
 package com.psr.psr.global.jwt.utils
 
-import com.psr.psr.global.Constant.JWT.BEARER_PREFIX
-import com.psr.psr.global.Constant.JWT.AUTHORIZATION_HEADER
+import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
+import com.psr.psr.global.Constant.JWT.JWT.AUTHORIZATION_HEADER
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
 import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.user.entity.Type
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -39,7 +40,7 @@ class JwtUtils(
     /**
      * 토큰 생성
      */
-    fun createToken(authentication: Authentication): TokenRes {
+    fun createToken(authentication: Authentication, type: Type): TokenRes {
         val authorities = authentication.authorities.stream()
             .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.joining(","))
@@ -57,7 +58,7 @@ class JwtUtils(
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
 
-        return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken)
+        return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
     }
 
     /**
@@ -85,11 +86,13 @@ class JwtUtils(
      * 토큰 복호화
      */
     fun getAuthentication(accessToken: String): Authentication {
-        val claims = parseClaims(accessToken)
-        // todo: 에러 추가
-        if (claims[AUTHORIZATION_HEADER] == null) logger.info("토큰 복호화 error")
-        val userDetails: UserDetails = userDetailsService.loadUserByUsername(claims.subject)
+        val userId = getUserIdFromJWT(accessToken)
+        val userDetails: UserDetails = userDetailsService.loadUserById(userId)
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+    }
+
+    fun getUserIdFromJWT(token: String): Long {
+        return parseClaims(token).subject.toLong()
     }
 
     private fun parseClaims(token: String): Claims {

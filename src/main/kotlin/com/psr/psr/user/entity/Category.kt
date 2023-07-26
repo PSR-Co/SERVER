@@ -1,5 +1,8 @@
 package com.psr.psr.user.entity
 
+import com.psr.psr.global.exception.BaseException
+import com.psr.psr.global.exception.BaseResponseCode
+
 enum class Category(val value: String) {
     BROADCAST_PRODUCT("방송가능 상품소싱"),
     SHOW_HOST_ADVERTISE("쇼호스트 구인"),
@@ -9,5 +12,12 @@ enum class Category(val value: String) {
     VIDEO_EDITING("영상편집"),
     INSTRUCTOR_MATCHING("강사매칭"),
     SNS_MARKETING("SNS 마케팅"),
-    PROMOTION_DESIGN("홍보물 디자인")
+    PROMOTION_DESIGN("홍보물 디자인");
+
+    companion object {
+        fun getCategoryByName(name: String): Category {
+            return enumValues<Category>().find { it.value == name }
+                ?: throw BaseException(BaseResponseCode.INVALID_USER_CATEGORY)
+        }
+    }
 }

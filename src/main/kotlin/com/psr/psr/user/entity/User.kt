@@ -5,9 +5,9 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
-data class User(
+class User(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @NotNull
         @Column(length = 100)
@@ -29,7 +29,7 @@ data class User(
         @Column(length = 15)
         var phone:String,
 
-        var imgKey: String,
+        var imgKey: String? = null,
 
         @NotNull
         @Enumerated(EnumType.STRING)
