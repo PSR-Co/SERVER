@@ -10,6 +10,6 @@ class ExceptionHandler {
     @ExceptionHandler(BaseException::class)
     protected fun handleBaseException(e: BaseException): ResponseEntity<BaseRes>{
         return ResponseEntity.status(e.baseResponseCode.status)
-            .body(BaseRes(e.baseResponseCode.status, e.baseResponseCode.message))
+            .body(BaseRes(e.baseResponseCode.status.value(), e.baseResponseCode.message))
     }
 }
