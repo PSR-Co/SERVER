@@ -21,7 +21,7 @@ class BaseResponse<T> {
     constructor(result: T) {
         this.code = BaseResponseCode.SUCCESS.status.value()
         this.message = BaseResponseCode.SUCCESS.message
-        this.data = data
+        this.data = result
     }
 
     // fail
