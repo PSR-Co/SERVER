@@ -6,6 +6,7 @@ import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
 import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.user.entity.Type
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
@@ -39,7 +40,7 @@ class JwtUtils(
     /**
      * 토큰 생성
      */
-    fun createToken(authentication: Authentication): TokenRes {
+    fun createToken(authentication: Authentication, type: Type): TokenRes {
         val authorities = authentication.authorities.stream()
             .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.joining(","))
@@ -57,7 +58,7 @@ class JwtUtils(
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
 
-        return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken)
+        return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
     }
 
     /**

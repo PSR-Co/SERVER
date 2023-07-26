@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class UserInterest(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "user_id")
