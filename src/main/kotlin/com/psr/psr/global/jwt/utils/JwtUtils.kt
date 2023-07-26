@@ -1,7 +1,7 @@
 package com.psr.psr.global.jwt.utils
 
-import com.psr.psr.global.Constant.JWT.BEARER_PREFIX
-import com.psr.psr.global.Constant.JWT.AUTHORIZATION_HEADER
+import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
+import com.psr.psr.global.Constant.JWT.JWT.AUTHORIZATION_HEADER
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
