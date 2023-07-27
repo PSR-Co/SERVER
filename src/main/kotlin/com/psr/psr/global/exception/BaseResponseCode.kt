@@ -13,9 +13,6 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "만료된 토큰 값입니다."),
 
     // user
-    INVALID_EMAIL(HttpStatus.BAD_REQUEST, "올바르지 않은 이메일 형식입니다."),
-    INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "올바르지 않은 비밀번호 형식입니다."),
-    INVALID_PHONE(HttpStatus.BAD_REQUEST, "올바르지 않은 휴대폰 형식입니다."),
     EXISTS_PHONE(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 휴대폰 번호입니다."),
     EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 이메일입니다."),
     EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 닉네임입니다."),
