@@ -1,17 +1,11 @@
 package com.psr.psr.user.service
 
-import com.fasterxml.jackson.databind.ser.Serializers.Base
-import com.psr.psr.global.Constant.User.User.EMAIL_VALIDATION
-import com.psr.psr.global.Constant.User.User.PASSWORD_VALIDATION
-import com.psr.psr.global.Constant.User.User.PHONE_VALIDATION
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.SignUpReq
-import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
-import com.psr.psr.user.entity.UserInterest
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
