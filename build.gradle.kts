@@ -50,6 +50,9 @@ dependencies {
 
 	//log
 	implementation ("io.github.microutils:kotlin-logging:3.0.5")
+
+	// valid
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 }
 
 allOpen {
