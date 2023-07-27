@@ -36,11 +36,11 @@ class UserService(
     @Transactional
     fun signUp(signUpReq: SignUpReq): TokenRes {
         // 이메일의 형식이 맞는지 확인
-        if(!isValidRegularExpression(signUpReq.email, EMAIL_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_EMAIL)
+//        if(!isValidRegularExpression(signUpReq.email, EMAIL_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_EMAIL)
         // 비밀번호의 형식이 맞는지 확인
-        if(!isValidRegularExpression(signUpReq.password, PASSWORD_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_PASSWORD)
+//        if(!isValidRegularExpression(signUpReq.password, PASSWORD_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_PASSWORD)
         // 휴대폰 번호의 형식이 맞는지 확인
-        if(!isValidRegularExpression(signUpReq.phone, PHONE_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_PHONE)
+//        if(!isValidRegularExpression(signUpReq.phone, PHONE_VALIDATION)) throw BaseException(BaseResponseCode.INVALID_PHONE)
         // Category가 알맞은 이름을 갖고 있는지, 값이 중복되어있는지 확인
         val categoryCheck = signUpReq.interestList.stream().map { i -> i.checkInterestCategory() }.collect(Collectors.toList()).groupingBy { it }.eachCount().any { it.value > 1 }
         if(categoryCheck) throw BaseException(BaseResponseCode.INVALID_USER_INTEREST_COUNT)
