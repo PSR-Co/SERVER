@@ -40,8 +40,9 @@ class WebSecurityConfig(
             // token 없이 사용이 가능한 api url 작성
             .authorizeHttpRequests { c ->
                 c.requestMatchers("/global").permitAll()
-                c.requestMatchers(AntPathRequestMatcher("/users/login")).permitAll()
-                c.requestMatchers(AntPathRequestMatcher("/users/signup")).permitAll()
+                c.requestMatchers("/inquiries").permitAll()
+                c.requestMatchers("/users/login").permitAll()
+                c.requestMatchers("/users/signup").permitAll()
                 c.anyRequest().authenticated()
             }
             .apply(JwtSecurityConfig(jwtUtils))
