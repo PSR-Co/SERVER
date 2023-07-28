@@ -7,24 +7,24 @@ import org.jetbrains.annotations.NotNull
 
 @Entity
 data class Inquiry(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
-        @ManyToOne
-        @JoinColumn(nullable = false, name = "user_id")
-        var user: User,
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "user_id")
+    var user: User,
 
-        @NotNull
-        @Column(length = 100)
-        var title: String,
+    @NotNull
+    @Column(length = 100)
+    var title: String?,
 
-        @NotNull
-        var content: String,
+    @NotNull
+    var content: String?,
 
-        @NotNull
-        @Enumerated(EnumType.STRING)
-        var inquiryStatus: InquiryStatus,
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    var inquiryStatus: InquiryStatus? = InquiryStatus.PROGRESSING,
 
-        var answer: String
+    var answer: String? = null
 
 ): BaseEntity()
