@@ -16,7 +16,6 @@ class InquiryService(
 ) {
     fun makeInquiry(inquiryReq: InquiryReq, userId: Long) {
         val user: User = userRepository.findByIdOrNull(userId) ?: throw BaseException(BaseResponseCode.NOT_FOUND_USER)
-        val user1: User? = userRepository.getReferenceById(userId) ?: throw BaseException(BaseResponseCode.NOT_FOUND_USER)
         inquiryRepository.save(inquiryReq.toEntity(user))
     }
 }
