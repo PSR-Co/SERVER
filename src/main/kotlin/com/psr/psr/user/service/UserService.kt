@@ -2,8 +2,10 @@ package com.psr.psr.user.service
 
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
+import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
+import com.psr.psr.user.dto.LoginReq
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Pattern
 import java.util.stream.Collectors
+import kotlin.math.log
 
 @Service
 @Transactional(readOnly = true)
@@ -52,6 +55,14 @@ class UserService(
 
         // token 생성
         return createToken(user, password)
+    }
+
+    // 로그인
+    @Transactional
+    fun login(loginReq: LoginReq) : TokenRes{
+        val user = userRepository.findByEmail(loginReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
+        if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
+        return createToken(user, loginReq.password)
     }
 
     // 정규 표현식 확인 extract method
