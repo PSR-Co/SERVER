@@ -5,14 +5,14 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserDetailsImpl(private val user:User) :UserDetails {
+class UserAccount(private val user:User) :UserDetails {
 
     var enabled: Boolean = true
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val grantedAuthority = SimpleGrantedAuthority(user.type.name)
         return mutableListOf(grantedAuthority)
     }
-    fun getUserId() : Long = user.id!!
+    fun getUser() : User = user
     override fun getPassword(): String = user.password
 
     override fun getUsername(): String = user.id.toString()
