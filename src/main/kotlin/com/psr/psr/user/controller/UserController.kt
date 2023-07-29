@@ -4,6 +4,7 @@ import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.user.dto.LoginReq
 import com.psr.psr.user.dto.SignUpReq
+import com.psr.psr.user.dto.checkNicknameReq
 import com.psr.psr.user.service.UserService
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -29,5 +30,15 @@ class UserController(
         @ResponseBody
         fun login (@RequestBody @Validated loginReq: LoginReq) : BaseResponse<TokenRes>{
                 return BaseResponse(userService.login(loginReq))
+        }
+
+        /**
+         * 닉네임 중복
+         */
+        @PostMapping("/nickname")
+        @ResponseBody
+        fun checkDuplicateNickname (@RequestBody @Validated nicknameReq: checkNicknameReq) : BaseResponse<Boolean>{
+                // 사용 가능 : True, 사용 불가 : False
+                return BaseResponse(!userService.checkDuplicateNickname(nicknameReq.nickname))
         }
 }

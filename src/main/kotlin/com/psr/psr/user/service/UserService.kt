@@ -64,6 +64,11 @@ class UserService(
         return createToken(user, loginReq.password)
     }
 
+    // 닉네임 중복 체크
+    fun checkDuplicateNickname(nickname: String): Boolean {
+        return userRepository.existsByNickname(nickname)
+    }
+
     // 정규 표현식 확인 extract method
     private fun isValidRegularExpression(word: String, validation: String) : Boolean{
         val pattern = Pattern.compile(validation)
@@ -76,4 +81,6 @@ class UserService(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         return jwtUtils.createToken(authentication, user.type)
     }
+
+
 }

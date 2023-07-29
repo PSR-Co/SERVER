@@ -43,6 +43,7 @@ class WebSecurityConfig(
                 c.requestMatchers("/inquiries").permitAll()
                 c.requestMatchers("/users/login").permitAll()
                 c.requestMatchers("/users/signup").permitAll()
+                c.requestMatchers("/users/nickname").permitAll()
                 c.anyRequest().authenticated()
             }
             .apply(JwtSecurityConfig(jwtUtils))
