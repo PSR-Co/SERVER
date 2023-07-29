@@ -2,6 +2,7 @@ package com.psr.psr.user.controller
 
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.user.dto.LoginReq
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.service.UserService
 import org.springframework.validation.annotation.Validated
@@ -19,5 +20,14 @@ class UserController(
         @ResponseBody
         fun signUp (@RequestBody @Validated signUpReq:  SignUpReq) : BaseResponse<TokenRes>{
                return BaseResponse(userService.signUp(signUpReq))
+        }
+
+        /**
+         * 로그인
+         */
+        @PostMapping("/login")
+        @ResponseBody
+        fun login (@RequestBody @Validated loginReq: LoginReq) : BaseResponse<TokenRes>{
+                return BaseResponse(userService.login(loginReq))
         }
 }

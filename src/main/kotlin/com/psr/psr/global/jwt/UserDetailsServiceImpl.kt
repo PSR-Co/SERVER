@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional
 class UserDetailsServiceImpl(private val userRepository: UserRepository) :UserDetailsService {
     override fun loadUserByUsername(username: String?): UserDetails {
         val user:User = userRepository.findByIdOrNull(username?.toLong() ?: 0L) ?: throw UsernameNotFoundException("사용자 id를 찾을 수 없습니다.")
-        return UserDetailsImpl(user)
+        return UserAccount(user)
     }
 
     @Transactional
     fun loadUserById(id: Long): UserDetails {
         val user = userRepository.findById(id).orElseThrow { UsernameNotFoundException("User not found with id : $id") }
-        return UserDetailsImpl(user)
+        return UserAccount(user)
     }
 }
