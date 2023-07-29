@@ -6,7 +6,8 @@ import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
-@Entity(name = "orders")
+@Entity
+@Table(name = "orders")
 data class Order(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long,
