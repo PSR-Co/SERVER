@@ -1,11 +1,14 @@
 package com.psr.psr.user.controller
 
 import com.psr.psr.global.dto.BaseResponse
+import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.user.dto.LoginReq
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.dto.CheckNicknameReq
+import com.psr.psr.user.dto.ProfileRes
 import com.psr.psr.user.service.UserService
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -40,5 +43,14 @@ class UserController(
         fun checkDuplicateNickname (@RequestBody @Validated nicknameReq: CheckNicknameReq) : BaseResponse<Boolean>{
                 // 사용 가능 : True, 사용 불가 : False
                 return BaseResponse(!userService.checkDuplicateNickname(nicknameReq.nickname))
+        }
+
+        /**
+         * 사용자 프로필 불러오기
+         */
+        @GetMapping("/profile")
+        @ResponseBody
+        fun getProfile(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<ProfileRes>{
+                return BaseResponse(userService.getProfile(userAccount.getUser()))
         }
 }

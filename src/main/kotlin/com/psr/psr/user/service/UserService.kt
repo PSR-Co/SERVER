@@ -7,6 +7,7 @@ import com.psr.psr.global.exception.BaseResponseCode.NOT_EXIST_EMAIL
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.LoginReq
+import com.psr.psr.user.dto.ProfileRes
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
@@ -80,6 +81,11 @@ class UserService(
         val authenticationToken = UsernamePasswordAuthenticationToken(user.id.toString(), password)
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         return jwtUtils.createToken(authentication, user.type)
+    }
+
+    // 사용자 프로필 불러오기
+    fun getProfile(user: User): ProfileRes {
+        return ProfileRes(user.email, user.imgKey)
     }
 
 
