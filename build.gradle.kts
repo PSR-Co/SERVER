@@ -8,6 +8,8 @@ plugins {
 	kotlin("plugin.jpa") version "1.8.21"
 	kotlin("plugin.allopen") version "1.6.21"
 	kotlin("plugin.noarg") version "1.6.21"
+	kotlin("kapt") version "1.7.10"
+	idea
 }
 
 group = "com.psr"
@@ -53,7 +55,12 @@ dependencies {
 
 	// valid
 	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+	// queryDSL
+	implementation("com.infobip:infobip-spring-data-jpa-querydsl-boot-starter:8.0.0")
+	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
 }
+
 
 allOpen {
 	annotation("javax.persistence.Entity")
@@ -70,4 +77,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+idea {
+	module {
+		val kaptMain = file("build/generated/source/kapt/main")
+		sourceDirs.add(kaptMain)
+		generatedSourceDirs.add(kaptMain)
+	}
 }
