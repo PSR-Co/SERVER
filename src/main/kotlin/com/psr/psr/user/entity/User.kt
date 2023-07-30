@@ -2,8 +2,12 @@ package com.psr.psr.user.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import jakarta.persistence.*
+import org.hibernate.annotations.DynamicInsert
+import org.hibernate.annotations.DynamicUpdate
 import org.jetbrains.annotations.NotNull
 
+@DynamicUpdate
+@DynamicInsert
 @Entity
 class User(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
