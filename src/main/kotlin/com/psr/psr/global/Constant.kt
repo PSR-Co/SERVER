@@ -7,5 +7,11 @@ class Constant {
             const val BEARER_PREFIX: String = "Bearer "
         }
     }
-
+    class USER_STATUS {
+        companion object USER_STATUS {
+            const val LOGOUT = "logout"
+            const val ACTIVE_STATUS = "active"
+            const val INACTIVE_STATUS = "inactive"
+        }
+    }
 }
