@@ -7,6 +7,7 @@ import com.psr.psr.global.exception.BaseResponseCode.NOT_EXIST_EMAIL
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.LoginReq
+import com.psr.psr.user.dto.ProfileReq
 import com.psr.psr.user.dto.ProfileRes
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
@@ -86,6 +87,17 @@ class UserService(
     // 사용자 프로필 불러오기
     fun getProfile(user: User): ProfileRes {
         return ProfileRes(user.email, user.imgKey)
+    }
+
+    // 사용자 프로필 변경
+    @Transactional
+    fun postProfile(user: User, profileReq: ProfileReq) {
+        if(user.nickname != profileReq.nickname) {
+            if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(BaseResponseCode.EXISTS_NICKNAME)
+            user.nickname = profileReq.nickname
+        }
+        if(user.imgKey != profileReq.profileImgKey) user.imgKey = profileReq.profileImgKey
+        userRepository.save(user)
     }
 
 

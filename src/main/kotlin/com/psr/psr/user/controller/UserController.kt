@@ -1,12 +1,10 @@
 package com.psr.psr.user.controller
 
 import com.psr.psr.global.dto.BaseResponse
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenRes
-import com.psr.psr.user.dto.LoginReq
-import com.psr.psr.user.dto.SignUpReq
-import com.psr.psr.user.dto.CheckNicknameReq
-import com.psr.psr.user.dto.ProfileRes
+import com.psr.psr.user.dto.*
 import com.psr.psr.user.service.UserService
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
@@ -53,4 +51,15 @@ class UserController(
         fun getProfile(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<ProfileRes>{
                 return BaseResponse(userService.getProfile(userAccount.getUser()))
         }
+
+        /**
+         * 사용자 프로필 변경하기
+         */
+        @PostMapping("/profile")
+        @ResponseBody
+        fun postProfile(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated profileReq: ProfileReq) : BaseResponse<Any> {
+                userService.postProfile(userAccount.getUser(), profileReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
 }
