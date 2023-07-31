@@ -1,7 +1,6 @@
 package com.psr.psr.user.service
 
 import com.psr.psr.global.Constant
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.LOGOUT
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.INVALID_PASSWORD
@@ -21,7 +20,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.net.http.HttpRequest
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
@@ -105,23 +103,25 @@ class UserService(
         userRepository.save(user)
     }
 
-    // 로그아웃
-    fun logout(user: User, request: HttpServletRequest) {
+    // 토큰 자동 토큰 만료 및 RefreshToken 삭제
+    fun blackListToken(user: User, request: HttpServletRequest, loginStatus: String) {
         val token = getHeaderAuthorization(request)
         // 토큰 만료
-        jwtUtils.expireToken(token, LOGOUT);
+        jwtUtils.expireToken(token, loginStatus);
         // refresh token 삭제
         jwtUtils.deleteRefreshToken(user.id!!)
+    }
+
+    // 회원 탈퇴
+    fun signOut(user: User) {
+        // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
+        userRepository.delete(user)
     }
 
     /**
      * header에서 token 불러오기
      */
-    fun getHeaderAuthorization(request: HttpServletRequest): String {
+    private fun getHeaderAuthorization(request: HttpServletRequest): String {
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
     }
-
-
-
-
 }

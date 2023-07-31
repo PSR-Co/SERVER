@@ -1,5 +1,7 @@
 package com.psr.psr.user.controller
 
+import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.INACTIVE_STATUS
+import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.LOGOUT
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
@@ -10,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
-import java.net.http.HttpRequest
 
 @RestController
 @RequestMapping("/users")
@@ -70,8 +71,21 @@ class UserController(
         @PatchMapping("/logout")
         @ResponseBody
         fun logout(@AuthenticationPrincipal userAccount: UserAccount, request: HttpServletRequest) : BaseResponse<Any> {
-                userService.logout(userAccount.getUser(), request)
+                userService.blackListToken(userAccount.getUser(), request, LOGOUT)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
+
+        /**
+         * 회원 탈퇴
+         */
+        @DeleteMapping("/signout")
+        @ResponseBody
+        fun signOut(@AuthenticationPrincipal userAccount: UserAccount, request: HttpServletRequest) : BaseResponse<Any> {
+                userService.blackListToken(userAccount.getUser(), request, INACTIVE_STATUS)
+                userService.signOut(userAccount.getUser())
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+
 
 }
