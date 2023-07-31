@@ -1,5 +1,7 @@
 package com.psr.psr.user.service
 
+import com.psr.psr.global.Constant
+import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.LOGOUT
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.INVALID_PASSWORD
@@ -13,13 +15,16 @@ import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.net.http.HttpRequest
 import java.util.regex.Pattern
 import java.util.stream.Collectors
+
 
 @Service
 @Transactional(readOnly = true)
@@ -99,6 +104,24 @@ class UserService(
         if(user.imgKey != profileReq.profileImgKey) user.imgKey = profileReq.profileImgKey
         userRepository.save(user)
     }
+
+    // 로그아웃
+    fun logout(user: User, request: HttpServletRequest) {
+        val token = getHeaderAuthorization(request)
+        // 토큰 만료
+        jwtUtils.expireToken(token, LOGOUT);
+        // refresh token 삭제
+        jwtUtils.deleteRefreshToken(user.id!!)
+    }
+
+    /**
+     * header에서 token 불러오기
+     */
+    fun getHeaderAuthorization(request: HttpServletRequest): String {
+        return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
+    }
+
+
 
 
 }

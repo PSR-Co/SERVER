@@ -6,9 +6,11 @@ import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.user.dto.*
 import com.psr.psr.user.service.UserService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.net.http.HttpRequest
 
 @RestController
 @RequestMapping("/users")
@@ -59,6 +61,16 @@ class UserController(
         @ResponseBody
         fun postProfile(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated profileReq: ProfileReq) : BaseResponse<Any> {
                 userService.postProfile(userAccount.getUser(), profileReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+        /**
+         * 로그아웃
+         */
+        @PatchMapping("/logout")
+        @ResponseBody
+        fun logout(@AuthenticationPrincipal userAccount: UserAccount, request: HttpServletRequest) : BaseResponse<Any> {
+                userService.logout(userAccount.getUser(), request)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
