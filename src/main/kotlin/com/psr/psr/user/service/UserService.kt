@@ -74,12 +74,6 @@ class UserService(
         return userRepository.existsByNickname(nickname)
     }
 
-    // 정규 표현식 확인 extract method
-    private fun isValidRegularExpression(word: String, validation: String) : Boolean{
-        val pattern = Pattern.compile(validation)
-        return pattern.matcher(word).matches()
-    }
-
     // token 생성 extract method
     private fun createToken(user: User, password: String): TokenRes {
         val authenticationToken = UsernamePasswordAuthenticationToken(user.id.toString(), password)
