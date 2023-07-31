@@ -30,6 +30,10 @@ data class SignUpReq (
     @field:Nullable
     val imgKey: String? = null,
     @field:NotBlank
+    @field:Pattern(
+        regexp = "^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}\$",
+        message = "한글, 영어, 숫자만 입력해주세요. (10글자)"
+    )
     val nickname: String,
     val marketing: Boolean,
     @field:NotNull

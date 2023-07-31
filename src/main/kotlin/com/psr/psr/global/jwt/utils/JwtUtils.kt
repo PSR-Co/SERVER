@@ -1,7 +1,7 @@
 package com.psr.psr.global.jwt.utils
 
-import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
 import com.psr.psr.global.Constant.JWT.JWT.AUTHORIZATION_HEADER
+import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
@@ -13,20 +13,24 @@ import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.security.Key
+import java.time.Duration
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
 
 @Component
 class JwtUtils(
     private val userDetailsService: UserDetailsServiceImpl,
-    @Value("\${jwt.secret}") private val secret: String
+    @Value("\${jwt.secret}") private val secret: String,
+    private val redisTemplate: RedisTemplate<String, String>
 ) {
     val logger = KotlinLogging.logger {}
 
@@ -57,6 +61,7 @@ class JwtUtils(
             .setExpiration(Date(now + REFRESH_TOKEN_EXPIRE_TIME))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
+        redisTemplate.opsForValue().set(authentication.name, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME))
 
         return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
     }
@@ -102,4 +107,24 @@ class JwtUtils(
             .parseClaimsJws(token)
             .body
     }
+
+    /**
+     * 토큰 만료
+     */
+    private fun expireToken(token: String, status: String){
+        val refreshToken = token.replace(BEARER_PREFIX, "")
+        val expiration = getExpiration(refreshToken)
+        redisTemplate.opsForValue().set(refreshToken, status, expiration, TimeUnit.MILLISECONDS)
+
+    }
+
+    /**
+     * Token 남은 시간 return
+     */
+    fun getExpiration(token: String): Long {
+        val expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body.expiration
+        val now = Date().time
+        return expiration.time - now
+    }
+
 }

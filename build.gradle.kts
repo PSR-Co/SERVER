@@ -59,6 +59,10 @@ dependencies {
 	// queryDSL
 	implementation("com.infobip:infobip-spring-data-jpa-querydsl-boot-starter:8.0.0")
 	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+
+	// redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
 }
 
 

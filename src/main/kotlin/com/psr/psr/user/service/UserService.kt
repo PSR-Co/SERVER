@@ -7,6 +7,8 @@ import com.psr.psr.global.exception.BaseResponseCode.NOT_EXIST_EMAIL
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.LoginReq
+import com.psr.psr.user.dto.ProfileReq
+import com.psr.psr.user.dto.ProfileRes
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
@@ -64,6 +66,11 @@ class UserService(
         return createToken(user, loginReq.password)
     }
 
+    // 닉네임 중복 체크
+    fun checkDuplicateNickname(nickname: String): Boolean {
+        return userRepository.existsByNickname(nickname)
+    }
+
     // 정규 표현식 확인 extract method
     private fun isValidRegularExpression(word: String, validation: String) : Boolean{
         val pattern = Pattern.compile(validation)
@@ -76,4 +83,22 @@ class UserService(
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         return jwtUtils.createToken(authentication, user.type)
     }
+
+    // 사용자 프로필 불러오기
+    fun getProfile(user: User): ProfileRes {
+        return ProfileRes(user.email, user.imgKey)
+    }
+
+    // 사용자 프로필 변경
+    @Transactional
+    fun postProfile(user: User, profileReq: ProfileReq) {
+        if(user.nickname != profileReq.nickname) {
+            if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(BaseResponseCode.EXISTS_NICKNAME)
+            user.nickname = profileReq.nickname
+        }
+        if(user.imgKey != profileReq.profileImgKey) user.imgKey = profileReq.profileImgKey
+        userRepository.save(user)
+    }
+
+
 }
