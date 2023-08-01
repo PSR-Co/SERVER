@@ -16,8 +16,8 @@ class InquiryController(
 ){
         // 문의하기 등록
         @PostMapping
-        fun makeInquiry (@RequestBody @Valid inquiryReq: InquiryReq) : BaseResponse<Unit> {
-                return BaseResponse(inquiryService.makeInquiry(inquiryReq, 1L))
+        fun makeInquiry (@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Valid inquiryReq: InquiryReq) : BaseResponse<Unit> {
+                return BaseResponse(inquiryService.makeInquiry(userAccount.getUser(), inquiryReq))
         }
 
         // 문의하기 상세 조회
