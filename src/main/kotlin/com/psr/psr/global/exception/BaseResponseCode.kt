@@ -11,6 +11,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰 값입니다."),
     MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 구조의 토큰 값입니다."),
     EXPIRED_TOKEN(HttpStatus.FORBIDDEN, "만료된 토큰 값입니다."),
+    BLACKLIST_TOKEN(HttpStatus.FORBIDDEN, "로그아웃 혹은 회원 탈퇴된 유저의 토큰 값입니다."),
 
     // user
     EXISTS_PHONE(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 휴대폰 번호입니다."),

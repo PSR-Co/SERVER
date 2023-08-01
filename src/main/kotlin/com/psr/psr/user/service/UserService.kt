@@ -1,5 +1,6 @@
 package com.psr.psr.user.service
 
+import com.psr.psr.global.Constant
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.INVALID_PASSWORD
@@ -13,6 +14,7 @@ import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.regex.Pattern
 import java.util.stream.Collectors
+
 
 @Service
 @Transactional(readOnly = true)
@@ -71,12 +74,6 @@ class UserService(
         return userRepository.existsByNickname(nickname)
     }
 
-    // 정규 표현식 확인 extract method
-    private fun isValidRegularExpression(word: String, validation: String) : Boolean{
-        val pattern = Pattern.compile(validation)
-        return pattern.matcher(word).matches()
-    }
-
     // token 생성 extract method
     private fun createToken(user: User, password: String): TokenRes {
         val authenticationToken = UsernamePasswordAuthenticationToken(user.id.toString(), password)
@@ -100,5 +97,25 @@ class UserService(
         userRepository.save(user)
     }
 
+    // 토큰 자동 토큰 만료 및 RefreshToken 삭제
+    fun blackListToken(user: User, request: HttpServletRequest, loginStatus: String) {
+        val token = getHeaderAuthorization(request)
+        // 토큰 만료
+        jwtUtils.expireToken(token, loginStatus);
+        // refresh token 삭제
+        jwtUtils.deleteRefreshToken(user.id!!)
+    }
 
+    // 회원 탈퇴
+    fun signOut(user: User) {
+        // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
+        userRepository.delete(user)
+    }
+
+    /**
+     * header에서 token 불러오기
+     */
+    private fun getHeaderAuthorization(request: HttpServletRequest): String {
+        return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
+    }
 }

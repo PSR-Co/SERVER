@@ -4,15 +4,18 @@ import com.psr.psr.global.Constant.JWT.JWT.AUTHORIZATION_HEADER
 import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseException
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.utils.JwtUtils
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.util.ObjectUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 
-class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
+class JwtFilter(private val jwtUtils: JwtUtils, private val redisTemplate: RedisTemplate<String, String>) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -20,9 +23,15 @@ class JwtFilter(private val jwtUtils: JwtUtils) : OncePerRequestFilter() {
         filterChain: FilterChain
     ) {
         try{
+            // header 에서 token 꺼내기
             val token = resolveToken(request)
+            // 유효한 token 인지 확인
             if(StringUtils.hasText(token) && jwtUtils.validateToken(token)){
-                val authentication = jwtUtils.getAuthentication(token!!)
+                // 이미 blacklist 가 된 토큰인지 아닌지 확인
+                if(!ObjectUtils.isEmpty(redisTemplate.opsForValue().get(token!!))){
+                    throw BaseException(BaseResponseCode.BLACKLIST_TOKEN)
+                }
+                val authentication = jwtUtils.getAuthentication(token)
                 SecurityContextHolder.getContext().authentication = authentication
             }
         } catch (e: BaseException) {

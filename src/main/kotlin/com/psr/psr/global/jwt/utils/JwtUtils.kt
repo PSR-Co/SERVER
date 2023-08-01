@@ -34,7 +34,6 @@ class JwtUtils(
 ) {
     val logger = KotlinLogging.logger {}
 
-    // todo: 암호화시켜 yaml 파일에 넣어두기
     private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 30 // 30 분
     private final val REFRESH_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 7 // 일주일
 
@@ -111,20 +110,29 @@ class JwtUtils(
     /**
      * 토큰 만료
      */
-    private fun expireToken(token: String, status: String){
-        val refreshToken = token.replace(BEARER_PREFIX, "")
-        val expiration = getExpiration(refreshToken)
-        redisTemplate.opsForValue().set(refreshToken, status, expiration, TimeUnit.MILLISECONDS)
+    fun expireToken(token: String, status: String){
+        val accessToken = token.replace(BEARER_PREFIX, "")
+        val expiration = getExpiration(accessToken)
+        redisTemplate.opsForValue().set(accessToken, status, expiration, TimeUnit.MILLISECONDS)
 
     }
 
     /**
      * Token 남은 시간 return
      */
-    fun getExpiration(token: String): Long {
+    private fun getExpiration(token: String): Long {
         val expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body.expiration
         val now = Date().time
-        return expiration.time - now
+        return (expiration.time - now)
     }
+
+    /**
+     * refresh token 삭제
+     */
+    fun deleteRefreshToken(userId: Long) {
+        if(redisTemplate.opsForValue().get(userId.toString()) != null) redisTemplate.delete(userId.toString())
+    }
+
+
 
 }
