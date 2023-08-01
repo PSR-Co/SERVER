@@ -1,6 +1,7 @@
 package com.psr.psr.inquiry.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.inquiry.dto.InquiryListRes
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
@@ -27,4 +28,11 @@ data class Inquiry(
 
     var answer: String? = null
 
-): BaseEntity()
+): BaseEntity(){
+    fun toListDto(): InquiryListRes {
+        return InquiryListRes(
+            inquiryId = id!!,
+            title = title!!
+        )
+    }
+}
