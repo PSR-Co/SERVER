@@ -40,4 +40,10 @@ class InquiryController(
         fun answerInquiry (@AuthenticationPrincipal userAccount: UserAccount, @PathVariable inquiryId: Long, @RequestBody @Valid inquiryAnswerReq: InquiryAnswerReq) : BaseResponse<Unit> {
                 return BaseResponse(inquiryService.answerInquiry(userAccount.getUser(), inquiryId, inquiryAnswerReq))
         }
+
+        // 문의하기 답변 등록
+        @DeleteMapping("/{inquiryId}")
+        fun deleteInquiry (@AuthenticationPrincipal userAccount: UserAccount, @PathVariable inquiryId: Long) : BaseResponse<Unit> {
+                return BaseResponse(inquiryService.deleteInquiry(userAccount.getUser(), inquiryId))
+        }
 }

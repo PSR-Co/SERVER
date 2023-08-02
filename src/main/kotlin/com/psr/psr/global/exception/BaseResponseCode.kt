@@ -22,7 +22,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),
-    NOT_MANAGER(HttpStatus.FORBIDDEN, "관리자가 아닙니다."),
+    NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     INVALID_USER_CATEGORY(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 카테고리입니다."),
 
     // User - category
