@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 interface InquiryRepository: JpaRepository<Inquiry, Long> {
     fun findByUserAndInquiryStatusAndStatus(user: User, inquiryStatus: InquiryStatus, status: String): List<Inquiry>?
     fun findByInquiryStatusAndStatus(inquiryStatus: InquiryStatus, status: String): List<Inquiry>?
+    fun findByIdAndStatus(inquiryId: Long, status: String): Inquiry?
 }
