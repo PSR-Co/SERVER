@@ -46,7 +46,7 @@ class InquiryService(
 
     // 문의 답변 등록
     fun answerInquiry(user: User, inquiryId: Long, inquiryAnswerReq: InquiryAnswerReq) {
-        if (user.type != Type.MANAGER) throw BaseException(BaseResponseCode.NOT_MANAGER)
+        if (user.type != Type.MANAGER) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
         val inquiry: Inquiry = inquiryRepository.findByIdAndStatus(inquiryId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
@@ -54,5 +54,13 @@ class InquiryService(
 
         inquiry.registerAnswer(inquiryAnswerReq.answer)
         inquiryRepository.save(inquiry)
+    }
+
+    // 문의 삭제
+    fun deleteInquiry(user: User, inquiryId: Long) {
+        val inquiry: Inquiry = inquiryRepository.findByIdAndStatus(inquiryId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
+        if (inquiry.user.id != user.id && user.type != Type.MANAGER) throw BaseException(BaseResponseCode.NO_PERMISSION)
+        inquiryRepository.delete(inquiry)
     }
 }

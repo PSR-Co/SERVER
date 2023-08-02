@@ -5,9 +5,11 @@ import com.psr.psr.inquiry.dto.InquiryListRes
 import com.psr.psr.inquiry.dto.InquiryRes
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity
+@SQLDelete(sql = "UPDATE inquiry SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
 data class Inquiry(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
