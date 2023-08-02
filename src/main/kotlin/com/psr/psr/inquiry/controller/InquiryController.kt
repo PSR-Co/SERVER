@@ -2,6 +2,7 @@ package com.psr.psr.inquiry.controller
 
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.UserAccount
+import com.psr.psr.inquiry.dto.InquiryListRes
 import com.psr.psr.inquiry.dto.InquiryReq
 import com.psr.psr.inquiry.dto.InquiryRes
 import com.psr.psr.inquiry.service.InquiryService
@@ -25,5 +26,11 @@ class InquiryController(
         fun getInquiryDetails (@AuthenticationPrincipal userAccount: UserAccount, @PathVariable inquiryId: Long
         ) : BaseResponse<InquiryRes> {
                 return BaseResponse(inquiryService.getInquiryDetails(userAccount.getUser(), inquiryId))
+        }
+
+        // 문의하기 목록 조회
+        @GetMapping
+        fun getInquiryList (@AuthenticationPrincipal userAccount: UserAccount, @RequestParam status: String) : BaseResponse<List<InquiryListRes>> {
+                return BaseResponse(inquiryService.getInquiryList(userAccount.getUser(), status))
         }
 }
