@@ -41,4 +41,5 @@ class InquiryService(
                     ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
 
         return inquiries.map { inquiry: Inquiry -> inquiry.toListDto() }
+    }
 }
