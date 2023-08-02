@@ -91,7 +91,7 @@ class UserController(
          */
         @PostMapping("/eid")
         @ResponseBody
-        fun validateEid(@RequestBody @Validated userEidReq: UserEidReq) : BaseResponse<Any> {
+        fun validateEid(@RequestBody @Validated userEidReq: UserEidReq) : BaseResponse<Boolean> {
                 userService.validateEid(userEidReq)
                 return BaseResponse(true)
         }
