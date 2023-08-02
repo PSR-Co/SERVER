@@ -26,7 +26,10 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_USER_CATEGORY(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 카테고리입니다."),
 
     // User - category
-    INVALID_USER_INTEREST_COUNT(HttpStatus.BAD_REQUEST, "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다");
+    INVALID_USER_INTEREST_COUNT(HttpStatus.BAD_REQUEST, "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다."),
+
+    // inquiry
+    NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다.");
 
     val status: HttpStatus = status
     val message: String = message

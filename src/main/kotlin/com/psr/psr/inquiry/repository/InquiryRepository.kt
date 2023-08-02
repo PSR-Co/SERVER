@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface InquiryRepository: JpaRepository<Inquiry, Long> {
+    fun findByIdAndStatus(inquiryId: Long, status: String): Inquiry?
 }
