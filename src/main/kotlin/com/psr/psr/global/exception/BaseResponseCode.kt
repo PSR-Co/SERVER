@@ -20,6 +20,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     NOT_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 사용자를 찾을 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
+    NOT_FOUND_EID(HttpStatus.NOT_FOUND, "사업자를 찾을 수 없습니다."),
+    INVALID_EID(HttpStatus.BAD_REQUEST, "정상 사업자가 아닙니다. (휴업자 or 폐업자)"),
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),

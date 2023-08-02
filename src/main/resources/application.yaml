@@ -27,3 +27,6 @@ redis:
   host: ENC(uElbV1Tjp5E4VQHM9wUCtdoVZkcG0/m3)
   port: ENC(abmpN3SWG3scsGG4F6VJbw==)
   password: ENC(xr9ZvfQtVGCxlbymLxNPXG4Qxyl40IA9)
+
+eid:
+  key: ENC(B9cwrrg05EC+WNRxW6m2+Pa42w1VqM0nn/PDdnKh5sMgZKppvQQ9TeiWpeNpRl1PaHNESHCW8xlub/YIl2wO1PKA0bPBlBT++6Ec0plkA6w4pKowNPYWnguoWDe2pjQaUegJ6c8/A/Y=)

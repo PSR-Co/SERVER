@@ -86,6 +86,16 @@ class UserController(
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
+        /**
+         * 사업자 등록 번호 인증
+         */
+        @PostMapping("/eid")
+        @ResponseBody
+        fun validateEid(@RequestBody @Validated userEidReq: UserEidReq) : BaseResponse<Any> {
+                userService.validateEid(userEidReq)
+                return BaseResponse(true)
+        }
+
 
 
 }
