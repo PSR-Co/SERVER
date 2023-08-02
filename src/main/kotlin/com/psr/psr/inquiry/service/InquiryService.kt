@@ -3,6 +3,7 @@ package com.psr.psr.inquiry.service
 import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
+import com.psr.psr.inquiry.dto.InquiryAnswerReq
 import com.psr.psr.inquiry.dto.InquiryListRes
 import com.psr.psr.inquiry.dto.InquiryReq
 import com.psr.psr.inquiry.entity.Inquiry
@@ -41,5 +42,17 @@ class InquiryService(
                     ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
 
         return inquiries.map { inquiry: Inquiry -> inquiry.toListDto() }
+    }
+
+    // 문의 답변 등록
+    fun answerInquiry(user: User, inquiryId: Long, inquiryAnswerReq: InquiryAnswerReq) {
+        if (user.type != Type.MANAGER) throw BaseException(BaseResponseCode.NOT_MANAGER)
+
+        val inquiry: Inquiry = inquiryRepository.findByIdAndStatus(inquiryId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
+        if (inquiry.inquiryStatus == InquiryStatus.COMPLETED) throw BaseException(BaseResponseCode.INQUIRY_ANSWER_ALREADY_COMPLETE)
+
+        inquiry.registerAnswer(inquiryAnswerReq.answer)
+        inquiryRepository.save(inquiry)
     }
 }

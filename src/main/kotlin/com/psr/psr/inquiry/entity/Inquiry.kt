@@ -30,6 +30,11 @@ data class Inquiry(
     var answer: String? = null
 
 ): BaseEntity(){
+    fun registerAnswer(answer: String){
+        this.answer = answer
+        this.inquiryStatus = InquiryStatus.COMPLETED
+    }
+
     fun toListDto(): InquiryListRes {
         return InquiryListRes(
             inquiryId = id!!,
