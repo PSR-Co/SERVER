@@ -19,10 +19,10 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 닉네임입니다."),
     NOT_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 사용자를 찾을 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
-    NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),
+    NOT_MANAGER(HttpStatus.FORBIDDEN, "관리자가 아닙니다."),
     INVALID_USER_CATEGORY(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 카테고리입니다."),
 
     // User - category
@@ -30,7 +30,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
-    INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다.");
+    INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),
+    INQUIRY_ANSWER_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다.");
 
     val status: HttpStatus = status
     val message: String = message
