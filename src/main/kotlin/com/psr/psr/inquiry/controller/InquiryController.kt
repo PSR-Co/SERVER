@@ -22,7 +22,7 @@ class InquiryController(
 
         // 문의하기 목록 조회
         @GetMapping
-        fun getInquiryList (@AuthenticationPrincipal userAccount: UserAccount, @RequestParam completed: Int) : BaseResponse<List<InquiryListRes>> {
-                return BaseResponse(inquiryService.getInquiryList(userAccount.getUser(), completed))
+        fun getInquiryList (@AuthenticationPrincipal userAccount: UserAccount, @RequestParam status: String) : BaseResponse<List<InquiryListRes>> {
+                return BaseResponse(inquiryService.getInquiryList(userAccount.getUser(), status))
         }
 }

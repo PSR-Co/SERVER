@@ -25,8 +25,8 @@ class InquiryService(
     }
 
     // 문의 목록 조회
-    fun getInquiryList(user: User, completed: Int): List<InquiryListRes> {
-        val inquiryStatus: InquiryStatus = InquiryStatus.findByNum(completed)
+    fun getInquiryList(user: User, status: String): List<InquiryListRes> {
+        val inquiryStatus: InquiryStatus = InquiryStatus.findByName(status)
         val inquiries: List<Inquiry> =
             if (user.type == Type.MANAGER)
                 inquiryRepository.findByInquiryStatusAndStatus(inquiryStatus, ACTIVE_STATUS)

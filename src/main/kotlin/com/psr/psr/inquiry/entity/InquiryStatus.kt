@@ -3,13 +3,13 @@ package com.psr.psr.inquiry.entity
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 
-enum class InquiryStatus(val num: Int, val value: String) {
-    PROGRESSING(0, "진행중"),
-    COMPLETED(1, "완료");
+enum class InquiryStatus(val statusName: String) {
+    PROGRESSING("진행중"),
+    COMPLETED("완료");
 
     companion object {
-        fun findByNum(num: Int): InquiryStatus{
-            return InquiryStatus.values().find { it.num == num }
+        fun findByName(statusName: String): InquiryStatus{
+            return InquiryStatus.values().find { it.statusName == statusName }
                 ?: throw BaseException(BaseResponseCode.INVALID_INQUIRY_STATUS)
         }
     }
