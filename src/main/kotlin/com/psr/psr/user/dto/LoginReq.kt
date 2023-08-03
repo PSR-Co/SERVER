@@ -20,5 +20,4 @@ data class LoginReq (
         message = "비밀번호를 숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요"
     )
     var password: String
-    ) {
-}
+    )

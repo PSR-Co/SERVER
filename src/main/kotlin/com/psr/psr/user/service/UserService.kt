@@ -42,7 +42,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
     private val serviceKey: String,
-    userAssembler: UserAssembler
+    private val userAssembler: UserAssembler
 
 ) {
     // 회원가입
@@ -66,13 +66,13 @@ class UserService(
         val encodedPassword = passwordEncoder.encode(signUpReq.password)
         signUpReq.password = encodedPassword
         // user 저장
-        val user = userRepository.save(signUpReq.toEntity())
-        userInterestRepository.saveAll(signUpReq.toInterestEntity(user))
+        val user = userRepository.save(userAssembler.toEntity(signUpReq))
+        userInterestRepository.saveAll(userAssembler.toInterestEntity(user, signUpReq))
 
         // 사업자인경우
         if (user.type == Type.ENTREPRENEUR){
             if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
-            businessInfoRepository.save(signUpReq.toBusinessEntity(user))
+            businessInfoRepository.save(userAssembler.toBusinessEntity(user, signUpReq))
         }
 
         // token 생성
@@ -139,7 +139,7 @@ class UserService(
     // 공공데이터포털에서 사용자 불러오기
     private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
         val url = EID_URL + serviceKey
-        val businesses = userEidReq.toList()
+        val businesses = userAssembler.toUserEidList(userEidReq)
         val json = ObjectMapper().writeValueAsString(businesses)
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
@@ -159,7 +159,7 @@ class UserService(
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
     }
 
-    //
+    // 마이페이지 정보 불러오기
     fun getMyPageInfo(user: User): MyPageInfoRes {
         return MyPageInfoRes(user.email, user.imgKey, user.type.value, user.phone)
     }
