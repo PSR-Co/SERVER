@@ -70,7 +70,6 @@ data class SignUpReq (
             companyName = entreInfo!!.companyName,
             ownerName = entreInfo.ownerName,
             number = entreInfo.number,
-            // todo: pr이 merge 되면 address => date로 변경
             date = LocalDate.parse(entreInfo.companyDate, format)
         )
     }
