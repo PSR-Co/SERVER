@@ -9,6 +9,7 @@ import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
+import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.entity.BusinessInfo
 import com.psr.psr.user.entity.Type
@@ -40,7 +41,8 @@ class UserService(
     private val jwtUtils: JwtUtils,
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
-    private val serviceKey: String
+    private val serviceKey: String,
+    userAssembler: UserAssembler
 
 ) {
     // 회원가입
@@ -155,5 +157,10 @@ class UserService(
     // header에서 token 불러오기
     private fun getHeaderAuthorization(request: HttpServletRequest): String {
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
+    }
+
+    //
+    fun getMyPageInfo(user: User): MyPageInfoRes {
+        return MyPageInfoRes(user.email, user.imgKey, user.type.value, user.phone)
     }
 }

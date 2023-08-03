@@ -96,6 +96,14 @@ class UserController(
                 return BaseResponse(true)
         }
 
+        /**
+         * 마이페이지 내 정보 화면
+         */
+        @GetMapping("/mypage")
+        @ResponseBody
+        fun getMyPageInfo(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<MyPageInfoRes>{
+               return BaseResponse(userService.getMyPageInfo(userAccount.getUser()))
+        }
 
 
 }
