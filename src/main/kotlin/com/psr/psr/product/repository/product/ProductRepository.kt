@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ProductRepository: JpaRepository<Product, Long>, ProductCustom {
-    fun findAllByUserAndStatus(user: User, activeStatus: String): List<Product>?
+    fun findAllByUserAndStatusOrderByCreatedAtDesc(user: User, activeStatus: String): List<Product>?
 
 
 }

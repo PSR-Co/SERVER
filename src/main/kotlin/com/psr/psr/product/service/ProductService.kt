@@ -36,7 +36,7 @@ class ProductService(
     }
 
     fun getMyProducts(user: User): List<MyProduct>? {
-        val myProductList: List<Product>? = productRepository.findAllByUserAndStatus(user, ACTIVE_STATUS)
+        val myProductList: List<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS)
 
         return myProductList?.map { p: Product ->
             val productImg = productImgRepository.findTop1ByProductEqualsAndStatusEqualsOrderByCreatedAtDesc(p, ACTIVE_STATUS)
