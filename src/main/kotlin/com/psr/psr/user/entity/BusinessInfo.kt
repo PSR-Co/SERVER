@@ -8,7 +8,7 @@ import java.time.LocalDate
 @Entity
 data class BusinessInfo(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long ?= null,
 
         @OneToOne
         @JoinColumn(nullable = false, name = "user_id")

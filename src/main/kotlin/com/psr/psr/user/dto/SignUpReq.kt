@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import org.jetbrains.annotations.NotNull
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 
@@ -39,7 +41,8 @@ data class SignUpReq (
     @field:NotNull
     val notification: Boolean,
     @field:NotEmpty
-    val interestList: List<UserInterestReq>
+    val interestList: List<UserInterestReq>,
+    val entreInfo: UserEidReq ?= null
     ) {
     fun toEntity(): User {
         return User(email = email,
@@ -59,5 +62,15 @@ data class SignUpReq (
                 UserInterest(category = Category.getCategoryByName(i.category),
                     user = user)
             }.collect(Collectors.toList())
+    }
+
+    fun toBusinessEntity(user: User): BusinessInfo{
+        val format = DateTimeFormatter.ofPattern("yyyyMMdd")
+        return BusinessInfo(user = user,
+            companyName = entreInfo!!.companyName,
+            ownerName = entreInfo.ownerName,
+            number = entreInfo.number,
+            date = LocalDate.parse(entreInfo.companyDate, format)
+        )
     }
 }

@@ -21,6 +21,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     NOT_FOUND_EID(HttpStatus.NOT_FOUND, "사업자를 찾을 수 없습니다."),
+    NOT_EMPTY_EID(HttpStatus.BAD_REQUEST, "사업자 정보를 입력해주세요. "),
     INVALID_EID(HttpStatus.BAD_REQUEST, "정상 사업자가 아닙니다. (휴업자 or 폐업자)"),
 
     // User - type
