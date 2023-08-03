@@ -3,6 +3,7 @@ package com.psr.psr.user.entity
 import com.psr.psr.global.entity.BaseEntity
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
+import java.time.LocalDate
 
 @Entity
 data class BusinessInfo(
@@ -23,5 +24,5 @@ data class BusinessInfo(
         var number: String,
 
         @NotNull
-        var address: String
+        var date: LocalDate
 ): BaseEntity()
