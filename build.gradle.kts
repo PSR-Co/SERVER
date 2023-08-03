@@ -63,6 +63,8 @@ dependencies {
 	// redis
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+	// webclient
+	implementation ("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 

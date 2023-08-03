@@ -14,4 +14,11 @@ class Constant {
             const val INACTIVE_STATUS = "inactive"
         }
     }
+
+    class USER_EID{
+        companion object USER_EID{
+            const val EID_URL = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey="
+            const val PAY_STATUS = "01"
+        }
+    }
 }

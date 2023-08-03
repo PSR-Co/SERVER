@@ -1,26 +1,29 @@
 package com.psr.psr.user.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.psr.psr.global.Constant
+import com.psr.psr.global.Constant.USER_EID.USER_EID.EID_URL
+import com.psr.psr.global.Constant.USER_EID.USER_EID.PAY_STATUS
 import com.psr.psr.global.exception.BaseException
-import com.psr.psr.global.exception.BaseResponseCode
-import com.psr.psr.global.exception.BaseResponseCode.INVALID_PASSWORD
-import com.psr.psr.global.exception.BaseResponseCode.NOT_EXIST_EMAIL
+import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
-import com.psr.psr.user.dto.LoginReq
-import com.psr.psr.user.dto.ProfileReq
-import com.psr.psr.user.dto.ProfileRes
-import com.psr.psr.user.dto.SignUpReq
+import com.psr.psr.user.dto.*
+import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import jakarta.servlet.http.HttpServletRequest
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.util.regex.Pattern
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.util.DefaultUriBuilderFactory
 import java.util.stream.Collectors
 
 
@@ -31,22 +34,24 @@ class UserService(
     private val userInterestRepository: UserInterestRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtUtils: JwtUtils,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    @Value("\${eid.key}")
+    private val serviceKey: String
 
 ) {
     // 회원가입
     @Transactional
     fun signUp(signUpReq: SignUpReq): TokenRes {
         val categoryCheck = signUpReq.interestList.stream().map { i -> i.checkInterestCategory() }.collect(Collectors.toList()).groupingBy { it }.eachCount().any { it.value > 1 }
-        if(categoryCheck) throw BaseException(BaseResponseCode.INVALID_USER_INTEREST_COUNT)
+        if(categoryCheck) throw BaseException(INVALID_USER_INTEREST_COUNT)
         // category 의 사이즈 확인
         val listSize = signUpReq.interestList.size
-        if(listSize < 1 || listSize > 3) throw BaseException(BaseResponseCode.INVALID_USER_INTEREST_COUNT)
+        if(listSize < 1 || listSize > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
 
         // 이미 가지고 있는 이메일, 닉네임, 휴대폰 번호인지 확인
-        if(userRepository.existsByEmail(signUpReq.email)) throw BaseException(BaseResponseCode.EXISTS_EMAIL)
-        if(userRepository.existsByPhone(signUpReq.phone)) throw BaseException(BaseResponseCode.EXISTS_PHONE)
-        if(userRepository.existsByNickname(signUpReq.nickname)) throw BaseException(BaseResponseCode.EXISTS_NICKNAME)
+        if(userRepository.existsByEmail(signUpReq.email)) throw BaseException(EXISTS_EMAIL)
+        if(userRepository.existsByPhone(signUpReq.phone)) throw BaseException(EXISTS_PHONE)
+        if(userRepository.existsByNickname(signUpReq.nickname)) throw BaseException(EXISTS_NICKNAME)
 
 
         // 암호화되지 않은 password 값 저장
@@ -90,7 +95,7 @@ class UserService(
     @Transactional
     fun postProfile(user: User, profileReq: ProfileReq) {
         if(user.nickname != profileReq.nickname) {
-            if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(BaseResponseCode.EXISTS_NICKNAME)
+            if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(EXISTS_NICKNAME)
             user.nickname = profileReq.nickname
         }
         if(user.imgKey != profileReq.profileImgKey) user.imgKey = profileReq.profileImgKey
@@ -112,9 +117,32 @@ class UserService(
         userRepository.delete(user)
     }
 
-    /**
-     * header에서 token 불러오기
-     */
+    // 사업자 정보 확인 API
+    fun validateEid(userEidReq: UserEidReq) {
+        val eidInfo = getEidInfo(userEidReq)
+        if(eidInfo.valid_cnt == null) throw BaseException(NOT_FOUND_EID)
+        if(eidInfo.data[0].status!!.b_stt_cd != PAY_STATUS) throw BaseException(INVALID_EID)
+    }
+
+    // 공공데이터포털에서 사용자 불러오기
+    private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
+        val url = EID_URL + serviceKey
+        val businesses = userEidReq.toList()
+        val json = ObjectMapper().writeValueAsString(businesses)
+        val factory = DefaultUriBuilderFactory(url)
+        factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
+        return WebClient.builder()
+            .uriBuilderFactory(factory)
+            .baseUrl(url)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .build().post()
+            .bodyValue(json)
+            .retrieve()
+            .bodyToMono(BusinessListRes::class.java)
+            .block()!!
+    }
+
+    // header에서 token 불러오기
     private fun getHeaderAuthorization(request: HttpServletRequest): String {
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
     }
