@@ -3,7 +3,7 @@ package com.psr.psr.product.dto.response
 import com.querydsl.core.annotations.QueryProjection
 
 data class ProductDetail @QueryProjection constructor(
-    val productIdx: Long,
+    val productId: Long,
     val imgKey: String,
     val userIdx: Long,
     val nickname: String,
