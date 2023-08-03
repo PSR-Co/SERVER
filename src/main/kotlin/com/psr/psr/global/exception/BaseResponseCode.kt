@@ -25,6 +25,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),
+    NO_PERMISSION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
     INVALID_USER_CATEGORY(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 카테고리입니다."),
 
     // User - category
@@ -32,7 +33,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
-    INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다.");
+    INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),
+    INQUIRY_ANSWER_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다.");
 
     val status: HttpStatus = status
     val message: String = message
