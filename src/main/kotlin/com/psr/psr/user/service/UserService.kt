@@ -10,7 +10,10 @@ import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.eidReq.BusinessListRes
+import com.psr.psr.user.entity.BusinessInfo
+import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
+import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import jakarta.servlet.http.HttpServletRequest
@@ -32,6 +35,7 @@ import java.util.stream.Collectors
 class UserService(
     private val userRepository: UserRepository,
     private val userInterestRepository: UserInterestRepository,
+    private val businessInfoRepository: BusinessInfoRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtUtils: JwtUtils,
     private val passwordEncoder: PasswordEncoder,
@@ -62,6 +66,12 @@ class UserService(
         // user 저장
         val user = userRepository.save(signUpReq.toEntity())
         userInterestRepository.saveAll(signUpReq.toInterestEntity(user))
+
+        // 사업자인경우
+        if (user.type == Type.ENTREPRENEUR){
+            if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
+            businessInfoRepository.save(signUpReq.toBusinessEntity(user))
+        }
 
         // token 생성
         return createToken(user, password)
