@@ -36,7 +36,7 @@ class ProductController(
          * 유저 상품 목록
          */
         @GetMapping("/users/{userId}")
-        fun getProductsByUser(@AuthenticationPrincipal userAccount: UserAccount, @PathVariable userId: Long): BaseResponse<GetProductsByUserRes> {
+        fun getProductsByUser(@PathVariable userId: Long): BaseResponse<GetProductsByUserRes> {
                 return BaseResponse(productService.getProductsByUser(userId))
         }
 
