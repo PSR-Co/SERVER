@@ -29,7 +29,7 @@ class CsAssembler {
     fun toFaqListRes(faqList: List<Faq>?) : FaqListRes {
         if(faqList == null) return FaqListRes(null)
         return FaqListRes(faqList.stream().map {
-            f -> FaqRes(f.id, f.title, f.type.value)
+            f -> FaqRes(f.id, f.type.value, f.title)
         }.collect(Collectors.toList()))
     }
 }
