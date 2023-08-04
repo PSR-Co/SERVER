@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 interface FaqRepository: JpaRepository<Faq, Long> {
     fun findByOrderByCreatedAtDesc(): List<Faq>
     fun findByTypeOrderByCreatedAtDesc(type: FaqType): List<Faq>
+    fun findByIdAndStatus(id: Long, status: String) : Faq?
 }

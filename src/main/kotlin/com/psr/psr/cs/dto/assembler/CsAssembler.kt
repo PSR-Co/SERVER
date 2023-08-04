@@ -32,4 +32,9 @@ class CsAssembler {
             f -> FaqRes(f.id, f.type.value, f.title)
         }.collect(Collectors.toList()))
     }
+
+    // 자주 묻는 질문 상세
+    fun toFaqRes(faq: Faq): FaqRes {
+        return FaqRes(faq.id, faq.type.value, faq.title, faq.content)
+    }
 }

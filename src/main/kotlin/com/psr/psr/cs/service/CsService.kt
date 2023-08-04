@@ -1,6 +1,7 @@
 package com.psr.psr.cs.service
 
 import com.psr.psr.cs.dto.FaqListRes
+import com.psr.psr.cs.dto.FaqRes
 import com.psr.psr.cs.dto.NoticeListRes
 import com.psr.psr.cs.dto.NoticeRes
 import com.psr.psr.cs.dto.assembler.CsAssembler
@@ -36,6 +37,12 @@ class CsService(
                 else{
                         csAssembler.toFaqListRes(faqRepository.findByTypeOrderByCreatedAtDesc(FaqType.getTypeByName(type)))
                 }
+        }
+
+        // 자주 묻는 질문 상세
+        fun getFaq(faqId: Long): FaqRes {
+                val faq = faqRepository.findByIdAndStatus(faqId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_NOTICE)
+                return csAssembler.toFaqRes(faq)
         }
 
 }

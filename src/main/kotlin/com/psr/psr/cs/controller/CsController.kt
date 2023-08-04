@@ -1,6 +1,7 @@
 package com.psr.psr.cs.controller
 
 import com.psr.psr.cs.dto.FaqListRes
+import com.psr.psr.cs.dto.FaqRes
 import com.psr.psr.cs.dto.NoticeListRes
 import com.psr.psr.cs.dto.NoticeRes
 import com.psr.psr.cs.service.CsService
@@ -37,5 +38,14 @@ class CsController(
         @ResponseBody
         fun getFaqs(@RequestParam(value = "type", required = false) type: String?): BaseResponse<FaqListRes>{
                 return BaseResponse(csService.getFaqs(type))
+        }
+
+        /**
+         * 자주 묻는 질문 상세
+         */
+        @GetMapping("/faqs/{faqId}")
+        @ResponseBody
+        fun getFaq(@PathVariable(name = "faqId") faqId: Long): BaseResponse<FaqRes>{
+                return BaseResponse(csService.getFaq(faqId))
         }
 }
