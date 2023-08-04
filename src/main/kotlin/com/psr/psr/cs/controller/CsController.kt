@@ -24,9 +24,9 @@ class CsController(
         /**
          * 공지사항 상세
          */
-        @GetMapping("/notices/{noticeIdx}")
+        @GetMapping("/notices/{noticeId}")
         @ResponseBody
-        fun getNotice(@PathVariable(name = "noticeIdx") noticeId: Long): BaseResponse<NoticeRes>{
+        fun getNotice(@PathVariable(name = "noticeId") noticeId: Long): BaseResponse<NoticeRes>{
                 return BaseResponse(csService.getNotice(noticeId))
         }
 
