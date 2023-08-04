@@ -23,8 +23,8 @@ class CsService(
         }
 
         // 공지사항 상세
-        fun getNotice(noticeIdx: Long) : NoticeRes{
-                val notice = noticeRepository.findByIdAndStatus(noticeIdx, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_NOTICE)
+        fun getNotice(noticeId: Long) : NoticeRes{
+                val notice = noticeRepository.findByIdAndStatus(noticeId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_NOTICE)
                 return csAssembler.toNoticeRes(notice)
         }
 

@@ -29,7 +29,7 @@ class CsController(
          */
         @GetMapping("/notices/{noticeIdx}")
         @ResponseBody
-        fun getNotice(@PathVariable(name = "noticeIdx") noticeIdx: Long): BaseResponse<NoticeRes>{
-                return BaseResponse(csService.getNotice(noticeIdx))
+        fun getNotice(@PathVariable(name = "noticeIdx") noticeId: Long): BaseResponse<NoticeRes>{
+                return BaseResponse(csService.getNotice(noticeId))
         }
 }

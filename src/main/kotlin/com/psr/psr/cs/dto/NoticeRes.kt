@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import java.time.LocalDateTime
 
 data class NoticeRes (
-    val noticeIdx: Long,
+    val noticeId: Long,
     val title: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val date: LocalDateTime,
