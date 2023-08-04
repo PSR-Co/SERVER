@@ -1,5 +1,7 @@
 package com.psr.psr.user.dto.assembler
 
+import com.psr.psr.user.dto.MyPageInfoRes
+import com.psr.psr.user.dto.ProfileRes
 import com.psr.psr.user.dto.SignUpReq
 import com.psr.psr.user.dto.UserEidReq
 import com.psr.psr.user.dto.eidReq.Business
@@ -13,6 +15,9 @@ import java.util.stream.Collectors
 
 @Component
 class UserAssembler {
+    /**
+     * toEntity
+     */
     fun toEntity(signUpReq: SignUpReq): User {
         return User(email = signUpReq.email,
             password = signUpReq.password,
@@ -46,5 +51,16 @@ class UserAssembler {
     fun toUserEidList(userEidReq: UserEidReq): BusinessListReq {
         val business = Business(userEidReq.number, userEidReq.companyDate, userEidReq.ownerName, userEidReq.companyName)
         return BusinessListReq(Collections.singletonList(business))
+    }
+
+    /**
+     * toDto
+     */
+    fun toMyPageInfoRes(user: User) : MyPageInfoRes {
+        return MyPageInfoRes(user.email, user.imgKey, user.type.value, user.phone)
+    }
+
+    fun toProfileRes(user: User) : ProfileRes {
+        return ProfileRes(user.email, user.imgKey)
     }
 }

@@ -100,7 +100,7 @@ class UserService(
 
     // 사용자 프로필 불러오기
     fun getProfile(user: User): ProfileRes {
-        return ProfileRes(user.email, user.imgKey)
+        return userAssembler.toProfileRes(user)
     }
 
     // 사용자 프로필 변경
@@ -161,6 +161,6 @@ class UserService(
 
     // 마이페이지 정보 불러오기
     fun getMyPageInfo(user: User): MyPageInfoRes {
-        return MyPageInfoRes(user.email, user.imgKey, user.type.value, user.phone)
+        return userAssembler.toMyPageInfoRes(user)
     }
 }
