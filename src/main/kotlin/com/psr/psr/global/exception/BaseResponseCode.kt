@@ -35,6 +35,10 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // CS - notices
     NOT_FOUND_NOTICE(HttpStatus.NOT_FOUND, "해당 공지사항를 찾을 수 없습니다."),
 
+    // CS - faqs
+    INVALID_FAQ_TYPE_NAME(HttpStatus.NOT_FOUND, "올바르지 않은 FAQ 카테고리입니다. "),
+
+
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
     INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),

@@ -1,7 +1,10 @@
 package com.psr.psr.cs.dto.assembler
 
+import com.psr.psr.cs.dto.FaqListRes
+import com.psr.psr.cs.dto.FaqRes
 import com.psr.psr.cs.dto.NoticeListRes
 import com.psr.psr.cs.dto.NoticeRes
+import com.psr.psr.cs.entity.Faq
 import com.psr.psr.cs.entity.Notice
 import org.springframework.stereotype.Component
 import java.util.stream.Collectors
@@ -20,5 +23,13 @@ class CsAssembler {
     // 공지사항 상세
     fun toNoticeRes(notice: Notice): NoticeRes {
         return NoticeRes(notice.id, notice.title, notice.createdAt, notice.imgKey)
+    }
+
+    // 자주 묻는 질문 메인
+    fun toFaqListRes(faqList: List<Faq>?) : FaqListRes {
+        if(faqList == null) return FaqListRes(null)
+        return FaqListRes(faqList.stream().map {
+            f -> FaqRes(f.id, f.title, f.type.value)
+        }.collect(Collectors.toList()))
     }
 }
