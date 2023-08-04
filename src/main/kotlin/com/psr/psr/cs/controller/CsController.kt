@@ -1,10 +1,11 @@
 package com.psr.psr.cs.controller
 
-import com.psr.psr.cs.dto.NoticesListRes
+import com.psr.psr.cs.dto.NoticeListRes
+import com.psr.psr.cs.dto.NoticeRes
 import com.psr.psr.cs.service.CsService
 import com.psr.psr.global.dto.BaseResponse
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
@@ -19,7 +20,16 @@ class CsController(
          */
         @GetMapping("/notices")
         @ResponseBody
-        fun getNotices(): BaseResponse<NoticesListRes>{
+        fun getNotices(): BaseResponse<NoticeListRes>{
                 return BaseResponse(csService.getNotices())
+        }
+
+        /**
+         * 공지사항 상세
+         */
+        @GetMapping("/notices/{noticeIdx}")
+        @ResponseBody
+        fun getNotice(@PathVariable(name = "noticeIdx") noticeIdx: Long): BaseResponse<NoticeRes>{
+                return BaseResponse(csService.getNotice(noticeIdx))
         }
 }
