@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface NoticeRepository: JpaRepository<Notice, Long> {
+    fun findByOrderByCreatedAtDesc() : List<Notice>?
 }
