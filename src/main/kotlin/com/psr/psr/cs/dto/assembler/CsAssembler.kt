@@ -14,7 +14,7 @@ class CsAssembler {
 
     // 공지사항 메인
     fun toNoticeListRes(noticeList: List<Notice>?): NoticeListRes {
-        if (noticeList == null) return NoticeListRes(null)
+        if (noticeList!!.isEmpty()) return NoticeListRes(null)
         return NoticeListRes(noticeList.stream().map {
             n -> NoticeRes(n.id, n.title, n.createdAt)
         }.collect(Collectors.toList()))
@@ -27,7 +27,7 @@ class CsAssembler {
 
     // 자주 묻는 질문 메인
     fun toFaqListRes(faqList: List<Faq>?) : FaqListRes {
-        if(faqList == null) return FaqListRes(null)
+        if(faqList!!.isEmpty()) return FaqListRes(null)
         return FaqListRes(faqList.stream().map {
             f -> FaqRes(f.id, f.type.value, f.title)
         }.collect(Collectors.toList()))
