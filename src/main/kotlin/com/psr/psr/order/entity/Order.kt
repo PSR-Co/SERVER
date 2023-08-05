@@ -24,7 +24,6 @@ data class Order(
         @Column(length = 100)
         var ordererName: String,
 
-        @NotNull
         var websiteUrl: String?,
 
         @NotNull
