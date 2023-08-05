@@ -32,6 +32,9 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // User - category
     INVALID_USER_INTEREST_COUNT(HttpStatus.BAD_REQUEST, "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다"),
 
+    // CS - notices
+    NOT_FOUND_NOTICE(HttpStatus.NOT_FOUND, "해당 공지사항를 찾을 수 없습니다."),
+
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
     INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),
