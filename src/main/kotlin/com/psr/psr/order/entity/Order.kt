@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull
 @Table(name = "orders")
 data class Order(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "product_id")
@@ -24,12 +24,11 @@ data class Order(
         @Column(length = 100)
         var ordererName: String,
 
-        @NotNull
-        var websiteUrl: String,
+        var websiteUrl: String?,
 
         @NotNull
         @Enumerated(EnumType.STRING)
-        var orderStatus: OrderStatus,
+        var orderStatus: OrderStatus = OrderStatus.ORDER_WAITING,
 
         @NotNull
         var inquiry: String,
