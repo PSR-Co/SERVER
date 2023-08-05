@@ -5,7 +5,7 @@ import com.psr.psr.global.Constant.JWT.JWT.BEARER_PREFIX
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
-import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.user.entity.Type
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
@@ -43,7 +43,7 @@ class JwtUtils(
     /**
      * 토큰 생성
      */
-    fun createToken(authentication: Authentication, type: Type): TokenRes {
+    fun createToken(authentication: Authentication, type: Type): TokenDto {
         val authorities = authentication.authorities.stream()
             .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.joining(","))
@@ -62,7 +62,7 @@ class JwtUtils(
             .compact()
         redisTemplate.opsForValue().set(authentication.name, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME))
 
-        return TokenRes(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
+        return TokenDto(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
     }
 
     /**
@@ -133,6 +133,13 @@ class JwtUtils(
         if(redisTemplate.opsForValue().get(userId.toString()) != null) redisTemplate.delete(userId.toString())
     }
 
+    /**
+     * check Token in Redis DB
+     */
+    fun validateRefreshToken(userId: Long, refreshToken: String) {
+        val redisToken = redisTemplate.opsForValue().get(userId.toString())
+        if(redisToken == null || redisToken != refreshToken) throw BaseException(BaseResponseCode.INVALID_TOKEN)
+    }
 
 
 }

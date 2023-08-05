@@ -1,9 +1,8 @@
 package com.psr.psr.user.dto.assembler
 
-import com.psr.psr.user.dto.MyPageInfoRes
-import com.psr.psr.user.dto.ProfileRes
-import com.psr.psr.user.dto.SignUpReq
-import com.psr.psr.user.dto.UserEidReq
+import com.psr.psr.global.Constant
+import com.psr.psr.global.jwt.dto.TokenDto
+import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.eidReq.Business
 import com.psr.psr.user.dto.eidReq.BusinessListReq
 import com.psr.psr.user.entity.*
@@ -62,5 +61,10 @@ class UserAssembler {
 
     fun toProfileRes(user: User) : ProfileRes {
         return ProfileRes(user.email, user.imgKey)
+    }
+
+    fun toTokenDto(tokenDto: TokenDto) {
+        tokenDto.accessToken.replace(Constant.JWT.BEARER_PREFIX, "").also { tokenDto.accessToken = it }
+        tokenDto.refreshToken.replace(Constant.JWT.BEARER_PREFIX, "").also { tokenDto.refreshToken = it }
     }
 }

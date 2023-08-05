@@ -5,7 +5,7 @@ import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.LOGOUT
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
-import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.user.dto.*
 import com.psr.psr.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
@@ -23,7 +23,7 @@ class UserController(
          */
         @PostMapping("/signup")
         @ResponseBody
-        fun signUp (@RequestBody @Validated signUpReq:  SignUpReq) : BaseResponse<TokenRes>{
+        fun signUp (@RequestBody @Validated signUpReq:  SignUpReq) : BaseResponse<TokenDto>{
                return BaseResponse(userService.signUp(signUpReq))
         }
 
@@ -32,7 +32,7 @@ class UserController(
          */
         @PostMapping("/login")
         @ResponseBody
-        fun login (@RequestBody @Validated loginReq: LoginReq) : BaseResponse<TokenRes>{
+        fun login (@RequestBody @Validated loginReq: LoginReq) : BaseResponse<TokenDto>{
                 return BaseResponse(userService.login(loginReq))
         }
 
@@ -103,6 +103,15 @@ class UserController(
         @ResponseBody
         fun getMyPageInfo(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<MyPageInfoRes>{
                return BaseResponse(userService.getMyPageInfo(userAccount.getUser()))
+        }
+
+        /**
+         * 토큰 재발급
+         */
+        @PostMapping("/reissue")
+        @ResponseBody
+        fun reissueToken(@RequestBody @Validated tokenDto: TokenDto) : BaseResponse<TokenDto>{
+                return BaseResponse(userService.reissueToken(tokenDto))
         }
 
 

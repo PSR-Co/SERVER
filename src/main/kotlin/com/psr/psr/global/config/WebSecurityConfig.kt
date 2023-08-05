@@ -47,6 +47,7 @@ class WebSecurityConfig(
                 c.requestMatchers("/users/signup").permitAll()
                 c.requestMatchers("/users/nickname").permitAll()
                 c.requestMatchers("/users/eid").permitAll()
+                c.requestMatchers("/users/reissue").permitAll()
                 c.anyRequest().authenticated()
             }
             .apply(JwtSecurityConfig(jwtUtils, redisTemplate))
