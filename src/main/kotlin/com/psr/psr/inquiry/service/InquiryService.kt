@@ -29,17 +29,16 @@ class InquiryService(
     }
 
     // 문의 목록 조회
-    fun getInquiryList(user: User, status: String): List<InquiryListRes> {
+    fun getInquiryList(user: User, status: String): InquiryListRes {
         val inquiryStatus: InquiryStatus = InquiryStatus.findByName(status)
-        val inquiries: List<Inquiry> =
-            if (user.type == Type.MANAGER)
+        val inquiries: List<InquiryRes> =
+            (if (user.type == Type.MANAGER)
                 inquiryRepository.findByInquiryStatusAndStatus(inquiryStatus, ACTIVE_STATUS)
-                    ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
             else
-                inquiryRepository.findByUserAndInquiryStatusAndStatus(user, inquiryStatus, ACTIVE_STATUS)
-                    ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
+                inquiryRepository.findByUserAndInquiryStatusAndStatus(user, inquiryStatus, ACTIVE_STATUS))
+                .map { inquiry: Inquiry -> inquiryAssembler.toPrepareListDto(inquiry) }
 
-        return inquiries.map { inquiry: Inquiry -> inquiryAssembler.toListDto(inquiry) }
+        return inquiryAssembler.toListDto(inquiries)
     }
 
     // 문의 답변 등록
