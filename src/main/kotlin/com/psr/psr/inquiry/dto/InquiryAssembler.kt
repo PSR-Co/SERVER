@@ -14,11 +14,9 @@ class InquiryAssembler {
         )
     }
 
-    fun toListDto(inquiry: Inquiry): InquiryListRes {
-        return InquiryListRes(
-            inquiryId = inquiry.id!!,
-            title = inquiry.title!!
-        )
+    fun toListDto(inquiryList: List<InquiryRes>): InquiryListRes {
+        if (inquiryList.isEmpty()) return InquiryListRes(null)
+        return InquiryListRes(inquiryList)
     }
 
     fun toDto(inquiry: Inquiry): InquiryRes {
@@ -27,6 +25,15 @@ class InquiryAssembler {
             title = inquiry.title!!,
             content = inquiry.content!!,
             answer = inquiry.answer
+        )
+    }
+
+    fun toPrepareListDto(inquiry: Inquiry): InquiryRes {
+        return InquiryRes(
+            inquiryId = inquiry.id!!,
+            title = inquiry.title!!,
+            content = null,
+            answer = null
         )
     }
 }

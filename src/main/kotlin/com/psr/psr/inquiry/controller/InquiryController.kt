@@ -24,14 +24,13 @@ class InquiryController(
 
         // 문의하기 상세 조회
         @GetMapping("/{inquiryId}")
-        fun getInquiryDetails (@AuthenticationPrincipal userAccount: UserAccount, @PathVariable inquiryId: Long
-        ) : BaseResponse<InquiryRes> {
+        fun getInquiryDetails (@AuthenticationPrincipal userAccount: UserAccount, @PathVariable inquiryId: Long) : BaseResponse<InquiryRes> {
                 return BaseResponse(inquiryService.getInquiryDetails(userAccount.getUser(), inquiryId))
         }
 
         // 문의하기 목록 조회
         @GetMapping
-        fun getInquiryList (@AuthenticationPrincipal userAccount: UserAccount, @RequestParam status: String) : BaseResponse<List<InquiryListRes>> {
+        fun getInquiryList (@AuthenticationPrincipal userAccount: UserAccount, @RequestParam status: String) : BaseResponse<InquiryListRes?> {
                 return BaseResponse(inquiryService.getInquiryList(userAccount.getUser(), status))
         }
 
