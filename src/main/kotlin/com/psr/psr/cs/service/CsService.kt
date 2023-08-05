@@ -41,7 +41,7 @@ class CsService(
 
         // 자주 묻는 질문 상세
         fun getFaq(faqId: Long): FaqRes {
-                val faq = faqRepository.findByIdAndStatus(faqId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_NOTICE)
+                val faq = faqRepository.findByIdAndStatus(faqId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_FAQ)
                 return csAssembler.toFaqRes(faq)
         }
 
