@@ -22,7 +22,7 @@ class CsService(
 ) {
         // 공지사항 메인
         fun getNotices() : NoticeListRes{
-                return csAssembler.toNoticeListRes(noticeRepository.findByOrderByCreatedAtDesc())
+                return csAssembler.toNoticeListRes(noticeRepository.findByStatusOrderByCreatedAtDesc(ACTIVE_STATUS))
         }
 
         // 공지사항 상세
@@ -33,9 +33,9 @@ class CsService(
 
         // 자주 묻는 질문 메인
         fun getFaqs(type: String?): FaqListRes {
-                return if(type == null) csAssembler.toFaqListRes(faqRepository.findByOrderByCreatedAtDesc())
+                return if(type == null) csAssembler.toFaqListRes(faqRepository.findByStatusOrderByCreatedAtDesc(ACTIVE_STATUS))
                 else{
-                        csAssembler.toFaqListRes(faqRepository.findByTypeOrderByCreatedAtDesc(FaqType.getTypeByName(type)))
+                        csAssembler.toFaqListRes(faqRepository.findByTypeAndStatusOrderByCreatedAtDesc(FaqType.getTypeByName(type), ACTIVE_STATUS))
                 }
         }
 
