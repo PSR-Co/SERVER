@@ -10,16 +10,16 @@ data class OrderReq (
 
     @field:NotBlank(message = "이름을 입력해주세요.")
     @field:Size(max = 100, message = "이름은 최대 100자입니다.")
-    val ordererName: String? = null,
+    val ordererName: String,
 
     @field:Size(max = 255)
     var websiteUrl: String? = null,
 
     @field:NotBlank(message = "문의사항을 입력해주세요.")
     @field:Size(max = 250, message = "문의사항은 최대 250자입니다.")
-    val inquiry: String? = null,
+    val inquiry: String,
 
     @field:NotBlank(message = "요청 상세설명을 입력해주세요.")
     @field:Size(max = 250, message = "요청 상세설명은 최대 250자입니다.")
-    val description: String? = null
+    val description: String
 )
