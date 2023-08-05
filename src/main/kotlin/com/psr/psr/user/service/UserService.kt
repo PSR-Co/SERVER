@@ -2,9 +2,9 @@ package com.psr.psr.user.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.psr.psr.global.Constant
-import com.psr.psr.global.Constant.USER_EID.USER_EID.EID_URL
-import com.psr.psr.global.Constant.USER_EID.USER_EID.PAY_STATUS
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.ACTIVE_STATUS
+import com.psr.psr.global.Constant.UserEID.UserEID.EID_URL
+import com.psr.psr.global.Constant.UserEID.UserEID.PAY_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto

@@ -8,7 +8,7 @@ import com.psr.psr.cs.dto.assembler.CsAssembler
 import com.psr.psr.cs.entity.FaqType
 import com.psr.psr.cs.repository.FaqRepository
 import com.psr.psr.cs.repository.NoticeRepository
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.ACTIVE_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import org.springframework.stereotype.Service

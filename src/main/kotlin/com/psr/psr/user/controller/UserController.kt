@@ -1,7 +1,7 @@
 package com.psr.psr.user.controller
 
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.INACTIVE_STATUS
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.LOGOUT
+import com.psr.psr.global.Constant.UserStatus.UserStatus.INACTIVE_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.LOGOUT
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount

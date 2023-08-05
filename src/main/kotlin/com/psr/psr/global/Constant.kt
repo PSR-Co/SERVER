@@ -7,18 +7,25 @@ class Constant {
             const val BEARER_PREFIX: String = "Bearer "
         }
     }
-    class USER_STATUS {
-        companion object USER_STATUS {
+    class UserStatus {
+        companion object UserStatus {
             const val LOGOUT = "logout"
             const val ACTIVE_STATUS = "active"
             const val INACTIVE_STATUS = "inactive"
         }
     }
 
-    class USER_EID{
-        companion object USER_EID{
+    class UserEID{
+        companion object UserEID{
             const val EID_URL = "https://api.odcloud.kr/api/nts-businessman/v1/validate?serviceKey="
             const val PAY_STATUS = "01"
+        }
+    }
+
+    class OrderType{
+        companion object OrderType{
+            const val SELL = "sell"
+            const val ORDER = "order"
         }
     }
 }
