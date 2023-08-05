@@ -39,11 +39,13 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_FAQ_TYPE_NAME(HttpStatus.NOT_FOUND, "올바르지 않은 FAQ 카테고리입니다. "),
     NOT_FOUND_FAQ(HttpStatus.NOT_FOUND, "해당 FAQ를 찾을 수 없습니다."),
 
-
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
     INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),
     INQUIRY_ANSWER_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다."),
+
+    // order
+    NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다."),
 
     // product
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다.");
