@@ -43,34 +43,4 @@ data class SignUpReq (
     @field:NotEmpty
     val interestList: List<UserInterestReq>,
     val entreInfo: UserEidReq ?= null
-    ) {
-    fun toEntity(): User {
-        return User(email = email,
-            password = password,
-            type = Type.getTypeByName(type),
-            phone = phone,
-            imgKey = imgKey,
-            provider = Provider.LOCAL,
-            marketing = marketing,
-            notification = notification,
-            nickname = nickname)
-    }
-
-    fun toInterestEntity(user: User): List<UserInterest> {
-        return interestList.stream()
-            .map { i ->
-                UserInterest(category = Category.getCategoryByName(i.category),
-                    user = user)
-            }.collect(Collectors.toList())
-    }
-
-    fun toBusinessEntity(user: User): BusinessInfo{
-        val format = DateTimeFormatter.ofPattern("yyyyMMdd")
-        return BusinessInfo(user = user,
-            companyName = entreInfo!!.companyName,
-            ownerName = entreInfo.ownerName,
-            number = entreInfo.number,
-            date = LocalDate.parse(entreInfo.companyDate, format)
-        )
-    }
-}
+    )

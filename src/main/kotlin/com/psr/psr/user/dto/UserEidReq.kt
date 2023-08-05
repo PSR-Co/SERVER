@@ -15,9 +15,4 @@ data class UserEidReq (
     val companyName: String,
     @field:NotBlank
     val ownerName: String,
-) {
-    fun toList(): BusinessListReq {
-        val business = Business(number, companyDate, ownerName, companyName)
-        return BusinessListReq(Collections.singletonList(business))
-    }
-}
+)

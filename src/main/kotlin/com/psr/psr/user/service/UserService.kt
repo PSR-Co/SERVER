@@ -9,6 +9,7 @@ import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenRes
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
+import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.entity.BusinessInfo
 import com.psr.psr.user.entity.Type
@@ -40,7 +41,8 @@ class UserService(
     private val jwtUtils: JwtUtils,
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
-    private val serviceKey: String
+    private val serviceKey: String,
+    private val userAssembler: UserAssembler
 
 ) {
     // 회원가입
@@ -64,13 +66,13 @@ class UserService(
         val encodedPassword = passwordEncoder.encode(signUpReq.password)
         signUpReq.password = encodedPassword
         // user 저장
-        val user = userRepository.save(signUpReq.toEntity())
-        userInterestRepository.saveAll(signUpReq.toInterestEntity(user))
+        val user = userRepository.save(userAssembler.toEntity(signUpReq))
+        userInterestRepository.saveAll(userAssembler.toInterestEntity(user, signUpReq))
 
         // 사업자인경우
         if (user.type == Type.ENTREPRENEUR){
             if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
-            businessInfoRepository.save(signUpReq.toBusinessEntity(user))
+            businessInfoRepository.save(userAssembler.toBusinessEntity(user, signUpReq))
         }
 
         // token 생성
@@ -98,7 +100,7 @@ class UserService(
 
     // 사용자 프로필 불러오기
     fun getProfile(user: User): ProfileRes {
-        return ProfileRes(user.email, user.imgKey)
+        return userAssembler.toProfileRes(user)
     }
 
     // 사용자 프로필 변경
@@ -137,7 +139,7 @@ class UserService(
     // 공공데이터포털에서 사용자 불러오기
     private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
         val url = EID_URL + serviceKey
-        val businesses = userEidReq.toList()
+        val businesses = userAssembler.toUserEidList(userEidReq)
         val json = ObjectMapper().writeValueAsString(businesses)
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
@@ -155,5 +157,10 @@ class UserService(
     // header에서 token 불러오기
     private fun getHeaderAuthorization(request: HttpServletRequest): String {
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
+    }
+
+    // 마이페이지 정보 불러오기
+    fun getMyPageInfo(user: User): MyPageInfoRes {
+        return userAssembler.toMyPageInfoRes(user)
     }
 }
