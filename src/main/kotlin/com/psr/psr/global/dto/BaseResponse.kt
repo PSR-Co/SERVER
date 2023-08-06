@@ -4,8 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyOrder
 import com.psr.psr.global.exception.BaseResponseCode
+import lombok.AllArgsConstructor
+import lombok.Getter
+import lombok.RequiredArgsConstructor
 
 @JsonPropertyOrder("code", "message", "data")
+@RequiredArgsConstructor
+@AllArgsConstructor
+@Getter
 class BaseResponse<T> {
     @JsonProperty("code")
     private val code: Int
@@ -25,8 +31,18 @@ class BaseResponse<T> {
     }
 
     // fail
-    constructor(status: BaseResponseCode) {
-        this.code = status.status.value()
-        this.message = status.message
+    constructor(code: Int, message: String) {
+        this.code = code
+        this.message = message
+    }
+    constructor(baseResponseCode: BaseResponseCode) {
+        this.code = baseResponseCode.status.value()
+        this.message = baseResponseCode.message
+    }
+
+    companion object {
+        fun error(code: Int, message: String): BaseResponse<*> {
+            return BaseResponse<Any>(code, message)
+        }
     }
 }
