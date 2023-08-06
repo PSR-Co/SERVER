@@ -184,7 +184,12 @@ class UserService(
     // 비밀번호 재설정
     @Transactional
     fun patchPassword(user: User, passwordReq: PasswordReq) {
+        // 현재 비밀번호 일치 여부
         if(!passwordEncoder.matches(passwordReq.currentPassword, user.password)) throw BaseException(INVALID_PASSWORD)
+        // 현재 비밀번호와 변경하려는 비밀번호 일치 여부
+        if(passwordReq.currentPassword == passwordReq.password) throw BaseException(DUPLICATE_PASSWORD)
+
+        // 비밀번호 변경
         user.password = passwordEncoder.encode(passwordReq.password)
         userRepository.save(user)
     }

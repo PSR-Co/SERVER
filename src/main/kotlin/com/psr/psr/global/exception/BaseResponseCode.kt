@@ -23,6 +23,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     NOT_FOUND_EID(HttpStatus.NOT_FOUND, "사업자를 찾을 수 없습니다."),
     NOT_EMPTY_EID(HttpStatus.BAD_REQUEST, "사업자 정보를 입력해주세요. "),
     INVALID_EID(HttpStatus.BAD_REQUEST, "정상 사업자가 아닙니다. (휴업자 or 폐업자)"),
+    DUPLICATE_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호와 변경하려는 비밀번호가 동일합니다."),
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),
