@@ -50,7 +50,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 타입입니다."),
 
     // product
-    NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다.");
+    NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다."),
+    NULL_PRODUCT_ID(HttpStatus.BAD_REQUEST, "상품ID를 입력해주세요.");
 
     val status: HttpStatus = status
     val message: String = message

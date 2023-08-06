@@ -21,7 +21,7 @@ class OrderService(
 ) {
     // 요청하기
     fun makeOrder(user: User, orderReq: OrderReq) {
-        val product: Product = productRepository.findByIdAndStatus(orderReq.productId, ACTIVE_STATUS)
+        val product: Product = orderReq.productId?.let { productRepository.findByIdAndStatus(it, ACTIVE_STATUS) }
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
         orderRepository.save(orderAssembler.toEntity(user, orderReq, product))
     }
@@ -47,5 +47,14 @@ class OrderService(
             .map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
 
         return orderAssembler.toListDto(orders)
+    }
+
+    // 요청 수정
+    fun editOrder(user: User, orderReq: OrderReq, orderId: Long) {
+        val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
+        if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
+        order.editOrder(orderReq)
+        orderRepository.save(order)
     }
 }

@@ -21,6 +21,7 @@ class OrderController(
     // 요청하기
     @PostMapping
     fun makeOrder(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Valid orderReq: OrderReq): BaseResponse<Unit> {
+        if (orderReq.productId == null) return BaseResponse(BaseResponseCode.NULL_PRODUCT_ID)
         if (orderReq.websiteUrl.isNullOrBlank()) orderReq.websiteUrl = null
         return BaseResponse(orderService.makeOrder(userAccount.getUser(), orderReq))
     }
@@ -36,5 +37,12 @@ class OrderController(
     fun getOrderList(@AuthenticationPrincipal userAccount: UserAccount, type: String, status: String): BaseResponse<OrderListRes> {
         if (type !in listOf(SELL, ORDER)) return BaseResponse(BaseResponseCode.INVALID_ORDER_TYPE)
         return BaseResponse(orderService.getOrderList(userAccount.getUser(), type, status))
+    }
+
+    // 요청 수정
+    @PatchMapping("/{orderId}")
+    fun editOrder(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Valid orderReq: OrderReq, @PathVariable orderId: Long): BaseResponse<Unit> {
+        if (orderReq.websiteUrl.isNullOrBlank()) orderReq.websiteUrl = null
+        return BaseResponse(orderService.editOrder(userAccount.getUser(), orderReq, orderId))
     }
 }

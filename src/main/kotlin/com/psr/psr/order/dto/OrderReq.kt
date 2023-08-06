@@ -1,12 +1,10 @@
 package com.psr.psr.order.dto
 
 import jakarta.validation.constraints.NotBlank
-import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 
 data class OrderReq (
-    @field:NotNull(message = "상품ID를 입력해주세요.")
-    val productId: Long,
+    val productId: Long?,
 
     @field:NotBlank(message = "이름을 입력해주세요.")
     @field:Size(max = 100, message = "이름은 최대 100자입니다.")
