@@ -35,6 +35,10 @@ class BaseResponse<T> {
         this.code = code
         this.message = message
     }
+    constructor(baseResponseCode: BaseResponseCode) {
+        this.code = baseResponseCode.status.value()
+        this.message = baseResponseCode.message
+    }
 
     companion object {
         fun error(code: Int, message: String): BaseResponse<*> {
