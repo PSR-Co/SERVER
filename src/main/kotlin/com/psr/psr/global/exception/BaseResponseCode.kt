@@ -46,6 +46,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // order
     NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 상태입니다."),
+    INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 타입입니다."),
 
     // product
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다.");

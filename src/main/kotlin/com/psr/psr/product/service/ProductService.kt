@@ -1,6 +1,6 @@
 package com.psr.psr.product.service
 
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.ACTIVE_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler

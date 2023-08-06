@@ -1,6 +1,6 @@
 package com.psr.psr.inquiry.service
 
-import com.psr.psr.global.Constant.USER_STATUS.USER_STATUS.ACTIVE_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.inquiry.dto.*
@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class InquiryService(
-        private val inquiryRepository: InquiryRepository,
-        private val inquiryAssembler: InquiryAssembler
+    private val inquiryRepository: InquiryRepository,
+    private val inquiryAssembler: InquiryAssembler
 ) {
     // 문의 등록
     fun makeInquiry(user: User, inquiryReq: InquiryReq) {
@@ -31,12 +31,13 @@ class InquiryService(
     // 문의 목록 조회
     fun getInquiryList(user: User, status: String): InquiryListRes {
         val inquiryStatus: InquiryStatus = InquiryStatus.findByName(status)
-        val inquiries: List<InquiryRes> =
-            (if (user.type == Type.MANAGER)
-                inquiryRepository.findByInquiryStatusAndStatus(inquiryStatus, ACTIVE_STATUS)
-            else
-                inquiryRepository.findByUserAndInquiryStatusAndStatus(user, inquiryStatus, ACTIVE_STATUS))
-                .map { inquiry: Inquiry -> inquiryAssembler.toPrepareListDto(inquiry) }
+        val inquiries: List<InquiryRes> = (
+                if (user.type == Type.MANAGER)
+                    inquiryRepository.findByInquiryStatusAndStatus(inquiryStatus, ACTIVE_STATUS)
+                else
+                    inquiryRepository.findByUserAndInquiryStatusAndStatus(user, inquiryStatus, ACTIVE_STATUS)
+                )
+            .map { inquiry: Inquiry -> inquiryAssembler.toPrepareListDto(inquiry) }
 
         return inquiryAssembler.toListDto(inquiries)
     }
