@@ -50,11 +50,15 @@ class OrderService(
     }
 
     // 요청 수정
-    fun editOrder(user: User, orderReq: OrderReq, orderId: Long) {
+    fun editOrder(user: User, orderReq: OrderReq?, status: String?, orderId: Long) {
         val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
-        order.editOrder(orderReq)
+
+        var orderStatus: OrderStatus? = null
+        if (status != null) orderStatus = OrderStatus.findByName(status)
+
+        order.editOrder(orderReq, orderStatus)
         orderRepository.save(order)
     }
 }

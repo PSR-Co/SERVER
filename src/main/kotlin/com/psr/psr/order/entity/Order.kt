@@ -41,10 +41,15 @@ data class Order(
     var isReviewed: Boolean = false
 
 ) : BaseEntity() {
-    fun editOrder(orderReq: OrderReq) {
-        this.ordererName = orderReq.ordererName
-        this.websiteUrl = orderReq.websiteUrl
-        this.inquiry = orderReq.inquiry
-        this.description = orderReq.description
+    fun editOrder(orderReq: OrderReq?, orderStatus: OrderStatus?) {
+        if (orderReq != null) {
+            this.ordererName = orderReq.ordererName
+            this.websiteUrl = orderReq.websiteUrl
+            this.inquiry = orderReq.inquiry
+            this.description = orderReq.description
+        }
+        if (orderStatus != null) {
+            this.orderStatus = orderStatus
+        }
     }
 }
