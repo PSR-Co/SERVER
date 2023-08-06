@@ -198,6 +198,7 @@ class UserService(
     fun resetPassword(passwordReq: ResetPasswordReq) {
         val user = userRepository.findByEmail(passwordReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(user.phone != passwordReq.phone) throw BaseException(INVALID_PHONE)
+        if(passwordEncoder.matches(passwordReq.password, user.password)) throw BaseException(DUPLICATE_PASSWORD)
 
         // 비밀번호 변경
         user.password = passwordEncoder.encode(passwordReq.password)
