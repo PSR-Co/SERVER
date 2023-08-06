@@ -9,32 +9,34 @@ import org.jetbrains.annotations.NotNull
 @Entity
 @Table(name = "orders")
 data class Order(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
-        @ManyToOne
-        @JoinColumn(nullable = false, name = "product_id")
-        var product: Product,
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "product_id")
+    var product: Product,
 
-        @ManyToOne
-        @JoinColumn(nullable = false, name = "user_id")
-        var user: User,
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "user_id")
+    var user: User,
 
-        @NotNull
-        @Column(length = 100)
-        var ordererName: String,
+    @NotNull
+    @Column(length = 100)
+    var ordererName: String,
 
-        @NotNull
-        var websiteUrl: String,
+    var websiteUrl: String?,
 
-        @NotNull
-        @Enumerated(EnumType.STRING)
-        var orderStatus: OrderStatus,
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    var orderStatus: OrderStatus = OrderStatus.ORDER_WAITING,
 
-        @NotNull
-        var inquiry: String,
+    @NotNull
+    var inquiry: String,
 
-        @NotNull
-        var description: String
+    @NotNull
+    var description: String,
 
-): BaseEntity()
+    @NotNull
+    var isReviewed: Boolean = false
+
+) : BaseEntity()

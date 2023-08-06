@@ -21,6 +21,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
     NOT_FOUND_EID(HttpStatus.NOT_FOUND, "사업자를 찾을 수 없습니다."),
+    NOT_EMPTY_EID(HttpStatus.BAD_REQUEST, "사업자 정보를 입력해주세요. "),
     INVALID_EID(HttpStatus.BAD_REQUEST, "정상 사업자가 아닙니다. (휴업자 or 폐업자)"),
 
     // User - type
@@ -31,10 +32,25 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // User - category
     INVALID_USER_INTEREST_COUNT(HttpStatus.BAD_REQUEST, "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다"),
 
+    // CS - notices
+    NOT_FOUND_NOTICE(HttpStatus.NOT_FOUND, "해당 공지사항를 찾을 수 없습니다."),
+
+    // CS - faqs
+    INVALID_FAQ_TYPE_NAME(HttpStatus.NOT_FOUND, "올바르지 않은 FAQ 카테고리입니다. "),
+    NOT_FOUND_FAQ(HttpStatus.NOT_FOUND, "해당 FAQ를 찾을 수 없습니다."),
+
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
     INVALID_INQUIRY_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 문의 상태입니다."),
-    INQUIRY_ANSWER_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다.");
+    INQUIRY_ANSWER_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다."),
+
+    // order
+    NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다."),
+    INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 상태입니다."),
+    INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 타입입니다."),
+
+    // product
+    NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다.");
 
     val status: HttpStatus = status
     val message: String = message

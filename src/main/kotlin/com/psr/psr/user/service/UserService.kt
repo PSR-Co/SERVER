@@ -2,15 +2,19 @@ package com.psr.psr.user.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.psr.psr.global.Constant
-import com.psr.psr.global.Constant.USER_EID.USER_EID.EID_URL
-import com.psr.psr.global.Constant.USER_EID.USER_EID.PAY_STATUS
+import com.psr.psr.global.Constant.UserEID.UserEID.EID_URL
+import com.psr.psr.global.Constant.UserEID.UserEID.PAY_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode.*
-import com.psr.psr.global.jwt.dto.TokenRes
+import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
+import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
+import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
+import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import jakarta.servlet.http.HttpServletRequest
@@ -32,16 +36,18 @@ import java.util.stream.Collectors
 class UserService(
     private val userRepository: UserRepository,
     private val userInterestRepository: UserInterestRepository,
+    private val businessInfoRepository: BusinessInfoRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtUtils: JwtUtils,
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
-    private val serviceKey: String
+    private val serviceKey: String,
+    private val userAssembler: UserAssembler
 
 ) {
     // 회원가입
     @Transactional
-    fun signUp(signUpReq: SignUpReq): TokenRes {
+    fun signUp(signUpReq: SignUpReq): TokenDto {
         val categoryCheck = signUpReq.interestList.stream().map { i -> i.checkInterestCategory() }.collect(Collectors.toList()).groupingBy { it }.eachCount().any { it.value > 1 }
         if(categoryCheck) throw BaseException(INVALID_USER_INTEREST_COUNT)
         // category 의 사이즈 확인
@@ -60,15 +66,21 @@ class UserService(
         val encodedPassword = passwordEncoder.encode(signUpReq.password)
         signUpReq.password = encodedPassword
         // user 저장
-        val user = userRepository.save(signUpReq.toEntity())
-        userInterestRepository.saveAll(signUpReq.toInterestEntity(user))
+        val user = userRepository.save(userAssembler.toEntity(signUpReq))
+        userInterestRepository.saveAll(userAssembler.toInterestEntity(user, signUpReq))
+
+        // 사업자인경우
+        if (user.type == Type.ENTREPRENEUR){
+            if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
+            businessInfoRepository.save(userAssembler.toBusinessEntity(user, signUpReq))
+        }
 
         // token 생성
         return createToken(user, password)
     }
 
     // 로그인
-    fun login(loginReq: LoginReq) : TokenRes{
+    fun login(loginReq: LoginReq) : TokenDto{
         val user = userRepository.findByEmail(loginReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
         return createToken(user, loginReq.password)
@@ -80,7 +92,7 @@ class UserService(
     }
 
     // token 생성 extract method
-    private fun createToken(user: User, password: String): TokenRes {
+    private fun createToken(user: User, password: String): TokenDto {
         val authenticationToken = UsernamePasswordAuthenticationToken(user.id.toString(), password)
         val authentication = authenticationManagerBuilder.`object`.authenticate(authenticationToken)
         return jwtUtils.createToken(authentication, user.type)
@@ -88,7 +100,7 @@ class UserService(
 
     // 사용자 프로필 불러오기
     fun getProfile(user: User): ProfileRes {
-        return ProfileRes(user.email, user.imgKey)
+        return userAssembler.toProfileRes(user)
     }
 
     // 사용자 프로필 변경
@@ -127,7 +139,7 @@ class UserService(
     // 공공데이터포털에서 사용자 불러오기
     private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
         val url = EID_URL + serviceKey
-        val businesses = userEidReq.toList()
+        val businesses = userAssembler.toUserEidList(userEidReq)
         val json = ObjectMapper().writeValueAsString(businesses)
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
@@ -145,5 +157,27 @@ class UserService(
     // header에서 token 불러오기
     private fun getHeaderAuthorization(request: HttpServletRequest): String {
         return request.getHeader(Constant.JWT.AUTHORIZATION_HEADER)
+    }
+
+    // 마이페이지 정보 불러오기
+    fun getMyPageInfo(user: User): MyPageInfoRes {
+        return userAssembler.toMyPageInfoRes(user)
+    }
+
+    // 토큰 재발급
+    fun reissueToken(tokenDto: TokenDto): TokenDto {
+        // bearer String replace blank
+        userAssembler.toTokenDto(tokenDto)
+        // refresh token 검증
+        jwtUtils.validateToken(tokenDto.refreshToken)
+        // accessToken 내 사용자 정보
+        val authentication = jwtUtils.getAuthentication(tokenDto.accessToken)
+        val user = userRepository.findByIdAndStatus(authentication.name.toLong(), ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+        // refreshToken이 redis 내 토큰과 같은지 확인
+        jwtUtils.validateRefreshToken(user.id!!, tokenDto.refreshToken)
+        // redis 내 refreshToken 삭제
+        jwtUtils.deleteRefreshToken(user.id!!)
+        // token 생성
+        return jwtUtils.createToken(authentication, user.type)
     }
 }

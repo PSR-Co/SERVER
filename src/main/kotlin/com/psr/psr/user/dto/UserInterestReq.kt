@@ -8,5 +8,4 @@ data class UserInterestReq (
     fun checkInterestCategory() : Category{
         return Category.getCategoryByName(category)
     }
-
 }

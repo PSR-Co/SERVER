@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import org.jetbrains.annotations.NotNull
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.stream.Collectors
 
 
@@ -39,25 +41,6 @@ data class SignUpReq (
     @field:NotNull
     val notification: Boolean,
     @field:NotEmpty
-    val interestList: List<UserInterestReq>
-    ) {
-    fun toEntity(): User {
-        return User(email = email,
-            password = password,
-            type = Type.getTypeByName(type),
-            phone = phone,
-            imgKey = imgKey,
-            provider = Provider.LOCAL,
-            marketing = marketing,
-            notification = notification,
-            nickname = nickname)
-    }
-
-    fun toInterestEntity(user: User): List<UserInterest> {
-        return interestList.stream()
-            .map { i ->
-                UserInterest(category = Category.getCategoryByName(i.category),
-                    user = user)
-            }.collect(Collectors.toList())
-    }
-}
+    val interestList: List<UserInterestReq>,
+    val entreInfo: UserEidReq ?= null
+    )
