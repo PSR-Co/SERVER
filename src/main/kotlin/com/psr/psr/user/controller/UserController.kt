@@ -134,5 +134,15 @@ class UserController(
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
+        /**
+         * 관심 목록 변경
+         */
+        @PatchMapping("/watchlists")
+        @ResponseBody
+        fun patchWatchLists(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated userInterestListReq: UserInterestListReq) : BaseResponse<Any>{
+                userService.patchWatchLists(userAccount.getUser(), userInterestListReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
 
 }

@@ -29,12 +29,17 @@ class UserAssembler {
             nickname = signUpReq.nickname)
     }
 
-    fun toInterestEntity(user: User, signUpReq: SignUpReq): List<UserInterest> {
+    fun toInterestListEntity(user: User, signUpReq: SignUpReq): List<UserInterest> {
         return signUpReq.interestList.stream()
             .map { i ->
                 UserInterest(category = Category.getCategoryByName(i.category),
                     user = user)
             }.collect(Collectors.toList())
+    }
+
+    fun toInterestEntity(user: User, category: Category): UserInterest {
+        return UserInterest(user = user,
+            category = category)
     }
 
     fun toBusinessEntity(user: User, signUpReq: SignUpReq): BusinessInfo {
