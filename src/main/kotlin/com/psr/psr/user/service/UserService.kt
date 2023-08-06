@@ -180,4 +180,12 @@ class UserService(
         // token 생성
         return jwtUtils.createToken(authentication, user.type)
     }
+
+    // 비밀번호 재설정
+    @Transactional
+    fun patchPassword(user: User, passwordReq: PasswordReq) {
+        if(!passwordEncoder.matches(passwordReq.currentPassword, user.password)) throw BaseException(INVALID_PASSWORD)
+        user.password = passwordEncoder.encode(passwordReq.password)
+        userRepository.save(user)
+    }
 }

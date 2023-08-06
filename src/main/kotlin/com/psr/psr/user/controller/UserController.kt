@@ -114,5 +114,13 @@ class UserController(
                 return BaseResponse(userService.reissueToken(tokenDto))
         }
 
-
+        /**
+         * 비밀번호 변경화면 with Token
+         */
+        @PatchMapping("/password-change")
+        @ResponseBody
+        fun changePassword(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated passwordReq: PasswordReq) : BaseResponse<Any>{
+                userService.patchPassword(userAccount.getUser(), passwordReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
 }
