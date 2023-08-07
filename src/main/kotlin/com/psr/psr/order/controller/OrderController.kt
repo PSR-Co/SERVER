@@ -10,6 +10,10 @@ import com.psr.psr.order.dto.OrderReq
 import com.psr.psr.order.dto.OrderRes
 import com.psr.psr.order.service.OrderService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -42,11 +46,16 @@ class OrderController(
     @GetMapping
     fun getOrderList(
         @AuthenticationPrincipal userAccount: UserAccount,
-        type: String,
-        status: String
-    ): BaseResponse<OrderListRes> {
+        @RequestParam type: String,
+        @RequestParam(required = false) status: String?,
+        @PageableDefault(size = 10, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+    ): BaseResponse<Page<OrderListRes>> {
         if (type !in listOf(SELL, ORDER)) return BaseResponse(BaseResponseCode.INVALID_ORDER_TYPE)
-        return BaseResponse(orderService.getOrderList(userAccount.getUser(), type, status))
+
+        // 전체 요청 상태 조회
+        return if (status == null) BaseResponse(orderService.getOrderList(userAccount.getUser(), type, pageable))
+        // 요청 상태별 조회
+        else BaseResponse(orderService.getOrderListByOrderStatus(userAccount.getUser(), type, status, pageable))
     }
 
     // 요청 수정
