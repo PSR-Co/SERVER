@@ -21,4 +21,13 @@ class ReviewController(
     ): BaseResponse<Unit> {
         return BaseResponse(reviewService.makeReview(userAccount.getUser(), orderId, reviewReq))
     }
+
+    // 리뷰 삭제
+    @DeleteMapping("/reviews/{reviewId}")
+    fun deleteReview(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @PathVariable reviewId: Long
+    ): BaseResponse<Unit> {
+        return BaseResponse(reviewService.deleteReview(userAccount.getUser(), reviewId))
+    }
 }
