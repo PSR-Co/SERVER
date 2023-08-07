@@ -1,6 +1,7 @@
 package com.psr.psr.product.repository.product
 
 
+import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.product.dto.response.PopularProductDetail
 import com.psr.psr.product.dto.response.ProductDetail
 import com.psr.psr.product.dto.response.QPopularProductDetail
@@ -11,6 +12,7 @@ import com.psr.psr.product.entity.product.QProductLike.productLike
 import com.psr.psr.product.entity.review.QReview.review
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
+
 import com.querydsl.core.types.ExpressionUtils
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions
@@ -68,7 +70,7 @@ class ProductRepositoryImpl(
                     Expressions.asBoolean(
                         JPAExpressions.selectFrom(productLike).where(
                             productLike.user.eq(target).and(productLike.product.eq(product))
-                                .and(productLike.status.eq("active"))
+                                .and(productLike.status.eq(ACTIVE_STATUS))
                         ).exists()
                     )
                 )
