@@ -11,6 +11,8 @@ import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.product.entity.product.Product
 import com.psr.psr.product.repository.product.ProductRepository
 import com.psr.psr.user.entity.User
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -35,18 +37,25 @@ class OrderService(
         return orderAssembler.toOrderResDTO(order, isSeller)
     }
 
-    // 요청 목록 조회
-    fun getOrderList(user: User, type: String, status: String): OrderListRes {
-        val orderStatus: OrderStatus = OrderStatus.findByName(status)
-        val orders: List<OrderListComp> = (
-                if (type == SELL)
-                    orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS)
-                else
-                    orderRepository.findByUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS)
-                )
-            .map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
+    // 요청 목록 조회(전체 상태)
+    fun getOrderList(user: User, type: String, pageable: Pageable): Page<OrderListReq> {
+        val orderList: Page<Order> =
+            if (type == SELL)
+                orderRepository.findByProductUserAndStatus(user, ACTIVE_STATUS, pageable)
+            else
+                orderRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)
+        return orderList.map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
+    }
 
-        return orderAssembler.toListDto(orders)
+    // 요청 목록 조회(요청 상태별)
+    fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListReq> {
+        val orderStatus = OrderStatus.findByName(status)
+        val orderList: Page<Order> =
+            if (type == SELL)
+                orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
+            else
+                orderRepository.findByUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
+        return orderList.map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
     }
 
     // 요청 수정

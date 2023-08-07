@@ -1,6 +1,6 @@
 package com.psr.psr.order.dto
 
-data class OrderListComp (
+data class OrderListReq (
     val orderId: Long,
     val orderDate: String,
     val userName: String,

@@ -35,11 +35,11 @@ class OrderAssembler {
         )
     }
 
-    fun toPrepareListDto(order: Order, type: String): OrderListComp {
+    fun toPrepareListDto(order: Order, type: String): OrderListReq {
         val userName: String =
             if (type == SELL) order.ordererName
             else order.product.user.nickname
-        return OrderListComp(
+        return OrderListReq(
             orderId = order.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
@@ -47,10 +47,5 @@ class OrderAssembler {
             productName = order.product.name,
             isReviewed = order.isReviewed
         )
-    }
-
-    fun toListDto(orderList: List<OrderListComp>): OrderListRes {
-        if (orderList.isEmpty()) return OrderListRes(null)
-        return OrderListRes(orderList)
     }
 }
