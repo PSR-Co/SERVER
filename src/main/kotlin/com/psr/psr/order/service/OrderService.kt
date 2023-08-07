@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val productImgRepository: ProductImgRepository,
     private val orderAssembler: OrderAssembler
 ) {
     // 요청하기
