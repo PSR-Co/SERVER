@@ -38,7 +38,7 @@ class OrderService(
     }
 
     // 요청 목록 조회(전체 상태)
-    fun getOrderList(user: User, type: String, pageable: Pageable): Page<OrderListReq> {
+    fun getOrderList(user: User, type: String, pageable: Pageable): Page<OrderListRes> {
         val orderList: Page<Order> =
             if (type == SELL)
                 orderRepository.findByProductUserAndStatus(user, ACTIVE_STATUS, pageable)
@@ -48,7 +48,7 @@ class OrderService(
     }
 
     // 요청 목록 조회(요청 상태별)
-    fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListReq> {
+    fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListRes> {
         val orderStatus = OrderStatus.findByName(status)
         val orderList: Page<Order> =
             if (type == SELL)

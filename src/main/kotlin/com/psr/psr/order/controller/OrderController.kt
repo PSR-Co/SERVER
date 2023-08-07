@@ -5,7 +5,7 @@ import com.psr.psr.global.Constant.OrderType.OrderType.SELL
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
-import com.psr.psr.order.dto.OrderListReq
+import com.psr.psr.order.dto.OrderListRes
 import com.psr.psr.order.dto.OrderReq
 import com.psr.psr.order.dto.OrderRes
 import com.psr.psr.order.service.OrderService
@@ -49,7 +49,7 @@ class OrderController(
         @RequestParam type: String,
         @RequestParam(required = false) status: String?,
         @PageableDefault(size = 10, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
-    ): BaseResponse<Page<OrderListReq>> {
+    ): BaseResponse<Page<OrderListRes>> {
         if (type !in listOf(SELL, ORDER)) return BaseResponse(BaseResponseCode.INVALID_ORDER_TYPE)
         // 전체 요청 상태 조회
         return if (status == null) BaseResponse(orderService.getOrderList(userAccount.getUser(), type, pageable))
