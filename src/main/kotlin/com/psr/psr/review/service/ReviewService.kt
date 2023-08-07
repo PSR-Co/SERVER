@@ -7,12 +7,15 @@ import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.review.dto.ReviewAssembler
+import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.repository.ReviewImgRepository
 import com.psr.psr.review.repository.ReviewRepository
 import com.psr.psr.user.entity.User
 import jakarta.transaction.Transactional
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -54,5 +57,14 @@ class ReviewService(
         reviewImgRepository.deleteByReviewAndStatus(review, ACTIVE_STATUS)
         reviewRepository.delete(review)
         orderRepository.save(review.order.changeReviewStatus())
+    }
+
+    // 상품별 리뷰 목록 조회
+    fun getProductReviews(productId: Long, pageable: Pageable): Page<ReviewListRes> {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+
+        return reviewRepository.findByProductAndStatus(product, ACTIVE_STATUS, pageable)
+            .map { review -> reviewAssembler.toDto(review) }
     }
 }
