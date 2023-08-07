@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class ReviewAssembler {
-    fun toEntity(order: Order, product: Product, reviewReq: ReviewReq): Review {
+    fun toEntity(order: Order, reviewReq: ReviewReq): Review {
         return Review(
             order = order,
-            product = product,
+            product = order.product,
             rating = reviewReq.rating,
             content = reviewReq.content
         )

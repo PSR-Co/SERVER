@@ -31,10 +31,7 @@ class ReviewService(
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
         if (order.isReviewed) throw BaseException(BaseResponseCode.REVIEW_ALREADY_COMPLETE)
 
-        val product: Product = productRepository.findByIdAndStatus(order.product.id, ACTIVE_STATUS)
-            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
-
-        val review = reviewRepository.save(reviewAssembler.toEntity(order, product, reviewReq))
+        val review = reviewRepository.save(reviewAssembler.toEntity(order, reviewReq))
         order.changeReviewStatus()
         orderRepository.save(order)
 
