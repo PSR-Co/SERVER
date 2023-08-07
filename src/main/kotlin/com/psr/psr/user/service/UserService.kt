@@ -12,6 +12,7 @@ import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
+import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.BusinessInfoRepository
@@ -67,7 +68,7 @@ class UserService(
         signUpReq.password = encodedPassword
         // user 저장
         val user = userRepository.save(userAssembler.toEntity(signUpReq))
-        userInterestRepository.saveAll(userAssembler.toInterestEntity(user, signUpReq))
+        userInterestRepository.saveAll(userAssembler.toInterestListEntity(user, signUpReq))
 
         // 사업자인경우
         if (user.type == Type.ENTREPRENEUR){
@@ -80,6 +81,7 @@ class UserService(
     }
 
     // 로그인
+    @Transactional
     fun login(loginReq: LoginReq) : TokenDto{
         val user = userRepository.findByEmail(loginReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
@@ -195,6 +197,7 @@ class UserService(
     }
 
     // 비밀번호 재설정
+    @Transactional
     fun resetPassword(passwordReq: ResetPasswordReq) {
         val user = userRepository.findByEmail(passwordReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(user.phone != passwordReq.phone) throw BaseException(INVALID_PHONE)
@@ -203,5 +206,32 @@ class UserService(
         // 비밀번호 변경
         user.password = passwordEncoder.encode(passwordReq.password)
         userRepository.save(user)
+    }
+
+    // 관심 목록 변경
+    @Transactional
+    fun patchWatchLists(user: User,  userInterestListReq: UserInterestListReq) {
+        val reqLists = userInterestListReq.interestList.map { i -> Category.getCategoryByName(i.category) }
+        if(reqLists.isEmpty() || reqLists.size > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
+        val userWatchLists = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS)
+        val categoryLists = userWatchLists.map { c -> c.category }
+
+        // 사용자 관심 목록에 최근 추가한 리스트(REQUEST) 관심 목록이 없다면? => 저장
+        reqLists.stream()
+            .forEach { interest ->
+                if(!categoryLists.contains(interest)) {
+                    // 과거에 삭제했던 경우 / 새롭게 생성하는 경우
+                    val interestE = userInterestRepository.findByUserAndCategory(user, interest)?: userAssembler.toInterestEntity(user, interest)
+                    interestE.status = ACTIVE_STATUS
+                    userInterestRepository.save(interestE)
+                }
+            }
+
+        // 최근 추가한 리스트(REQUEST)에 사용자 관심 목록이 없다면? => 삭제
+        userWatchLists.stream()
+            .forEach { interest ->
+                // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
+                if(!reqLists.contains(interest.category)) userInterestRepository.delete(interest)
+            }
     }
 }

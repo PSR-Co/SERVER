@@ -28,7 +28,7 @@ class ProductService(
         var interestCategoryList: MutableList<Category> = ArrayList()
         if(category.isEmpty()) {
             // 유저의 관심목록
-            val userInterestList = userInterestRepository.findByUser(user);
+            val userInterestList = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS);
             interestCategoryList = userInterestList.stream().map { ui -> ui.category }.toList()
         } else {
             interestCategoryList.add(Category.getCategoryByName(category))
