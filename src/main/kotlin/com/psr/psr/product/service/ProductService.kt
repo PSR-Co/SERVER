@@ -44,7 +44,7 @@ class ProductService(
         val myProductList: List<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS)
 
         return myProductList?.map { p: Product ->
-            val productImg = productImgRepository.findTop1ByProductEqualsAndStatusEqualsOrderByCreatedAtDesc(p, ACTIVE_STATUS)
+            val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
             productAssembler.toMyProductDto(p, productImg.imgKey)
         }
     }
@@ -54,7 +54,7 @@ class ProductService(
         val products: List<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS)
 
         val productList = products?.map { p: Product ->
-            val productImg = productImgRepository.findTop1ByProductEqualsAndStatusEqualsOrderByCreatedAtDesc(p, ACTIVE_STATUS)
+            val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
             productAssembler.toMyProductDto(p, productImg.imgKey)
         }
         return productAssembler.toGetProductsByUserResDto(user, productList)

@@ -35,16 +35,41 @@ class OrderAssembler {
         )
     }
 
-    fun toPrepareListDto(order: Order, type: String): OrderListRes {
-        val userName: String =
+    // 요청 목록 조회 시
+    fun toListDto(order: Order, type: String, productImgKey: String): OrderListRes {
+        val userName =
             if (type == SELL) order.ordererName
             else order.product.user.nickname
+        val profileImg: String? =
+            if (type == SELL) order.user.imgKey
+            else order.product.user.imgKey
+
         return OrderListRes(
             orderId = order.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
+            profileImgKey = profileImg,
             productId = order.product.id,
             productName = order.product.name,
+            productImgKey = productImgKey,
+            isReviewed = null
+        )
+    }
+
+    // 마이페이지 요청 목록 조회 시
+    fun toListDto(order: Order, type: String): OrderListRes {
+        val userName =
+            if (type == SELL) order.ordererName
+            else order.product.user.nickname
+
+        return OrderListRes(
+            orderId = order.id!!,
+            orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
+            userName = userName,
+            profileImgKey = null,
+            productId = order.product.id,
+            productName = order.product.name,
+            productImgKey = null,
             isReviewed = order.isReviewed
         )
     }

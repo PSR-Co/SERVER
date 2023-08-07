@@ -9,6 +9,7 @@ import com.psr.psr.order.entity.Order
 import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.product.entity.product.Product
+import com.psr.psr.product.repository.product.ProductImgRepository
 import com.psr.psr.product.repository.product.ProductRepository
 import com.psr.psr.user.entity.User
 import org.springframework.data.domain.Page
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
+    private val productImgRepository: ProductImgRepository,
     private val orderAssembler: OrderAssembler
 ) {
     // 요청하기
@@ -44,7 +46,7 @@ class OrderService(
                 orderRepository.findByProductUserAndStatus(user, ACTIVE_STATUS, pageable)
             else
                 orderRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)
-        return orderList.map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
+        return orderList.map { order: Order -> orderAssembler.toListDto(order, type, order.product.imgs.get(0).imgKey) }
     }
 
     // 요청 목록 조회(요청 상태별)
@@ -55,7 +57,7 @@ class OrderService(
                 orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
             else
                 orderRepository.findByUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
-        return orderList.map { order: Order -> orderAssembler.toPrepareListDto(order, type) }
+        return orderList.map { order: Order -> orderAssembler.toListDto(order, type) }
     }
 
     // 요청 수정

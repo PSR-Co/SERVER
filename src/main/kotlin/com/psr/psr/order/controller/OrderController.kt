@@ -51,6 +51,7 @@ class OrderController(
         @PageableDefault(size = 10, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): BaseResponse<Page<OrderListRes>> {
         if (type !in listOf(SELL, ORDER)) return BaseResponse(BaseResponseCode.INVALID_ORDER_TYPE)
+
         // 전체 요청 상태 조회
         return if (status == null) BaseResponse(orderService.getOrderList(userAccount.getUser(), type, pageable))
         // 요청 상태별 조회
