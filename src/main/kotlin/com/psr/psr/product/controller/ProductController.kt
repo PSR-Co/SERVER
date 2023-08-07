@@ -6,6 +6,8 @@ import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.MyProduct
 import com.psr.psr.product.service.ProductService
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -20,8 +22,10 @@ class ProductController(
          * 상품 메인 화면
          */
         @GetMapping()
-        fun getProducts(@AuthenticationPrincipal userAccount: UserAccount, @RequestParam(required = false) category: String): BaseResponse<GetProductsRes> {
-                return BaseResponse(productService.getProducts(userAccount.getUser(), category));
+        fun getProducts(@AuthenticationPrincipal userAccount: UserAccount,
+                        @RequestParam(required = false) category: String,
+                        @PageableDefault(size = 8, page = 0) pageable: Pageable): BaseResponse<GetProductsRes> {
+                return BaseResponse(productService.getProducts(userAccount.getUser(), category, pageable));
         }
 
         /**
