@@ -2,7 +2,7 @@ package com.psr.psr.product.dto.assembler
 
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.MyProduct
-import com.psr.psr.product.entity.product.Product
+import com.psr.psr.product.entity.Product
 import com.psr.psr.user.entity.User
 import org.springframework.stereotype.Component
 

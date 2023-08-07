@@ -1,7 +1,7 @@
-package com.psr.psr.product.repository.product
+package com.psr.psr.product.repository
 
 
-import com.psr.psr.product.entity.product.Product
+import com.psr.psr.product.entity.Product
 import com.psr.psr.user.entity.User
 
 import org.springframework.data.jpa.repository.JpaRepository

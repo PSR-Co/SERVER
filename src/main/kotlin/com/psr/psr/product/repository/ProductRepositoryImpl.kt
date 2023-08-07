@@ -1,4 +1,4 @@
-package com.psr.psr.product.repository.product
+package com.psr.psr.product.repository
 
 
 import com.psr.psr.product.dto.response.PopularProductDetail

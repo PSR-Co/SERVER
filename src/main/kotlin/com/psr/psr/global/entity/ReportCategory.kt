@@ -1,4 +1,4 @@
-package com.psr.psr.product.entity
+package com.psr.psr.global.entity
 
 enum class ReportCategory(val value: String) {
     JUNK("스팸홍보/도배"),

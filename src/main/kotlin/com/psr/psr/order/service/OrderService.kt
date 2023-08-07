@@ -8,9 +8,8 @@ import com.psr.psr.order.dto.*
 import com.psr.psr.order.entity.Order
 import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.order.repository.OrderRepository
-import com.psr.psr.product.entity.product.Product
-import com.psr.psr.product.repository.product.ProductImgRepository
-import com.psr.psr.product.repository.product.ProductRepository
+import com.psr.psr.product.entity.Product
+import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
