@@ -7,10 +7,10 @@ import com.psr.psr.product.dto.response.QPopularProductDetail
 import com.psr.psr.product.dto.response.QProductDetail
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Component
-import com.psr.psr.product.entity.product.QProduct.product
-import com.psr.psr.product.entity.product.QProductLike.productLike
-import com.psr.psr.product.entity.product.QProductImg.productImg
-import com.psr.psr.product.entity.review.QReview.review
+import com.psr.psr.product.entity.QProduct.product
+import com.psr.psr.product.entity.QProductLike.productLike
+import com.psr.psr.product.entity.QProductImg.productImg
+import com.psr.psr.review.entity.QReview.review
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import com.querydsl.core.types.ExpressionUtils

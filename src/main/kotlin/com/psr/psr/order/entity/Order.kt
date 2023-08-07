@@ -52,4 +52,8 @@ data class Order(
             this.orderStatus = orderStatus
         }
     }
+
+    fun changeReviewStatus() {
+        this.isReviewed = !this.isReviewed
+    }
 }
