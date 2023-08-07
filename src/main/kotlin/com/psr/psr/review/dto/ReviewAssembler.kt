@@ -1,9 +1,12 @@
 package com.psr.psr.review.dto
 
+import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.order.entity.Order
 import com.psr.psr.product.entity.Product
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.entity.ReviewImg
+import com.psr.psr.review.entity.ReviewReport
+import com.psr.psr.user.entity.User
 import org.springframework.stereotype.Component
 import java.time.format.DateTimeFormatter
 
@@ -22,6 +25,14 @@ class ReviewAssembler {
         return ReviewImg(
             review = review,
             imgKey = imgKey
+        )
+    }
+
+    fun toReportEntity(review: Review, user: User, reportCategory: ReportCategory): ReviewReport {
+        return ReviewReport(
+            review = review,
+            category = reportCategory,
+            user = user
         )
     }
 

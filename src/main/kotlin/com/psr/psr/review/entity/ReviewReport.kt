@@ -9,19 +9,19 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class ReviewReport(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    var id: Long? = null,
 
     @ManyToOne
-        @JoinColumn(nullable = false, name = "review_id")
-        var review: Review,
+    @JoinColumn(nullable = false, name = "review_id")
+    var review: Review,
 
     @ManyToOne
-        @JoinColumn(nullable = false, name = "user_id")
-        var user: User,
+    @JoinColumn(nullable = false, name = "user_id")
+    var user: User,
 
     @NotNull
-        @Enumerated(EnumType.STRING)
-        var category: ReportCategory
+    @Enumerated(EnumType.STRING)
+    var category: ReportCategory
 
 
-        ): BaseEntity()
+) : BaseEntity()
