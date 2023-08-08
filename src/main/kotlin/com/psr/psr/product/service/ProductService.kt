@@ -4,11 +4,13 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler
+import com.psr.psr.product.dto.response.GetProductDetailRes
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.MyProduct
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductImgRepository
+import com.psr.psr.product.repository.ProductLikeRepository
 import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
@@ -22,6 +24,7 @@ class ProductService(
     private val productRepository: ProductRepository,
     private val userInterestRepository: UserInterestRepository,
     private val productImgRepository: ProductImgRepository,
+    private val productLikeRepository: ProductLikeRepository,
     private val userRepository: UserRepository,
     private val productAssembler: ProductAssembler
 ) {
@@ -29,7 +32,7 @@ class ProductService(
         var interestCategoryList: MutableList<Category> = ArrayList()
         if(category.isEmpty()) {
             // 유저의 관심목록
-            val userInterestList = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS);
+            val userInterestList = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS)
             interestCategoryList = userInterestList.stream().map { ui -> ui.category }.toList()
         } else {
             interestCategoryList.add(Category.getCategoryByName(category))
@@ -59,6 +62,16 @@ class ProductService(
             productAssembler.toMyProductDto(p, productImg.imgUrl)
         }
         return productAssembler.toGetProductsByUserResDto(user, productList)
+    }
+
+    fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        val isOwner = product.user == user
+        val imgList = productImgRepository.findByProductAndStatus(product, ACTIVE_STATUS)
+        val numOfLikes = productLikeRepository.countByProductAndStatus(product, ACTIVE_STATUS)
+        val isLike = productLikeRepository.existsByProductAndUserAndStatus(product, user, ACTIVE_STATUS)
+
+        return productAssembler.toGetProductDetailResDto(isOwner, product, imgList, numOfLikes, isLike)
     }
 
 }

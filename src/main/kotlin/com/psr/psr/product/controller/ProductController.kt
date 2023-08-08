@@ -2,6 +2,7 @@ package com.psr.psr.product.controller
 
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.UserAccount
+import com.psr.psr.product.dto.response.GetProductDetailRes
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.MyProduct
@@ -19,13 +20,22 @@ class ProductController(
 ) {
 
         /**
-         * 상품 메인 화면
+         * 상품 메인 조회
          */
         @GetMapping()
         fun getProducts(@AuthenticationPrincipal userAccount: UserAccount,
                         @RequestParam(required = false) category: String,
                         @PageableDefault(size = 8) pageable: Pageable): BaseResponse<GetProductsRes> {
                 return BaseResponse(productService.getProducts(userAccount.getUser(), category, pageable));
+        }
+
+        /**
+         * 상품 상세 조회 - 상품
+         */
+        @GetMapping("/{productId}")
+        fun getProductDetail(@AuthenticationPrincipal userAccount: UserAccount,
+                             @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
+                return BaseResponse(productService.getProductDetail(userAccount.getUser(), productId));
         }
 
         /**
