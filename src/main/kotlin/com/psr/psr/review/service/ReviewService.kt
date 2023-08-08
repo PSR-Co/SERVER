@@ -8,6 +8,7 @@ import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductRepository
+import com.psr.psr.review.dto.GetProductDetailRes
 import com.psr.psr.review.dto.ReviewAssembler
 import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
@@ -81,5 +82,11 @@ class ReviewService(
             throw BaseException(BaseResponseCode.REPORT_ALREADY_COMPLETE)
 
         reviewReportRepository.save(reviewAssembler.toReportEntity(review, user, reportCategory))
+    }
+
+    fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        val reviewList = product.reviews
+        return reviewAssembler.toGetProductDetailResDto(reviewList)
     }
 }

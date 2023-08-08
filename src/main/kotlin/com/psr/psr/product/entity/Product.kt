@@ -1,6 +1,7 @@
 package com.psr.psr.product.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.review.entity.Review
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
@@ -34,6 +35,10 @@ data class Product(
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var imgs: List<ProductImg>
+        var imgs: List<ProductImg>,
+
+        @OneToMany(mappedBy = "product")
+        @Where(clause = "status = 'active'")
+        var reviews: List<Review>
 
 ): BaseEntity()
