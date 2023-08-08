@@ -14,6 +14,7 @@ import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
@@ -24,7 +25,7 @@ class ProductService(
     private val userRepository: UserRepository,
     private val productAssembler: ProductAssembler
 ) {
-    fun getProducts(user: User, category: String): GetProductsRes {
+    fun getProducts(user: User, category: String, pageable: Pageable): GetProductsRes {
         var interestCategoryList: MutableList<Category> = ArrayList()
         if(category.isEmpty()) {
             // 유저의 관심목록
@@ -34,7 +35,7 @@ class ProductService(
             interestCategoryList.add(Category.getCategoryByName(category))
         }
 
-        val productList = productRepository.findAllCategoryProducts(user, interestCategoryList)
+        val productList = productRepository.findAllCategoryProducts(pageable, user, interestCategoryList)
         val popularList = productRepository.findTop5PopularProducts(user, interestCategoryList)
 
         return GetProductsRes(popularList, productList)
