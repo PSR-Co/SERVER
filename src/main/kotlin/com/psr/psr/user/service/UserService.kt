@@ -112,7 +112,7 @@ class UserService(
             if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(EXISTS_NICKNAME)
             user.nickname = profileReq.nickname
         }
-        if(user.imgKey != profileReq.profileImgKey) user.imgKey = profileReq.profileImgKey
+        if(user.imgUrl != profileReq.profileImgUrl) user.imgUrl = profileReq.profileImgUrl
         userRepository.save(user)
     }
 

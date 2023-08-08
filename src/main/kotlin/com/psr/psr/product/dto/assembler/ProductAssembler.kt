@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class ProductAssembler {
-    fun toMyProductDto(product: Product, imgKey: String): MyProduct {
+    fun toMyProductDto(product: Product, imgUrl: String): MyProduct {
         return MyProduct(
             productId = product.id,
-            imgKey = imgKey,
+            imgUrl = imgUrl,
             category = product.category.value,
             name = product.name,
             price = product.price
@@ -20,7 +20,7 @@ class ProductAssembler {
 
     fun toGetProductsByUserResDto(user: User, productList: List<MyProduct>?): GetProductsByUserRes {
         return GetProductsByUserRes(
-            imgKey = user.imgKey,
+            imgUrl = user.imgUrl,
             type = user.type.value,
             nickname = user.nickname,
             productList = productList

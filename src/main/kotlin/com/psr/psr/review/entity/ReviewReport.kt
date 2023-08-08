@@ -23,5 +23,4 @@ data class ReviewReport(
     @Enumerated(EnumType.STRING)
     var category: ReportCategory
 
-
 ) : BaseEntity()

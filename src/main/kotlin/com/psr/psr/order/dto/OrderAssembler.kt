@@ -36,22 +36,22 @@ class OrderAssembler {
     }
 
     // 요청 목록 조회 시
-    fun toListDto(order: Order, type: String, productImgKey: String): OrderListRes {
+    fun toListDto(order: Order, type: String, productImgUrl: String): OrderListRes {
         val userName =
             if (type == SELL) order.ordererName
             else order.product.user.nickname
         val profileImg: String? =
-            if (type == SELL) order.user.imgKey
-            else order.product.user.imgKey
+            if (type == SELL) order.user.imgUrl
+            else order.product.user.imgUrl
 
         return OrderListRes(
             orderId = order.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
-            profileImgKey = profileImg,
+            profileImgUrl = profileImg,
             productId = order.product.id,
             productName = order.product.name,
-            productImgKey = productImgKey,
+            productImgUrl = productImgUrl,
             isReviewed = null
         )
     }
@@ -66,10 +66,10 @@ class OrderAssembler {
             orderId = order.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
-            profileImgKey = null,
+            profileImgUrl = null,
             productId = order.product.id,
             productName = order.product.name,
-            productImgKey = null,
+            productImgUrl = null,
             isReviewed = order.isReviewed
         )
     }

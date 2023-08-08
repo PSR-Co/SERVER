@@ -1,15 +1,11 @@
 package com.psr.psr.user.dto
 
-import com.psr.psr.user.entity.*
 import jakarta.annotation.Nullable
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.Pattern
 import org.jetbrains.annotations.NotNull
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.stream.Collectors
 
 
 data class SignUpReq (
@@ -30,7 +26,7 @@ data class SignUpReq (
     )
     val phone: String,
     @field:Nullable
-    val imgKey: String? = null,
+    val imgUrl: String? = null,
     @field:NotBlank
     @field:Pattern(
         regexp = "^([a-zA-Z0-9ㄱ-ㅎ|ㅏ-ㅣ|가-힣]).{0,10}\$",

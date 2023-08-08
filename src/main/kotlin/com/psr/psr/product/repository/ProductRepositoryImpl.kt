@@ -31,7 +31,7 @@ class ProductRepositoryImpl(
         return queryFactory
             .select(QPopularProductDetail(
                 product.id,
-                JPAExpressions.select(productImg.imgKey).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product)))),
+                JPAExpressions.select(productImg.imgUrl).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product)))),
                 product.name,
                 product.price,
                 ExpressionUtils.`as`(product.likeNum, "numOfLike"),
@@ -54,7 +54,7 @@ class ProductRepositoryImpl(
             .select(
                 QProductDetail(
                     product.id,
-                    JPAExpressions.select(productImg.imgKey).from(productImg).where(
+                    JPAExpressions.select(productImg.imgUrl).from(productImg).where(
                         productImg.id.eq(
                             JPAExpressions.select(productImg.id.min()).from(productImg)
                                 .where(productImg.product.eq(product))

@@ -10,5 +10,5 @@ data class NoticeRes (
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     val date: LocalDateTime,
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    val imgKey: String ?= null
+    val imgUrl: String ?= null
 )

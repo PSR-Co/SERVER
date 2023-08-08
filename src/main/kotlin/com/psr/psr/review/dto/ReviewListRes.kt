@@ -7,5 +7,5 @@ data class ReviewListRes(
     val imgList: List<String>?,
     val reviewedDate: String,
     val nickName: String,
-    val profileImgKey: String?
+    val profileImgUrl: String?
 )

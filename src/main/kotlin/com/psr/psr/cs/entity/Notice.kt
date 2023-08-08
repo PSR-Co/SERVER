@@ -21,6 +21,6 @@ data class Notice(
         @Column(length = 500)
         var content: String,
 
-        var imgKey: String
+        var imgUrl: String
 
 ): BaseEntity()

@@ -11,12 +11,12 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class ProductImg(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    var id: Long,
 
     @ManyToOne
-        var product: Product,
+    var product: Product,
 
     @NotNull
-        var imgKey: String
+    var imgUrl: String
 
-): BaseEntity()
+) : BaseEntity()
