@@ -2,7 +2,7 @@ package com.psr.psr.order.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.order.dto.OrderReq
-import com.psr.psr.product.entity.product.Product
+import com.psr.psr.product.entity.Product
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
@@ -51,5 +51,9 @@ data class Order(
         if (orderStatus != null) {
             this.orderStatus = orderStatus
         }
+    }
+
+    fun changeReviewStatus() {
+        this.isReviewed = !this.isReviewed
     }
 }

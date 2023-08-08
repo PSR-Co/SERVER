@@ -7,9 +7,9 @@ import com.psr.psr.product.dto.assembler.ProductAssembler
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.MyProduct
-import com.psr.psr.product.entity.product.Product
-import com.psr.psr.product.repository.product.ProductImgRepository
-import com.psr.psr.product.repository.product.ProductRepository
+import com.psr.psr.product.entity.Product
+import com.psr.psr.product.repository.ProductImgRepository
+import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository

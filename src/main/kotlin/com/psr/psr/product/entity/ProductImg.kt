@@ -1,4 +1,4 @@
-package com.psr.psr.product.entity.product
+package com.psr.psr.product.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import jakarta.persistence.Entity
@@ -10,13 +10,13 @@ import org.jetbrains.annotations.NotNull
 
 @Entity
 data class ProductImg(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long,
 
-        @ManyToOne
+    @ManyToOne
         var product: Product,
 
-        @NotNull
+    @NotNull
         var imgKey: String
 
 ): BaseEntity()

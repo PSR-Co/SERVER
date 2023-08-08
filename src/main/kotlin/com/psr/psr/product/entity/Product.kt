@@ -1,4 +1,4 @@
-package com.psr.psr.product.entity.product
+package com.psr.psr.product.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.user.entity.Category
