@@ -1,15 +1,10 @@
 package com.psr.psr.product.repository
 
-
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.product.dto.response.PopularProductDetail
 import com.psr.psr.product.dto.response.ProductDetail
 import com.psr.psr.product.dto.response.QPopularProductDetail
 import com.psr.psr.product.dto.response.QProductDetail
-import com.psr.psr.product.entity.product.QProduct.product
-import com.psr.psr.product.entity.product.QProductImg.productImg
-import com.psr.psr.product.entity.product.QProductLike.productLike
-import com.psr.psr.product.entity.review.QReview.review
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Component
 import com.psr.psr.product.entity.QProduct.product
@@ -22,13 +17,9 @@ import com.psr.psr.user.entity.User
 import com.querydsl.core.types.ExpressionUtils
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.JPAExpressions
-import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
-import org.springframework.stereotype.Component
-
-
 
 @Component
 class ProductRepositoryImpl(
