@@ -2,7 +2,6 @@ package com.psr.psr.review.dto
 
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.order.entity.Order
-import com.psr.psr.product.entity.Product
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.entity.ReviewImg
 import com.psr.psr.review.entity.ReviewReport
@@ -21,10 +20,10 @@ class ReviewAssembler {
         )
     }
 
-    fun toImgEntity(review: Review, imgKey: String): ReviewImg {
+    fun toImgEntity(review: Review, imgUrl: String): ReviewImg {
         return ReviewImg(
             review = review,
-            imgKey = imgKey
+            imgUrl = imgUrl
         )
     }
 
@@ -38,7 +37,7 @@ class ReviewAssembler {
 
     fun toDto(review: Review): ReviewListRes {
         val reviewImgs =
-            if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgKey }
+            if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgUrl }
             else null
         return ReviewListRes(
             reviewId = review.id!!,
@@ -47,7 +46,7 @@ class ReviewAssembler {
             imgList = reviewImgs,
             reviewedDate = review.createdAt.format(DateTimeFormatter.ISO_DATE),
             nickName = review.order.user.nickname,
-            profileImgKey = review.order.user.imgKey
+            profileImgUrl = review.order.user.imgUrl
         )
     }
 

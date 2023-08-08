@@ -16,6 +16,6 @@ data class ReviewReq(
     @field:Size(max = 250, message = "내용은 최대 250자입니다.")
     val content: String,
 
-    @field:Size(min = 1, max = 5, message = "imgKey는 null 또는 1~5개이어야 합니다.")
+    @field:Size(min = 1, max = 5, message = "imgUrl은 null 또는 1~5개이어야 합니다.")
     val imgList: List<String>?
 )

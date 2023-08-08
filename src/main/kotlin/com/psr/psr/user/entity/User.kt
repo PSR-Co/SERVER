@@ -33,7 +33,7 @@ class User(
         @Column(length = 15)
         var phone:String,
 
-        var imgKey: String? = null,
+        var imgUrl: String? = null,
 
         @NotNull
         @Enumerated(EnumType.STRING)

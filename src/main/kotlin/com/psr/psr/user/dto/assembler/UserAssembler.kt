@@ -22,7 +22,7 @@ class UserAssembler {
             password = signUpReq.password,
             type = Type.getTypeByName(signUpReq.type),
             phone = signUpReq.phone,
-            imgKey = signUpReq.imgKey,
+            imgUrl = signUpReq.imgUrl,
             provider = Provider.LOCAL,
             marketing = signUpReq.marketing,
             notification = signUpReq.notification,
@@ -61,11 +61,11 @@ class UserAssembler {
      * toDto
      */
     fun toMyPageInfoRes(user: User) : MyPageInfoRes {
-        return MyPageInfoRes(user.email, user.imgKey, user.type.value, user.phone)
+        return MyPageInfoRes(user.email, user.imgUrl, user.type.value, user.phone)
     }
 
     fun toProfileRes(user: User) : ProfileRes {
-        return ProfileRes(user.email, user.imgKey)
+        return ProfileRes(user.email, user.imgUrl)
     }
 
     fun toTokenDto(tokenDto: TokenDto) {

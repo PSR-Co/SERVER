@@ -46,7 +46,7 @@ class ProductService(
 
         return myProductList?.map { p: Product ->
             val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
-            productAssembler.toMyProductDto(p, productImg.imgKey)
+            productAssembler.toMyProductDto(p, productImg.imgUrl)
         }
     }
 
@@ -56,7 +56,7 @@ class ProductService(
 
         val productList = products?.map { p: Product ->
             val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
-            productAssembler.toMyProductDto(p, productImg.imgKey)
+            productAssembler.toMyProductDto(p, productImg.imgUrl)
         }
         return productAssembler.toGetProductsByUserResDto(user, productList)
     }
