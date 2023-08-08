@@ -50,7 +50,7 @@ class ReviewService(
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_REVIEW)
         if (review.order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
-        reviewImgRepository.deleteByReviewAndStatus(review, ACTIVE_STATUS)
+        reviewImgRepository.deleteByReview(review)
         reviewRepository.delete(review)
         orderRepository.save(review.order.changeReviewStatus())
     }

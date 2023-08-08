@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity
-@SQLDelete(sql = "UPDATE review_img SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
 data class ReviewImg(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
