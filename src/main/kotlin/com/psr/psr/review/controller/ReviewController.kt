@@ -6,6 +6,7 @@ import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
+import com.psr.psr.review.dto.ReviewRes
 import com.psr.psr.review.service.ReviewService
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
@@ -45,6 +46,15 @@ class ReviewController(
         @PageableDefault(size = 8, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): BaseResponse<Page<ReviewListRes>> {
         return BaseResponse(reviewService.getProductReviews(productId, pageable))
+    }
+
+    // 리뷰 개별 조회
+    @GetMapping("/reviews/{reviewId}")
+    fun getReview(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @PathVariable reviewId: Long
+    ): BaseResponse<ReviewRes> {
+        return BaseResponse(reviewService.getReview(userAccount.getUser(), reviewId))
     }
 
     // 리뷰 신고
