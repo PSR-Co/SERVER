@@ -28,7 +28,6 @@ data class Review(
     var content: String,
 
     @OneToMany(mappedBy = "review")
-    @Where(clause = "status = 'active'")
     var imgs: List<ReviewImg>? = null
 
 ) : BaseEntity()
