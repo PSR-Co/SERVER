@@ -1,6 +1,8 @@
 package com.psr.psr.review.controller
 
+import com.psr.psr.global.Constant.REPORT.REPORT.CATEGORY
 import com.psr.psr.global.dto.BaseResponse
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
@@ -43,5 +45,16 @@ class ReviewController(
         @PageableDefault(size = 8, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): BaseResponse<Page<ReviewListRes>> {
         return BaseResponse(reviewService.getProductReviews(productId, pageable))
+    }
+
+    // 리뷰 신고
+    @PostMapping("/reviews/{reviewId}/report")
+    fun reportReview(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @PathVariable reviewId: Long,
+        @RequestBody category: Map<String, String>
+    ): BaseResponse<Unit> {
+        category[CATEGORY] ?: return BaseResponse(BaseResponseCode.NULL_REPORT_CATEGORY)
+        return BaseResponse(reviewService.reportReview(userAccount.getUser(), reviewId, category[CATEGORY]!!))
     }
 }

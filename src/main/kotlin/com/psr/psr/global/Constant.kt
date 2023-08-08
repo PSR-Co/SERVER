@@ -7,6 +7,7 @@ class Constant {
             const val BEARER_PREFIX: String = "Bearer "
         }
     }
+
     class UserStatus {
         companion object UserStatus {
             const val LOGOUT = "logout"
@@ -26,6 +27,12 @@ class Constant {
         companion object OrderType{
             const val SELL = "sell"
             const val ORDER = "order"
+        }
+    }
+
+    class REPORT {
+        companion object REPORT {
+            const val CATEGORY = "category"
         }
     }
 }

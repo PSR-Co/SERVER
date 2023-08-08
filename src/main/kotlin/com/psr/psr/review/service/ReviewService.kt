@@ -1,6 +1,7 @@
 package com.psr.psr.review.service
 
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
+import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.order.entity.OrderStatus
@@ -12,6 +13,7 @@ import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.repository.ReviewImgRepository
+import com.psr.psr.review.repository.ReviewReportRepository
 import com.psr.psr.review.repository.ReviewRepository
 import com.psr.psr.user.entity.User
 import jakarta.transaction.Transactional
@@ -25,6 +27,7 @@ class ReviewService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
     private val reviewImgRepository: ReviewImgRepository,
+    private val reviewReportRepository: ReviewReportRepository,
     private val reviewAssembler: ReviewAssembler
 ) {
     // 리뷰 생성
@@ -65,5 +68,18 @@ class ReviewService(
 
         return reviewRepository.findByProductAndStatus(product, ACTIVE_STATUS, pageable)
             .map { review -> reviewAssembler.toDto(review) }
+    }
+
+    // 리뷰 신고
+    fun reportReview(user: User, reviewId: Long, category: String) {
+        println(category)
+        val reportCategory = ReportCategory.findByName(category)
+
+        val review: Review = reviewRepository.findByIdAndStatus(reviewId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_REVIEW)
+        if (reviewReportRepository.findByReviewAndUserAndStatus(review, user, ACTIVE_STATUS) != null)
+            throw BaseException(BaseResponseCode.REPORT_ALREADY_COMPLETE)
+
+        reviewReportRepository.save(reviewAssembler.toReportEntity(review, user, reportCategory))
     }
 }
