@@ -54,6 +54,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // review
     REVIEW_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 리뷰 완료된 요청입니다."),
     NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
+    ORDER_NOT_COMPLETE(HttpStatus.CONFLICT, "아직 완료된 요청이 아닙니다."),
 
     // product
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다."),

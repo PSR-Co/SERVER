@@ -3,6 +3,7 @@ package com.psr.psr.review.service
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
+import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductRepository
@@ -31,11 +32,9 @@ class ReviewService(
 
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
         if (order.isReviewed) throw BaseException(BaseResponseCode.REVIEW_ALREADY_COMPLETE)
+        if (order.orderStatus != OrderStatus.COMPLETED)  throw BaseException(BaseResponseCode.ORDER_NOT_COMPLETE)
 
-        val product: Product = productRepository.findByIdAndStatus(order.product.id, ACTIVE_STATUS)
-            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
-
-        val review = reviewRepository.save(reviewAssembler.toEntity(order, product, reviewReq))
+        val review = reviewRepository.save(reviewAssembler.toEntity(order, reviewReq))
         orderRepository.save(order.changeReviewStatus())
 
         if (reviewReq.imgList != null) {
