@@ -9,6 +9,7 @@ import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.review.dto.ReviewAssembler
 import com.psr.psr.review.dto.ReviewReq
+import com.psr.psr.review.entity.Review
 import com.psr.psr.review.repository.ReviewImgRepository
 import com.psr.psr.review.repository.ReviewRepository
 import com.psr.psr.user.entity.User
@@ -34,12 +35,23 @@ class ReviewService(
         if (order.orderStatus != OrderStatus.COMPLETED)  throw BaseException(BaseResponseCode.ORDER_NOT_COMPLETE)
 
         val review = reviewRepository.save(reviewAssembler.toEntity(order, reviewReq))
-        order.changeReviewStatus()
-        orderRepository.save(order)
+        orderRepository.save(order.changeReviewStatus())
 
         if (reviewReq.imgList != null) {
             val reviewImgs = reviewReq.imgList.map { img: String -> reviewAssembler.toImgEntity(review, img) }
             reviewImgRepository.saveAll(reviewImgs)
         }
+    }
+
+    // 리뷰 삭제
+    @Transactional
+    fun deleteReview(user: User, reviewId: Long) {
+        val review: Review = reviewRepository.findByIdAndStatus(reviewId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_REVIEW)
+        if (review.order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
+
+        reviewImgRepository.deleteByReview(review)
+        reviewRepository.delete(review)
+        orderRepository.save(review.order.changeReviewStatus())
     }
 }

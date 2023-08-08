@@ -2,6 +2,7 @@ package com.psr.psr.review.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity

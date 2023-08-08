@@ -53,7 +53,8 @@ data class Order(
         }
     }
 
-    fun changeReviewStatus() {
+    fun changeReviewStatus(): Order {
         this.isReviewed = !this.isReviewed
+        return this
     }
 }

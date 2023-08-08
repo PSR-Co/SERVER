@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ReviewRepository: JpaRepository<Review, Long> {
+    fun findByIdAndStatus(reviewId: Long, status: String): Review?
 }

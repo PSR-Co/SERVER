@@ -52,7 +52,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 타입입니다."),
 
     // review
-    REVIEW_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 답변 완료된 문의입니다."),
+    REVIEW_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 리뷰 완료된 요청입니다."),
+    NOT_FOUND_REVIEW(HttpStatus.NOT_FOUND, "해당 리뷰를 찾을 수 없습니다."),
     ORDER_NOT_COMPLETE(HttpStatus.CONFLICT, "아직 완료된 요청이 아닙니다."),
 
     // product
