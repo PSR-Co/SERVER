@@ -2,8 +2,9 @@ package com.psr.psr.global.entity
 
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
+import com.psr.psr.global.resolver.EnumType
 
-enum class ReportCategory(val value: String) {
+enum class ReportCategory(override val value: String) : EnumType {
     JUNK("스팸홍보/도배"),
     ABUSE("욕설/혐오/차별"),
     PORN("음란물/유해한 정보"),
@@ -15,5 +16,6 @@ enum class ReportCategory(val value: String) {
             return ReportCategory.values().find { it.name == name }
                 ?: throw BaseException(BaseResponseCode.INVALID_REPORT_CATEGORY)
         }
+        
     }
 }

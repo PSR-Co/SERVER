@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class ProductReport(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
     @ManyToOne
         @JoinColumn(nullable = false, name = "product_id")
