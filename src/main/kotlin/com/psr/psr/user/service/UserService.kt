@@ -66,6 +66,8 @@ class UserService(
     private val secretKey: String,
     @Value("\${naver.cloud.sms.serviceId}")
     private val serviceId: String,
+    @Value("\${naver.cloud.sms.send-phone}")
+    private val sendPhone: String,
     private val userAssembler: UserAssembler
 
 ) {
@@ -275,7 +277,7 @@ class UserService(
             .defaultHeader(ACCESS_KEY_HEADER, accessKey)
             .defaultHeader(SIGNATURE_HEADER, makeSignature(time))
             .build().post()
-            .bodyValue(this.userAssembler.toSMSReqDto(validPhoneReq, smsKey))
+            .bodyValue(this.userAssembler.toSMSReqDto(validPhoneReq, smsKey, sendPhone))
             .retrieve()
             .onStatus({ it.isError }) { response ->
                 throw BaseException(PHONE_ERROR)
