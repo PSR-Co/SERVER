@@ -50,4 +50,23 @@ class ReviewAssembler {
         )
     }
 
+    fun toGetProductDetailResDto(reviewList: List<Review>): GetProductDetailRes {
+        val ratingList = reviewList.map { r -> r.rating }
+        return GetProductDetailRes(
+            numOfReviews = reviewList.size,
+            avgOfRating = ratingList.average(),
+            reviewList = reviewList.map { r -> this.toReviewDetailTopDto(r) }.toList()
+        )
+    }
+
+    private fun toReviewDetailTopDto(review: Review): ReviewDetailTop {
+        val imgUrl =
+            if (review.imgs?.size != 0) review.imgs!![0].imgUrl
+            else null
+        return ReviewDetailTop(
+                imgUrl = imgUrl,
+                rating = review.rating,
+                content = review.content
+            )
+    }
 }
