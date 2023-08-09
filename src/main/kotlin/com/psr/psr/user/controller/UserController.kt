@@ -150,13 +150,20 @@ class UserController(
         /**
          * 휴대폰번호 유효
          */
-        @PostMapping("/phone-check")
+        @PostMapping("/phone/check")
         @ResponseBody
         fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 userService.checkValidPhone(validPhoneReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
-
-
+        /**
+         * 휴대폰 인증번호 조회
+         */
+        @PostMapping("/phone/validation")
+        @ResponseBody
+        fun checkValidSmsKey(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
+                userService.checkValidSmsKey(validPhoneReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
 }

@@ -26,6 +26,8 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     INVALID_EID(HttpStatus.BAD_REQUEST, "정상 사업자가 아닙니다. (휴업자 or 폐업자)"),
     DUPLICATE_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호와 변경하려는 비밀번호가 동일합니다."),
     PHONE_ERROR(HttpStatus.BAD_REQUEST, "naver SMS API 관련 에러입니다."),
+    BLACKLIST_PHONE(HttpStatus.BAD_REQUEST, "SMS 인증코드 유효 시간이 만료되었습니다."),
+    INVALID_SMS_KEY(HttpStatus.BAD_REQUEST, "SMS 인증코드가 알맞지 않습니다. "),
 
     // User - type
     INVALID_USER_TYPE_NAME(HttpStatus.BAD_REQUEST, "올바르지 않은 사용자 역할입니다."),

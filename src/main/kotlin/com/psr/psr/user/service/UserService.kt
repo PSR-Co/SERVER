@@ -1,7 +1,6 @@
 package com.psr.psr.user.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.ser.Serializers.Base
 import com.psr.psr.global.Constant
 import com.psr.psr.global.Constant.UserEID.UserEID.EID_URL
 import com.psr.psr.global.Constant.UserEID.UserEID.PAY_STATUS
@@ -37,7 +36,6 @@ import jakarta.servlet.http.HttpServletRequest
 import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -46,7 +44,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.DefaultUriBuilderFactory
-import reactor.core.publisher.Mono
 import java.util.stream.Collectors
 import javax.crypto.Mac
 
@@ -285,6 +282,14 @@ class UserService(
             }
             .bodyToMono(String::class.java)
             .block()
+        jwtUtils.createSmsKey(validPhoneReq.phone, smsKey)
+    }
+
+    // 휴대폰 인증번호 조회
+    fun checkValidSmsKey(validPhoneReq: ValidPhoneReq) {
+        val smsKey = jwtUtils.getSmsKey(validPhoneReq.phone)
+        // 인증코드가 같지 않은 경우 예외처리 발생
+        if(smsKey != validPhoneReq.smsKey) throw BaseException(INVALID_SMS_KEY)
     }
 
     // signature
@@ -306,4 +311,5 @@ class UserService(
         val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
         return Base64.encodeBase64String(rawHmac)
     }
+
 }
