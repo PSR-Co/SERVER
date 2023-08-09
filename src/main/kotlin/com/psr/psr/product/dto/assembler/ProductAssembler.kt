@@ -1,10 +1,12 @@
 package com.psr.psr.product.dto.assembler
 
+import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.product.dto.response.GetProductDetailRes
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.MyProduct
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.entity.ProductImg
+import com.psr.psr.product.entity.ProductReport
 import com.psr.psr.user.entity.User
 import org.springframework.stereotype.Component
 
@@ -43,6 +45,14 @@ class ProductAssembler {
             isLike = isLike
         )
 
+    }
+
+    fun toReportEntity(product: Product, user: User, category: ReportCategory): ProductReport {
+        return ProductReport(
+            product = product,
+            user = user,
+            category = category
+        )
     }
 
 

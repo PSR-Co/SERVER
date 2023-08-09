@@ -1,12 +1,15 @@
 package com.psr.psr.product.controller
 
 import com.psr.psr.global.dto.BaseResponse
+import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.jwt.UserAccount
+import com.psr.psr.product.dto.request.ReportProductReq
 import com.psr.psr.product.dto.response.GetProductDetailRes
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.MyProduct
 import com.psr.psr.product.service.ProductService
+import jakarta.validation.Valid
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -54,5 +57,15 @@ class ProductController(
                 return BaseResponse(productService.getProductsByUser(userId))
         }
 
+        /**
+         * 상품 신고
+         */
+        @PostMapping("/products/{productId}/report")
+        fun reportProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                          @PathVariable productId: Long,
+                          @RequestBody @Valid request: ReportProductReq): BaseResponse<Unit> {
+                val category = ReportCategory.findByValue(request.category)
+                return BaseResponse(productService.reportProduct(userAccount.getUser(), productId, category))
+        }
 
 }

@@ -16,6 +16,10 @@ enum class ReportCategory(override val value: String) : EnumType {
             return ReportCategory.values().find { it.name == name }
                 ?: throw BaseException(BaseResponseCode.INVALID_REPORT_CATEGORY)
         }
-        
+
+        fun findByValue(value: String): ReportCategory {
+            return ReportCategory.values().find { it.value == value }
+                ?: throw BaseException(BaseResponseCode.INVALID_REPORT_CATEGORY)
+        }
     }
 }
