@@ -4,6 +4,7 @@ import com.psr.psr.global.Constant.REPORT.REPORT.CATEGORY
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
+import com.psr.psr.review.dto.GetProductDetailRes
 import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
 import com.psr.psr.review.dto.ReviewRes
@@ -66,5 +67,14 @@ class ReviewController(
     ): BaseResponse<Unit> {
         category[CATEGORY] ?: return BaseResponse(BaseResponseCode.NULL_REPORT_CATEGORY)
         return BaseResponse(reviewService.reportReview(userAccount.getUser(), reviewId, category[CATEGORY]!!))
+    }
+
+    /**
+     * 상품 상세 조회 - 리뷰
+     */
+    @GetMapping("products/{productId}/reviews/top")
+    fun getProductDetail(@AuthenticationPrincipal userAccount: UserAccount,
+                         @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
+        return BaseResponse(reviewService.getProductDetail(userAccount.getUser(), productId));
     }
 }
