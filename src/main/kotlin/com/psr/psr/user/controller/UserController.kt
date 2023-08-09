@@ -7,6 +7,9 @@ import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.user.dto.*
+import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.ProfileRes
+import com.psr.psr.user.dto.request.*
 import com.psr.psr.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -23,7 +26,7 @@ class UserController(
          */
         @PostMapping("/signup")
         @ResponseBody
-        fun signUp (@RequestBody @Validated signUpReq:  SignUpReq) : BaseResponse<TokenDto>{
+        fun signUp (@RequestBody @Validated signUpReq: SignUpReq) : BaseResponse<TokenDto>{
                return BaseResponse(userService.signUp(signUpReq))
         }
 
@@ -143,6 +146,17 @@ class UserController(
                 userService.patchWatchLists(userAccount.getUser(), userInterestListReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
+
+        /**
+         * 휴대폰번호 유효
+         */
+        @PostMapping("/phone-check")
+        @ResponseBody
+        fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
+                userService.checkValidPhone(validPhoneReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
 
 
 }

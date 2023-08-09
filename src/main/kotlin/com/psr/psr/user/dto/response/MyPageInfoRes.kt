@@ -1,4 +1,4 @@
-package com.psr.psr.user.dto.Response
+package com.psr.psr.user.dto.response
 
 
 data class MyPageInfoRes(

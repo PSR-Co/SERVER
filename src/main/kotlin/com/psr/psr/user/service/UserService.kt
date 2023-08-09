@@ -1,9 +1,21 @@
 package com.psr.psr.user.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.ser.Serializers.Base
 import com.psr.psr.global.Constant
 import com.psr.psr.global.Constant.UserEID.UserEID.EID_URL
 import com.psr.psr.global.Constant.UserEID.UserEID.PAY_STATUS
+import com.psr.psr.global.Constant.UserPhone.UserPhone.ACCESS_KEY_HEADER
+import com.psr.psr.global.Constant.UserPhone.UserPhone.FINAL_URL
+import com.psr.psr.global.Constant.UserPhone.UserPhone.FIRST_URL
+import com.psr.psr.global.Constant.UserPhone.UserPhone.METHOD
+import com.psr.psr.global.Constant.UserPhone.UserPhone.MIDDLE_URL
+import com.psr.psr.global.Constant.UserPhone.UserPhone.NEWLINE
+import com.psr.psr.global.Constant.UserPhone.UserPhone.SETTING_ALGORITHM
+import com.psr.psr.global.Constant.UserPhone.UserPhone.SIGNATURE_HEADER
+import com.psr.psr.global.Constant.UserPhone.UserPhone.SPACE
+import com.psr.psr.global.Constant.UserPhone.UserPhone.TIMESTAMP_HEADER
+import com.psr.psr.global.Constant.UserPhone.UserPhone.UTF_8
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode.*
@@ -12,6 +24,9 @@ import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
+import com.psr.psr.user.dto.request.*
+import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
@@ -19,8 +34,10 @@ import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import jakarta.servlet.http.HttpServletRequest
+import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -29,8 +46,11 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.DefaultUriBuilderFactory
+import reactor.core.publisher.Mono
 import java.util.stream.Collectors
+import javax.crypto.Mac
 
+import javax.crypto.spec.SecretKeySpec
 
 @Service
 @Transactional(readOnly = true)
@@ -43,6 +63,12 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
     private val serviceKey: String,
+    @Value("\${naver.cloud.sms.access-key}")
+    private val accessKey: String,
+    @Value("\${naver.cloud.sms.secret-key}")
+    private val secretKey: String,
+    @Value("\${naver.cloud.sms.serviceId}")
+    private val serviceId: String,
     private val userAssembler: UserAssembler
 
 ) {
@@ -233,5 +259,51 @@ class UserService(
                 // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
                 if(!reqLists.contains(interest.category)) userInterestRepository.delete(interest)
             }
+    }
+
+    // 유효 휴대폰 검증
+    @Transactional
+    fun checkValidPhone(validPhoneReq: ValidPhoneReq) {
+        val time = System.currentTimeMillis()
+        val url = FIRST_URL + MIDDLE_URL + serviceId + FINAL_URL
+        val factory = DefaultUriBuilderFactory(url)
+        factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY
+        val smsKey = userAssembler.createSmsKey()
+
+        WebClient.builder()
+            .uriBuilderFactory(factory)
+            .baseUrl(url)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(TIMESTAMP_HEADER, time.toString())
+            .defaultHeader(ACCESS_KEY_HEADER, accessKey)
+            .defaultHeader(SIGNATURE_HEADER, makeSignature(time))
+            .build().post()
+            .bodyValue(this.userAssembler.toSMSReqDto(validPhoneReq, smsKey))
+            .retrieve()
+            .onStatus({ it.isError }) { response ->
+                throw BaseException(PHONE_ERROR)
+            }
+            .bodyToMono(String::class.java)
+            .block()
+    }
+
+    // signature
+    private fun makeSignature(time: Long): String {
+        val message = StringBuilder()
+            .append(METHOD)
+            .append(SPACE)
+            .append(MIDDLE_URL + serviceId + FINAL_URL) // url
+            .append(NEWLINE)
+            .append(time.toString()) // time
+            .append(NEWLINE)
+            .append(accessKey)
+            .toString()
+
+        val signingKey = SecretKeySpec(secretKey.toByteArray(charset(UTF_8)), SETTING_ALGORITHM)
+        val mac = Mac.getInstance(SETTING_ALGORITHM)
+        mac.init(signingKey)
+
+        val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
+        return Base64.encodeBase64String(rawHmac)
     }
 }
