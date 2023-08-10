@@ -4,10 +4,7 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler
-import com.psr.psr.product.dto.response.GetProductDetailRes
-import com.psr.psr.product.dto.response.GetProductsByUserRes
-import com.psr.psr.product.dto.response.GetProductsRes
-import com.psr.psr.product.dto.response.MyProduct
+import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductImgRepository
 import com.psr.psr.product.repository.ProductLikeRepository
@@ -72,6 +69,11 @@ class ProductService(
         val isLike = productLikeRepository.existsByProductAndUserAndStatus(product, user, ACTIVE_STATUS)
 
         return productAssembler.toGetProductDetailResDto(isOwner, product, imgList, numOfLikes, isLike)
+    }
+
+    fun getLikeProducts(user: User): GetLikeProductsRes {
+        val productLikeList = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS)
+        return productAssembler.toGetLikeProductsRes(productLikeList)
     }
 
 }

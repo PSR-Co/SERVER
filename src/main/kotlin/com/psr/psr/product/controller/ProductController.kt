@@ -2,10 +2,7 @@ package com.psr.psr.product.controller
 
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.UserAccount
-import com.psr.psr.product.dto.response.GetProductDetailRes
-import com.psr.psr.product.dto.response.GetProductsByUserRes
-import com.psr.psr.product.dto.response.GetProductsRes
-import com.psr.psr.product.dto.response.MyProduct
+import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.service.ProductService
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -52,6 +49,14 @@ class ProductController(
         @GetMapping("/users/{userId}")
         fun getProductsByUser(@PathVariable userId: Long): BaseResponse<GetProductsByUserRes> {
                 return BaseResponse(productService.getProductsByUser(userId))
+        }
+
+        /**
+         * 찜 목록
+         */
+        @GetMapping("/likes")
+        fun getLikeProducts(@AuthenticationPrincipal userAccount: UserAccount): BaseResponse<GetLikeProductsRes> {
+                return BaseResponse(productService.getLikeProducts(userAccount.getUser()))
         }
 
 
