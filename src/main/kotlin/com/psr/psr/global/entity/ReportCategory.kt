@@ -18,7 +18,7 @@ enum class ReportCategory(override val value: String) : EnumType {
         }
 
         fun findByValue(value: String): ReportCategory {
-            return ReportCategory.values().find { it.value == value }
+            return ReportCategory.values().find { it.value == value }!!
         }
     }
 }

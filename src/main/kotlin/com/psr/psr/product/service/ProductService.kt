@@ -24,6 +24,7 @@ class ProductService(
     private val userInterestRepository: UserInterestRepository,
     private val productImgRepository: ProductImgRepository,
     private val productLikeRepository: ProductLikeRepository,
+    private val productReportRepository: ProductReportRepository,
     private val userRepository: UserRepository,
     private val productAssembler: ProductAssembler
 ) {
