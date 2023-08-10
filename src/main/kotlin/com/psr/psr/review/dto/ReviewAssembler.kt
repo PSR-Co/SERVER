@@ -35,7 +35,7 @@ class ReviewAssembler {
         )
     }
 
-    fun toDto(review: Review): ReviewListRes {
+    fun toListDto(review: Review): ReviewListRes {
         val reviewImgs =
             if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgUrl }
             else null
@@ -47,6 +47,21 @@ class ReviewAssembler {
             reviewedDate = review.createdAt.format(DateTimeFormatter.ISO_DATE),
             nickName = review.order.user.nickname,
             profileImgUrl = review.order.user.imgUrl
+        )
+    }
+
+    fun toDto(review: Review): ReviewRes {
+        val reviewImgs =
+            if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgUrl }
+            else null
+        return ReviewRes(
+            reviewId = review.id!!,
+            rating = review.rating,
+            content = review.content,
+            imgList = reviewImgs,
+            nickname = review.product.user.nickname,
+            productName = review.product.name,
+            productImgUrl = review.product.imgs[0].imgUrl
         )
     }
 

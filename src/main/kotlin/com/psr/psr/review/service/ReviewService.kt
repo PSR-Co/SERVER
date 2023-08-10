@@ -12,6 +12,7 @@ import com.psr.psr.review.dto.GetProductDetailRes
 import com.psr.psr.review.dto.ReviewAssembler
 import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
+import com.psr.psr.review.dto.ReviewRes
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.repository.ReviewImgRepository
 import com.psr.psr.review.repository.ReviewReportRepository
@@ -68,7 +69,16 @@ class ReviewService(
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
 
         return reviewRepository.findByProductAndStatus(product, ACTIVE_STATUS, pageable)
-            .map { review -> reviewAssembler.toDto(review) }
+            .map { review -> reviewAssembler.toListDto(review) }
+    }
+
+    // 리뷰 개별 조회
+    fun getReview(user: User, reviewId: Long): ReviewRes {
+        val review: Review = reviewRepository.findByIdAndStatus(reviewId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_REVIEW)
+        if (review.order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
+
+        return reviewAssembler.toDto(review)
     }
 
     // 리뷰 신고

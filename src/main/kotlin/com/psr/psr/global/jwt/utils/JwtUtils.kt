@@ -19,6 +19,7 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
+import org.springframework.util.ObjectUtils
 import java.security.Key
 import java.time.Duration
 import java.util.*
@@ -37,6 +38,7 @@ class JwtUtils(
 //    private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 30 // 30 분
     private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 14 // 2주일 (임시)
     private final val REFRESH_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 7 // 일주일
+    private final val SMS_KEY_EXPIRE_TIME: Long = 1000L * 60 * 6 // 2분
 
     private val keyBytes = Decoders.BASE64.decode(secret)
     val key: Key = Keys.hmacShaKeyFor(keyBytes)
@@ -142,5 +144,23 @@ class JwtUtils(
         if(redisToken == null || redisToken != refreshToken) throw BaseException(BaseResponseCode.INVALID_TOKEN)
     }
 
+    /**
+     * 휴대폰 smsKey 만료시간
+     */
+    fun createSmsKey(phone: String, smsKey: String){
+        // 재발급을 받은 경우 기존 인증코드 삭제
+        if (redisTemplate.opsForValue().get(phone) != null) redisTemplate.delete(phone)
+        // 인증코드 생성
+        redisTemplate.opsForValue().set(phone, smsKey, Duration.ofMillis(SMS_KEY_EXPIRE_TIME))
+    }
 
+    /**
+     * 휴대폰 인증코드 정보 불러오기
+     */
+    fun getSmsKey(phone: String) : String {
+        val key = redisTemplate.opsForValue().get(phone)
+        // sms key 가 없거나 만료된 경우 예외처리
+        if(ObjectUtils.isEmpty(key) || key == null) throw BaseException(BaseResponseCode.BLACKLIST_PHONE)
+        return key
+    }
 }

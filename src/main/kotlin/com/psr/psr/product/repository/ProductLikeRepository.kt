@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 interface ProductLikeRepository: JpaRepository<ProductLike, Long> {
     fun existsByProductAndUserAndStatus(product: Product, user: User, activeStatus: String): Boolean
     fun countByProductAndStatus(product: Product, activeStatus: String): Int
+    fun findByUserAndStatus(user: User, activeStatus: String): List<ProductLike>?
 }

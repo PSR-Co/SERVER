@@ -5,10 +5,7 @@ import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler
-import com.psr.psr.product.dto.response.GetProductDetailRes
-import com.psr.psr.product.dto.response.GetProductsByUserRes
-import com.psr.psr.product.dto.response.GetProductsRes
-import com.psr.psr.product.dto.response.MyProduct
+import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductImgRepository
 import com.psr.psr.product.repository.ProductLikeRepository
@@ -27,7 +24,6 @@ class ProductService(
     private val userInterestRepository: UserInterestRepository,
     private val productImgRepository: ProductImgRepository,
     private val productLikeRepository: ProductLikeRepository,
-    private val productReportRepository: ProductReportRepository,
     private val userRepository: UserRepository,
     private val productAssembler: ProductAssembler
 ) {
@@ -86,4 +82,8 @@ class ProductService(
         productReportRepository.save(productAssembler.toReportEntity(product, user, category))
     }
 
+    fun getLikeProducts(user: User): GetLikeProductsRes {
+        val productLikeList = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS)
+        return productAssembler.toGetLikeProductsRes(productLikeList)
+    }
 }

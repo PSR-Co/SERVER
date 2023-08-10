@@ -65,6 +65,9 @@ dependencies {
 
 	// webclient
 	implementation ("org.springframework.boot:spring-boot-starter-webflux")
+
+	// random
+	implementation("org.apache.commons:commons-lang3:3.12.0")
 }
 
 
