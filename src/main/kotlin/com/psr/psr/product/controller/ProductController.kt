@@ -48,7 +48,7 @@ class ProductController(
          */
         @GetMapping("/myproducts")
         fun getMyProducts(@AuthenticationPrincipal userAccount: UserAccount,
-                          @PageableDefault(size = 10) pageable: Pageable): BaseResponse<Page<MyProduct>?> {
+                          @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetMyProductsRes> {
                 return BaseResponse(productService.getMyProducts(userAccount.getUser(), pageable));
         }
 

@@ -46,13 +46,9 @@ class ProductService(
         return GetProductsRes(popularList, productList)
     }
 
-    fun getMyProducts(user: User, pageable: Pageable): Page<MyProduct>? {
+    fun getMyProducts(user: User, pageable: Pageable): GetMyProductsRes {
         val myProductList: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
-
-        return myProductList?.map { p: Product ->
-            val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
-            productAssembler.toMyProductDto(p, productImg.imgUrl)
-        }
+        return productAssembler.toGetMyProductsDto(myProductList)
     }
 
     fun getProductsByUser(userId: Long, pageable: Pageable): GetProductsByUserRes {

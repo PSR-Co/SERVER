@@ -11,6 +11,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class ProductAssembler {
+
+    fun toGetMyProductsDto(productList: Page<Product>?): GetMyProductsRes {
+        return GetMyProductsRes(
+            productList = productList?.map { this.toMyProductDto(it) }
+        )
+    }
     fun toMyProductDto(product: Product, imgUrl: String): MyProduct {
         return MyProduct(
             productId = product.id,
