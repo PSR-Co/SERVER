@@ -1,10 +1,7 @@
 package com.psr.psr.product.dto.assembler
 
 import com.psr.psr.global.entity.ReportCategory
-import com.psr.psr.product.dto.response.GetLikeProductsRes
-import com.psr.psr.product.dto.response.GetProductDetailRes
-import com.psr.psr.product.dto.response.GetProductsByUserRes
-import com.psr.psr.product.dto.response.MyProduct
+import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.entity.ProductImg
 import com.psr.psr.product.entity.ProductLike
@@ -62,7 +59,7 @@ class ProductAssembler {
 
     }
 
-    fun toGetLikeProductsRes(productLikeList: List<ProductLike>?): GetLikeProductsRes {
+    fun toGetLikeProductsResDto(productLikeList: List<ProductLike>?): GetLikeProductsRes {
         return GetLikeProductsRes(
             productList = productLikeList?.map { pl -> this.toMyProductDto(pl.product) }?.toList()
         )
@@ -74,6 +71,34 @@ class ProductAssembler {
             product = product,
             user = user,
             category = category
+        )
+    }
+
+    fun toGetHomePageResDto(mainTopProductList: List<Product>?, productList: List<Product>?): GetHomePageRes {
+        return GetHomePageRes(
+            mainTopProductList = mainTopProductList?.sortedByDescending { it.createdAt }!!.take(3).map { p -> this.toMainTopProductDto(p) }.toList(),
+            recentProductList = productList?.sortedByDescending { it.createdAt }!!.take(5).map { p -> this.toMainProductDto(p) }.toList(),
+            popularProductList = productList?.sortedByDescending { it.likeNum }!!.take(5).map { p -> this.toMainProductDto(p) }.toList()
+        )
+    }
+
+    fun toMainTopProductDto(product: Product): MainTopProduct {
+        return MainTopProduct(
+            id = product.id,
+            category = product.category.value,
+            name = product.name,
+            description = product.description
+        )
+    }
+
+    fun toMainProductDto(product: Product): MainProduct {
+        val imgUrl =
+            if (product.imgs.isNotEmpty()) product.imgs[0].imgUrl
+            else null
+        return MainProduct(
+            id = product.id,
+            imgUrl = imgUrl,
+            name = product.name
         )
     }
 
