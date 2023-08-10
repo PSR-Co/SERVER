@@ -296,12 +296,19 @@ class UserService(
         if(sms != smsKey) throw BaseException(INVALID_SMS_KEY)
     }
 
-    // 이메일 찾기
+    // 이메일 찾기를 위한 인증
     fun findEmailSearch(findIdPwReq: FindIdPwReq): EmailRes {
         // 인증번호 확인
         checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
-        val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_EMPTY_NAME)
+        val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
         return userAssembler.toEmailResDto(user)
+    }
+
+    // 비밀번호 변경을 위한 인증
+    fun findPWSearch(findIdPwReq: FindIdPwReq) {
+        // 인증번호 확인
+        checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
+        userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
     }
 
     // signature
@@ -323,6 +330,7 @@ class UserService(
         val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
         return Base64.encodeBase64String(rawHmac)
     }
+
 
 
 

@@ -8,10 +8,10 @@ import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.user.dto.*
-import com.psr.psr.user.dto.response.MyPageInfoRes
-import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.dto.request.*
 import com.psr.psr.user.dto.response.EmailRes
+import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -178,5 +178,16 @@ class UserController(
         fun findEmailSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<EmailRes>{
                 if(!StringUtils.hasText(findIdPwReq.name)) throw BaseException(BaseResponseCode.NOT_EMPTY_NAME)
                 return BaseResponse(userService.findEmailSearch(findIdPwReq))
+        }
+
+        /**
+         * 비밀번호 변경 + 인증번호 조회
+         */
+        @PostMapping("/password")
+        @ResponseBody
+        fun findPWSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<Any>{
+                if(!StringUtils.hasText(findIdPwReq.email)) throw BaseException(BaseResponseCode.NOT_EMPTY_EMAIL)
+                userService.findPWSearch(findIdPwReq)
+                return BaseResponse(BaseResponseCode.SUCCESS);
         }
 }
