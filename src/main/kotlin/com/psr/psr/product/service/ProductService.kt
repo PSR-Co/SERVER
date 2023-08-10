@@ -1,6 +1,7 @@
 package com.psr.psr.product.service
 
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
+import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler
@@ -8,6 +9,7 @@ import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductImgRepository
 import com.psr.psr.product.repository.ProductLikeRepository
+import com.psr.psr.product.repository.ProductReportRepository
 import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
@@ -22,6 +24,7 @@ class ProductService(
     private val userInterestRepository: UserInterestRepository,
     private val productImgRepository: ProductImgRepository,
     private val productLikeRepository: ProductLikeRepository,
+    private val productReportRepository: ProductReportRepository,
     private val userRepository: UserRepository,
     private val productAssembler: ProductAssembler
 ) {
@@ -71,9 +74,17 @@ class ProductService(
         return productAssembler.toGetProductDetailResDto(isOwner, product, imgList, numOfLikes, isLike)
     }
 
+    fun reportProduct(user: User, productId: Long, category: ReportCategory) {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        if (productReportRepository.findByProductAndUserAndStatus(product, user, ACTIVE_STATUS) != null)
+            throw BaseException(BaseResponseCode.REPORT_ALREADY_COMPLETE)
+
+        productReportRepository.save(productAssembler.toReportEntity(product, user, category))
+    }
+
     fun getLikeProducts(user: User): GetLikeProductsRes {
         val productLikeList = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS)
         return productAssembler.toGetLikeProductsRes(productLikeList)
     }
-
 }
