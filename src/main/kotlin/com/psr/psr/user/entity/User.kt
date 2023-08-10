@@ -30,6 +30,10 @@ class User(
         var nickname:String,
 
         @NotNull
+        @Column(length = 30)
+        var name:String,
+
+        @NotNull
         @Column(length = 15)
         var phone:String,
 
