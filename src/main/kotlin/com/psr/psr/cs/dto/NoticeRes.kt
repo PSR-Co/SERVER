@@ -8,7 +8,8 @@ data class NoticeRes (
     val noticeId: Long,
     val title: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    val date: LocalDateTime,
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    val date: LocalDateTime ?= null,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val imgUrl: String ?= null,
     @JsonInclude(JsonInclude.Include.NON_NULL)

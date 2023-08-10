@@ -45,4 +45,9 @@ class CsService(
                 return csAssembler.toFaqRes(faq)
         }
 
+        // 홈 화면 조회 - 공지사항
+        fun getHomePage(): NoticeListRes {
+                return csAssembler.toNoticeListResForHomePage(noticeRepository.findTop3ByStatusOrderByCreatedAtDesc(ACTIVE_STATUS))
+    }
+
 }

@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository
 interface NoticeRepository: JpaRepository<Notice, Long> {
     fun findByStatusOrderByCreatedAtDesc(status: String) : List<Notice>?
     fun findByIdAndStatus(id: Long, status: String) : Notice?
+    fun findTop3ByStatusOrderByCreatedAtDesc(status: String) : List<Notice>?
 }
