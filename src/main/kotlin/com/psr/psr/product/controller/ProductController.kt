@@ -77,4 +77,12 @@ class ProductController(
                 return BaseResponse(productService.reportProduct(userAccount.getUser(), productId, category))
         }
 
+        /**
+         * 홈 화면 조회 - 상품
+         */
+        @GetMapping("/home")
+        fun getHomePage(): BaseResponse<GetHomePageRes> {
+                return BaseResponse(productService.getHomePage())
+        }
+
 }

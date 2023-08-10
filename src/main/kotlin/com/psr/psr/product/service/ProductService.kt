@@ -12,6 +12,7 @@ import com.psr.psr.product.repository.ProductLikeRepository
 import com.psr.psr.product.repository.ProductReportRepository
 import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.Category
+import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
@@ -85,6 +86,13 @@ class ProductService(
 
     fun getLikeProducts(user: User): GetLikeProductsRes {
         val productLikeList = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS)
-        return productAssembler.toGetLikeProductsRes(productLikeList)
+        return productAssembler.toGetLikeProductsResDto(productLikeList)
+    }
+
+    fun getHomePage(): GetHomePageRes {
+        // MANAGER 상품
+        val mainTopProductList = userRepository.findByTypeAndStatus(Type.MANAGER, ACTIVE_STATUS)!!.products
+        val productList = productRepository.findAllByStatus(ACTIVE_STATUS)
+        return productAssembler.toGetHomePageResDto(mainTopProductList, productList)
     }
 }

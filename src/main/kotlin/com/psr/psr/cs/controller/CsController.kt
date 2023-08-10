@@ -48,4 +48,12 @@ class CsController(
         fun getFaq(@PathVariable(name = "faqId") faqId: Long): BaseResponse<FaqRes>{
                 return BaseResponse(csService.getFaq(faqId))
         }
+
+        /**
+         * 홈 화면 조회 - 공지사항
+         */
+        @GetMapping("/notices/home")
+        fun getHomePage(): BaseResponse<NoticeListRes> {
+                return BaseResponse(csService.getHomePage())
+        }
 }

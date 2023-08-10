@@ -37,4 +37,14 @@ class CsAssembler {
     fun toFaqRes(faq: Faq): FaqRes {
         return FaqRes(faq.id, faq.type.value, faq.title, faq.content)
     }
+
+    fun toNoticeListResForHomePage(noticeList: List<Notice>?): NoticeListRes {
+        return NoticeListRes(
+            noticeLists = noticeList?.map { n -> toNoticeResHome(n) }!!.toList()
+        )
+    }
+
+    fun toNoticeResHome(notice: Notice): NoticeRes {
+        return NoticeRes(noticeId = notice.id, title = notice.title)
+    }
 }

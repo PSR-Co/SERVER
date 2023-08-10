@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository
 interface ProductRepository: JpaRepository<Product, Long>, ProductCustom {
     fun findAllByUserAndStatusOrderByCreatedAtDesc(user: User, activeStatus: String): List<Product>?
     fun findByIdAndStatus(productId: Long, activeStatus: String): Product?
+    fun findAllByStatus(activeStatus: String): List<Product>?
 }
