@@ -17,6 +17,7 @@ import com.psr.psr.global.Constant.UserPhone.UserPhone.TIMESTAMP_HEADER
 import com.psr.psr.global.Constant.UserPhone.UserPhone.UTF_8
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
@@ -24,6 +25,7 @@ import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.dto.request.*
+import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.dto.response.MyPageInfoRes
 import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.entity.Category
@@ -288,10 +290,25 @@ class UserService(
     }
 
     // 휴대폰 인증번호 조회
-    fun checkValidSmsKey(validPhoneReq: ValidPhoneReq) {
-        val smsKey = jwtUtils.getSmsKey(validPhoneReq.phone)
+    fun checkValidSmsKey(phone: String, smsKey: String) {
+        val sms = jwtUtils.getSmsKey(phone)
         // 인증코드가 같지 않은 경우 예외처리 발생
-        if(smsKey != validPhoneReq.smsKey) throw BaseException(INVALID_SMS_KEY)
+        if(sms != smsKey) throw BaseException(INVALID_SMS_KEY)
+    }
+
+    // 이메일 찾기를 위한 인증
+    fun findEmailSearch(findIdPwReq: FindIdPwReq): EmailRes {
+        // 인증번호 확인
+        checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
+        val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+        return userAssembler.toEmailResDto(user)
+    }
+
+    // 비밀번호 변경을 위한 인증
+    fun findPWSearch(findIdPwReq: FindIdPwReq) {
+        // 인증번호 확인
+        checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
+        userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
     }
 
     // signature
@@ -313,5 +330,8 @@ class UserService(
         val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
         return Base64.encodeBase64String(rawHmac)
     }
+
+
+
 
 }

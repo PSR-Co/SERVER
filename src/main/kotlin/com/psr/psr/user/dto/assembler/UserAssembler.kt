@@ -11,6 +11,7 @@ import com.psr.psr.user.dto.phoneReq.SMSReq
 import com.psr.psr.user.dto.request.SignUpReq
 import com.psr.psr.user.dto.request.UserEidReq
 import com.psr.psr.user.dto.request.ValidPhoneReq
+import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.entity.*
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Component
@@ -33,6 +34,7 @@ class UserAssembler {
             provider = Provider.LOCAL,
             marketing = signUpReq.marketing,
             notification = signUpReq.notification,
+            name = signUpReq.name,
             nickname = signUpReq.nickname)
     }
 
@@ -89,11 +91,14 @@ class UserAssembler {
         )
     }
 
+    fun toEmailResDto(user: User): EmailRes {
+        return EmailRes(email = user.email)
+    }
+
     /**
      * Utils
      */
     fun createSmsKey() : String{
         return RandomStringUtils.random(5, false, true);
     }
-
 }

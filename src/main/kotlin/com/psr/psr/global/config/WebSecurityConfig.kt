@@ -50,6 +50,8 @@ class WebSecurityConfig(
                 c.requestMatchers("/users/reissue").permitAll()
                 c.requestMatchers("/users/password-reset").permitAll()
                 c.requestMatchers("/users/phone/*").permitAll()
+                c.requestMatchers("/users/email/search").permitAll()
+                c.requestMatchers("/users/password").permitAll()
                 c.anyRequest().authenticated()
             }
             .apply(JwtSecurityConfig(jwtUtils, redisTemplate))
