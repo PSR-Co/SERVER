@@ -1,4 +1,4 @@
-package com.psr.psr.user.dto
+package com.psr.psr.user.dto.request
 
 import jakarta.validation.constraints.NotBlank
 
