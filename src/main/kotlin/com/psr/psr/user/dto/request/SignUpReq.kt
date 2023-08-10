@@ -33,6 +33,8 @@ data class SignUpReq (
         message = "한글, 영어, 숫자만 입력해주세요. (10글자)"
     )
     val nickname: String,
+    @field:NotNull
+    val name: String,
     val marketing: Boolean,
     @field:NotNull
     val notification: Boolean,

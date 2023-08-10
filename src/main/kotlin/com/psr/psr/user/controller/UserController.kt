@@ -3,6 +3,7 @@ package com.psr.psr.user.controller
 import com.psr.psr.global.Constant.UserStatus.UserStatus.INACTIVE_STATUS
 import com.psr.psr.global.Constant.UserStatus.UserStatus.LOGOUT
 import com.psr.psr.global.dto.BaseResponse
+import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.global.jwt.dto.TokenDto
@@ -10,9 +11,11 @@ import com.psr.psr.user.dto.*
 import com.psr.psr.user.dto.response.MyPageInfoRes
 import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.dto.request.*
+import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.util.StringUtils
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
@@ -163,7 +166,17 @@ class UserController(
         @PostMapping("/phone/validation")
         @ResponseBody
         fun checkValidSmsKey(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
-                userService.checkValidSmsKey(validPhoneReq)
+                userService.checkValidSmsKey(validPhoneReq.phone, validPhoneReq.smsKey!!)
                 return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+        /**
+         * 아이디 + 인증번호 조회
+         */
+        @PostMapping("/email/search")
+        @ResponseBody
+        fun findEmailSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<EmailRes>{
+                if(!StringUtils.hasText(findIdPwReq.name)) throw BaseException(BaseResponseCode.NOT_EMPTY_NAME)
+                return BaseResponse(userService.findEmailSearch(findIdPwReq))
         }
 }
