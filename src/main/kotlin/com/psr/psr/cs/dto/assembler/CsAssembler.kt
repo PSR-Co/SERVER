@@ -22,7 +22,7 @@ class CsAssembler {
 
     // 공지사항 상세
     fun toNoticeRes(notice: Notice): NoticeRes {
-        return NoticeRes(notice.id, notice.title, notice.createdAt, notice.imgUrl)
+        return NoticeRes(notice.id, notice.title, notice.createdAt, notice.imgUrl, notice.content)
     }
 
     // 자주 묻는 질문 메인
