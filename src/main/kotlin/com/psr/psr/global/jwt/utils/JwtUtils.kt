@@ -38,7 +38,7 @@ class JwtUtils(
 //    private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 30 // 30 분
     private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 14 // 2주일 (임시)
     private final val REFRESH_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 7 // 일주일
-    private final val SMS_KEY_EXPIRE_TIME: Long = 1000L * 60 * 2 // 2분
+    private final val SMS_KEY_EXPIRE_TIME: Long = 1000L * 60 * 6 // 2분
 
     private val keyBytes = Decoders.BASE64.decode(secret)
     val key: Key = Keys.hmacShaKeyFor(keyBytes)
@@ -154,6 +154,9 @@ class JwtUtils(
         redisTemplate.opsForValue().set(phone, smsKey, Duration.ofMillis(SMS_KEY_EXPIRE_TIME))
     }
 
+    /**
+     * 휴대폰 인증코드 정보 불러오기
+     */
     fun getSmsKey(phone: String) : String {
         val key = redisTemplate.opsForValue().get(phone)
         // sms key 가 없거나 만료된 경우 예외처리
