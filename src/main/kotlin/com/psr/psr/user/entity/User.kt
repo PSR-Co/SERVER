@@ -1,9 +1,11 @@
 package com.psr.psr.user.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.product.entity.Product
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicInsert
 import org.hibernate.annotations.DynamicUpdate
+import org.hibernate.annotations.Where
 import org.jetbrains.annotations.NotNull
 
 @DynamicUpdate
@@ -47,6 +49,10 @@ class User(
         var marketing: Boolean,
 
         @NotNull
-        var notification: Boolean
+        var notification: Boolean,
+
+        @OneToMany(mappedBy = "user")
+        @Where(clause = "status = 'active'")
+        var products: List<Product>? = null
 
 ): BaseEntity()
