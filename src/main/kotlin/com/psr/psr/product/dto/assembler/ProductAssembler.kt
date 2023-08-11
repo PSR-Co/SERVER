@@ -84,7 +84,7 @@ class ProductAssembler {
         return GetHomePageRes(
             mainTopProductList = mainTopProductList?.sortedByDescending { it.createdAt }!!.take(3).map { p -> this.toMainTopProductDto(p) }.toList(),
             recentProductList = productList?.sortedByDescending { it.createdAt }!!.take(5).map { p -> this.toMainProductDto(p) }.toList(),
-            popularProductList = productList?.sortedByDescending { it.likeNum }!!.take(5).map { p -> this.toMainProductDto(p) }.toList()
+            popularProductList = productList?.sortedByDescending { it.likeNum?.size }!!.take(5).map { p -> this.toMainProductDto(p) }.toList()
         )
     }
 
