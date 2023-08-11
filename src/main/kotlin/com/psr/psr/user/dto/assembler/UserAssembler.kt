@@ -76,7 +76,7 @@ class UserAssembler {
     }
 
     fun toProfileRes(user: User) : ProfileRes {
-        return ProfileRes(user.email, user.imgUrl)
+        return ProfileRes(user.nickname, user.imgUrl)
     }
 
     fun toTokenDto(tokenDto: TokenDto) {
