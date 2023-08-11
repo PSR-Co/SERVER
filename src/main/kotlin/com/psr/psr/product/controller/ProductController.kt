@@ -73,7 +73,7 @@ class ProductController(
         /**
          * 상품 신고
          */
-        @PostMapping("/products/{productId}/report")
+        @PostMapping("/{productId}/report")
         fun reportProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @PathVariable productId: Long,
                           @RequestBody @Valid request: ReportProductReq): BaseResponse<Unit> {
