@@ -1,6 +1,7 @@
 package com.psr.psr.product.service
 
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
+import com.psr.psr.global.Constant.UserStatus.UserStatus.INACTIVE_STATUS
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
@@ -91,5 +92,23 @@ class ProductService(
         val mainTopProductList = userRepository.findByTypeAndStatus(Type.MANAGER, ACTIVE_STATUS)!!.products
         val productList = productRepository.findAllByStatus(ACTIVE_STATUS)
         return productAssembler.toGetHomePageResDto(mainTopProductList, productList)
+    }
+
+    fun likeProduct(user: User, productId: Long) {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        val productLike = productLikeRepository.findByProductAndUser(product, user)
+
+        // 없는 경우 새로 생성
+        if (productLike == null) {
+            val newProductLike = productAssembler.toProductLikeEntity(product, user)
+            productLikeRepository.save(newProductLike)
+        } else {
+            val status = productLike.status
+            // 있는 경우 현재 상태와 반대로 변경
+            productLike.status = if (status == ACTIVE_STATUS) INACTIVE_STATUS
+                                else ACTIVE_STATUS
+            productLikeRepository.save(productLike)
+        }
     }
 }

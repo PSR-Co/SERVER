@@ -89,4 +89,13 @@ class ProductController(
                 return BaseResponse(productService.getHomePage())
         }
 
+        /**
+         * 상품 찜
+         */
+        @PostMapping("/{productId}/likes")
+        fun likeProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                        @PathVariable productId: Long): BaseResponse<Unit> {
+                return BaseResponse(productService.likeProduct(userAccount.getUser(), productId))
+        }
+
 }
