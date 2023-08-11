@@ -9,7 +9,7 @@ data class UserInterest(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
+        @ManyToOne
         @JoinColumn(nullable = false, name = "user_id")
         var user: User,
 
