@@ -61,7 +61,7 @@ class ReviewAssembler {
             imgList = reviewImgs,
             nickname = review.product.user.nickname,
             productName = review.product.name,
-            productImgUrl = review.product.imgs[0].imgUrl
+            productImgUrl = review.product.imgs?.get(0)?.imgUrl
         )
     }
 

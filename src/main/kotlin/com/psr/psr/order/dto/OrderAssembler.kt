@@ -26,7 +26,7 @@ class OrderAssembler {
             status = order.orderStatus.statusName,
             orderUserId = order.user.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
-            productId = order.product.id,
+            productId = order.product.id!!,
             productName = order.product.name,
             ordererName = order.ordererName,
             websiteUrl = order.websiteUrl,
@@ -49,7 +49,7 @@ class OrderAssembler {
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
             profileImgUrl = profileImg,
-            productId = order.product.id,
+            productId = order.product.id!!,
             productName = order.product.name,
             productImgUrl = productImgUrl,
             isReviewed = null
@@ -67,7 +67,7 @@ class OrderAssembler {
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
             profileImgUrl = null,
-            productId = order.product.id,
+            productId = order.product.id!!,
             productName = order.product.name,
             productImgUrl = null,
             isReviewed = order.isReviewed
