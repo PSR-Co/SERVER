@@ -9,7 +9,6 @@ import java.util.*
 
 @Repository
 interface UserRepository: JpaRepository<User, Long> {
-    @EntityGraph(attributePaths = ["interests"])
     fun findByIdAndStatus(id: Long, status: String) : User?
     fun existsByNickname(nickname: String): Boolean
     fun existsByPhone(phone: String): Boolean
