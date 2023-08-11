@@ -17,7 +17,6 @@ import com.psr.psr.global.Constant.UserPhone.UserPhone.TIMESTAMP_HEADER
 import com.psr.psr.global.Constant.UserPhone.UserPhone.UTF_8
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
-import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
@@ -237,8 +236,8 @@ class UserService(
 
     // 관심 목록 변경
     @Transactional
-    fun patchWatchLists(user: User,  userInterestListReq: UserInterestListReq) {
-        val reqLists = userInterestListReq.interestList.map { i -> Category.getCategoryByName(i.category) }
+    fun patchWatchLists(user: User,  userInterestListReq: UserInterestListDto) {
+        val reqLists = userInterestListReq.interestList!!.map { i -> Category.getCategoryByName(i.category) }
         if(reqLists.isEmpty() || reqLists.size > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
         val userWatchLists = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS)
         val categoryLists = userWatchLists.map { c -> c.category }
@@ -260,6 +259,11 @@ class UserService(
                 // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
                 if(!reqLists.contains(interest.category)) userInterestRepository.delete(interest)
             }
+    }
+
+    // 관심 목록 조회
+    fun getWatchList(user: User) :UserInterestListDto {
+        return userAssembler.toUserInterestListDto(user.interests)
     }
 
     // 유효 휴대폰 검증
@@ -330,8 +334,4 @@ class UserService(
         val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
         return Base64.encodeBase64String(rawHmac)
     }
-
-
-
-
 }

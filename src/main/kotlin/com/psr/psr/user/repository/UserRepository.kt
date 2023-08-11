@@ -2,6 +2,7 @@ package com.psr.psr.user.repository
 
 import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
+import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

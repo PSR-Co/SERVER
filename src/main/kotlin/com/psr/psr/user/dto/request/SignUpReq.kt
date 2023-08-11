@@ -1,5 +1,6 @@
 package com.psr.psr.user.dto.request
 
+import com.psr.psr.user.dto.UserInterestDto
 import jakarta.annotation.Nullable
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -39,6 +40,6 @@ data class SignUpReq (
     @field:NotNull
     val notification: Boolean,
     @field:NotEmpty
-    val interestList: List<UserInterestReq>,
+    val interestList: List<UserInterestDto>,
     val entreInfo: UserEidReq?= null
     )
