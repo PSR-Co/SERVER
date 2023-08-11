@@ -4,13 +4,19 @@ import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.entity.ProductImg
-import com.psr.psr.product.entity.ProductLike
 import com.psr.psr.product.entity.ProductReport
 import com.psr.psr.user.entity.User
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
 
 @Component
 class ProductAssembler {
+
+    fun toGetMyProductsDto(productList: Page<Product>?): GetMyProductsRes {
+        return GetMyProductsRes(
+            productList = productList?.map { this.toMyProductDto(it) }
+        )
+    }
     fun toMyProductDto(product: Product, imgUrl: String): MyProduct {
         return MyProduct(
             productId = product.id,
@@ -34,7 +40,7 @@ class ProductAssembler {
         )
     }
 
-    fun toGetProductsByUserResDto(user: User, productList: List<MyProduct>?): GetProductsByUserRes {
+    fun toGetProductsByUserResDto(user: User, productList: Page<MyProduct>?): GetProductsByUserRes {
         return GetProductsByUserRes(
             imgUrl = user.imgUrl,
             type = user.type.value,
@@ -59,11 +65,10 @@ class ProductAssembler {
 
     }
 
-    fun toGetLikeProductsResDto(productLikeList: List<ProductLike>?): GetLikeProductsRes {
+    fun toGetLikeProductsResDto(productList: Page<Product>?): GetLikeProductsRes {
         return GetLikeProductsRes(
-            productList = productLikeList?.map { pl -> this.toMyProductDto(pl.product) }?.toList()
+            productList = productList?.map { pl -> this.toMyProductDto(pl) }
         )
-
     }
 
     fun toReportEntity(product: Product, user: User, category: ReportCategory): ProductReport {

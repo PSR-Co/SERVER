@@ -16,6 +16,7 @@ import com.psr.psr.user.entity.Type
 import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
@@ -45,18 +46,14 @@ class ProductService(
         return GetProductsRes(popularList, productList)
     }
 
-    fun getMyProducts(user: User): List<MyProduct>? {
-        val myProductList: List<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS)
-
-        return myProductList?.map { p: Product ->
-            val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
-            productAssembler.toMyProductDto(p, productImg.imgUrl)
-        }
+    fun getMyProducts(user: User, pageable: Pageable): GetMyProductsRes {
+        val myProductList: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
+        return productAssembler.toGetMyProductsDto(myProductList)
     }
 
-    fun getProductsByUser(userId: Long): GetProductsByUserRes {
+    fun getProductsByUser(userId: Long, pageable: Pageable): GetProductsByUserRes {
         val user: User = userRepository.findByIdAndStatus(userId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_USER)
-        val products: List<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS)
+        val products: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
 
         val productList = products?.map { p: Product ->
             val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
@@ -84,9 +81,9 @@ class ProductService(
         productReportRepository.save(productAssembler.toReportEntity(product, user, category))
     }
 
-    fun getLikeProducts(user: User): GetLikeProductsRes {
-        val productLikeList = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS)
-        return productAssembler.toGetLikeProductsResDto(productLikeList)
+    fun getLikeProducts(user: User, pageable: Pageable): GetLikeProductsRes {
+        val productList: Page<Product>? = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)?.map { it.product }
+        return productAssembler.toGetLikeProductsResDto(productList)
     }
 
     fun getHomePage(): GetHomePageRes {
