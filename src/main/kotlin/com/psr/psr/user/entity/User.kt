@@ -53,6 +53,10 @@ class User(
 
         @OneToMany(mappedBy = "user")
         @Where(clause = "status = 'active'")
-        var products: List<Product>? = null
+        var products: List<Product>? = null,
+
+        @OneToMany(mappedBy = "user")
+        @Where(clause = "status = 'active'")
+        var interests: List<UserInterest>? = null
 
 ): BaseEntity()

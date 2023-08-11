@@ -1,8 +1,8 @@
-package com.psr.psr.user.dto.request
+package com.psr.psr.user.dto
 
 import com.psr.psr.user.entity.Category
 
-data class UserInterestReq (
+data class UserInterestDto (
     val category: String
 ){
     fun checkInterestCategory() : Category{

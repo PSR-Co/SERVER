@@ -145,9 +145,18 @@ class UserController(
          */
         @PatchMapping("/watchlists")
         @ResponseBody
-        fun patchWatchLists(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated userInterestListReq: UserInterestListReq) : BaseResponse<Any>{
+        fun patchWatchLists(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated userInterestListReq: UserInterestListDto) : BaseResponse<Any>{
                 userService.patchWatchLists(userAccount.getUser(), userInterestListReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+        /**
+         * 관심 목록 조회
+         */
+        @GetMapping("/watchlists")
+        @ResponseBody
+        fun getWatchList(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<UserInterestListDto>{
+                return BaseResponse(userService.getWatchList(userAccount.getUser()))
         }
 
         /**

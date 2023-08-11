@@ -2,8 +2,8 @@ package com.psr.psr.user.dto.assembler
 
 import com.psr.psr.global.Constant
 import com.psr.psr.global.jwt.dto.TokenDto
-import com.psr.psr.user.dto.response.MyPageInfoRes
-import com.psr.psr.user.dto.response.ProfileRes
+import com.psr.psr.user.dto.UserInterestDto
+import com.psr.psr.user.dto.UserInterestListDto
 import com.psr.psr.user.dto.eidReq.Business
 import com.psr.psr.user.dto.eidReq.BusinessListReq
 import com.psr.psr.user.dto.phoneReq.MessageReq
@@ -12,6 +12,8 @@ import com.psr.psr.user.dto.request.SignUpReq
 import com.psr.psr.user.dto.request.UserEidReq
 import com.psr.psr.user.dto.request.ValidPhoneReq
 import com.psr.psr.user.dto.response.EmailRes
+import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.entity.*
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.stereotype.Component
@@ -93,6 +95,12 @@ class UserAssembler {
 
     fun toEmailResDto(user: User): EmailRes {
         return EmailRes(email = user.email)
+    }
+
+    fun toUserInterestListDto(interests: List<UserInterest>?): UserInterestListDto {
+        return UserInterestListDto(
+            interestList = interests?.map { i -> UserInterestDto(i.category.value) }?.toList()
+        )
     }
 
     /**
