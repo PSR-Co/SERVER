@@ -131,7 +131,7 @@ class UserController(
         /**
          * 관심 목록 변경
          */
-        @PatchMapping("/watchlists")
+        @PatchMapping("/watchlist")
         fun patchWatchLists(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated userInterestListReq: UserInterestListDto) : BaseResponse<Any>{
                 userService.patchWatchLists(userAccount.getUser(), userInterestListReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
@@ -140,7 +140,7 @@ class UserController(
         /**
          * 관심 목록 조회
          */
-        @GetMapping("/watchlists")
+        @GetMapping("/watchlist")
         fun getWatchList(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<UserInterestListDto>{
                 return BaseResponse(userService.getWatchList(userAccount.getUser()))
         }
