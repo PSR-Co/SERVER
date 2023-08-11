@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class ProductImg(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
 
     @ManyToOne
     var product: Product,
