@@ -67,9 +67,12 @@ class ReviewAssembler {
 
     fun toGetProductDetailResDto(reviewList: List<Review>): GetProductDetailRes {
         val ratingList = reviewList.map { r -> r.rating }
+        val avgOfRating =
+            if (ratingList.average().isNaN()) 0.0
+            else ratingList.average()
         return GetProductDetailRes(
             numOfReviews = reviewList.size,
-            avgOfRating = ratingList.average(),
+            avgOfRating = avgOfRating,
             reviewList = reviewList.map { r -> this.toReviewDetailTopDto(r) }.toList()
         )
     }
