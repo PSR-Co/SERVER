@@ -72,7 +72,7 @@ class ProductController(
         /**
          * 상품 신고
          */
-        @PostMapping("/products/{productId}/report")
+        @PostMapping("/{productId}/report")
         fun reportProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @PathVariable productId: Long,
                           @RequestBody @Valid request: ReportProductReq): BaseResponse<Unit> {
@@ -96,6 +96,15 @@ class ProductController(
         fun createProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
                 return BaseResponse(productService.createProduct(userAccount.getUser(), request))
+        }
+
+        /**
+         * 상품 찜
+         */
+        @PostMapping("/{productId}/likes")
+        fun likeProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                        @PathVariable productId: Long): BaseResponse<Unit> {
+                return BaseResponse(productService.likeProduct(userAccount.getUser(), productId))
         }
 
 }

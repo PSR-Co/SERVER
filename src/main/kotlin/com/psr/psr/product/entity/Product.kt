@@ -31,7 +31,9 @@ data class Product(
         @NotNull
         var description: String,
 
-        var likeNum: Int = 0,
+        @OneToMany(mappedBy = "product")
+        @Where(clause = "status = 'active'")
+        var likeNum: List<ProductLike>?,
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")

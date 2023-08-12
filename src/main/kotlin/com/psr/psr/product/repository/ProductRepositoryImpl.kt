@@ -34,7 +34,7 @@ class ProductRepositoryImpl(
                 JPAExpressions.select(productImg.imgUrl).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product)))),
                 product.name,
                 product.price,
-                ExpressionUtils.`as`(product.likeNum, "numOfLike"),
+                ExpressionUtils.`as`(product.likeNum.size(), "numOfLike"),
                 Expressions.asBoolean(JPAExpressions.selectFrom(productLike).where(productLike.user.eq(target).and(productLike.product.eq(product)).and(productLike.status.eq("active"))).exists()),
                 ExpressionUtils.`as`(JPAExpressions.select(review.rating.avg()).from(review).where(review.product.eq(product)), "avgOfRating"),
                 ExpressionUtils.`as`(JPAExpressions.select(review.count().intValue()).from(review).where(review.product.eq(product)), "numOfReview")
@@ -43,7 +43,7 @@ class ProductRepositoryImpl(
             .leftJoin(product).on(product.eq(productLike.product))
             .where(product.category.`in`(category))
             .groupBy(product.id)
-            .orderBy(product.likeNum.desc())
+            .orderBy(product.likeNum.size().desc())
             .limit(5)
             .fetch()
     }
