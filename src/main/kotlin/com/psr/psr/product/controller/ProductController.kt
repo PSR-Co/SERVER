@@ -107,4 +107,10 @@ class ProductController(
                 return BaseResponse(productService.likeProduct(userAccount.getUser(), productId))
         }
 
+        @DeleteMapping("/{productId}")
+        fun deleteProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                          @PathVariable productId: Long): BaseResponse<Unit> {
+                return BaseResponse(productService.deleteProduct(userAccount.getUser(), productId))
+        }
+
 }
