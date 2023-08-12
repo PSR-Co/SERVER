@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity
+@SQLDelete(sql = "UPDATE product_img SET status = 'inactive', updated_at = CURRENT_TIMESTAMP WHERE id = ?")
 data class ProductImg(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,

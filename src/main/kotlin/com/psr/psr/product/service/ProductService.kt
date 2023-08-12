@@ -121,4 +121,11 @@ class ProductService(
             productLikeRepository.save(productLike)
         }
     }
+
+    fun deleteProduct(user: User, productId: Long) {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        if(product.user != user) throw BaseException(BaseResponseCode.INVALID_PRODUCT_USER)
+        productRepository.deleteById(productId)
+    }
 }
