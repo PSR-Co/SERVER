@@ -44,8 +44,7 @@ class OrderService(
                 orderRepository.findByProductUserAndStatus(user, ACTIVE_STATUS, pageable)
             else
                 orderRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)
-        return orderList.map { order: Order -> order.product.imgs?.get(0)
-            ?.let { orderAssembler.toListDto(order, type, it.imgUrl) } }
+        return orderList.map { order: Order -> orderAssembler.toListDto(order, type) }
     }
 
     // 요청 목록 조회(요청 상태별)

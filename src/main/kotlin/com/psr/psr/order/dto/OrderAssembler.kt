@@ -35,28 +35,6 @@ class OrderAssembler {
         )
     }
 
-    // 요청 목록 조회 시
-    fun toListDto(order: Order, type: String, productImgUrl: String): OrderListRes {
-        val userName =
-            if (type == SELL) order.ordererName
-            else order.product.user.nickname
-        val profileImg: String? =
-            if (type == SELL) order.user.imgUrl
-            else order.product.user.imgUrl
-
-        return OrderListRes(
-            orderId = order.id!!,
-            orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
-            userName = userName,
-            profileImgUrl = profileImg,
-            productId = order.product.id!!,
-            productName = order.product.name,
-            productImgUrl = productImgUrl,
-            isReviewed = null
-        )
-    }
-
-    // 마이페이지 요청 목록 조회 시
     fun toListDto(order: Order, type: String): OrderListRes {
         val userName =
             if (type == SELL) order.ordererName
@@ -66,11 +44,10 @@ class OrderAssembler {
             orderId = order.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             userName = userName,
-            profileImgUrl = null,
             productId = order.product.id!!,
             productName = order.product.name,
-            productImgUrl = null,
-            isReviewed = order.isReviewed
+            productImgUrl = order.product.imgs?.get(0)?.imgUrl,
+            reviewId = order.review?.id
         )
     }
 }
