@@ -4,6 +4,7 @@ import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.entity.ProductImg
+import com.psr.psr.product.entity.ProductLike
 import com.psr.psr.product.entity.ProductReport
 import com.psr.psr.user.entity.User
 import org.springframework.data.domain.Page
@@ -83,7 +84,7 @@ class ProductAssembler {
         return GetHomePageRes(
             mainTopProductList = mainTopProductList?.sortedByDescending { it.createdAt }!!.take(3).map { p -> this.toMainTopProductDto(p) }.toList(),
             recentProductList = productList?.sortedByDescending { it.createdAt }!!.take(5).map { p -> this.toMainProductDto(p) }.toList(),
-            popularProductList = productList?.sortedByDescending { it.likeNum }!!.take(5).map { p -> this.toMainProductDto(p) }.toList()
+            popularProductList = productList?.sortedByDescending { it.likeNum?.size }!!.take(5).map { p -> this.toMainProductDto(p) }.toList()
         )
     }
 
@@ -104,6 +105,13 @@ class ProductAssembler {
             id = product.id,
             imgUrl = imgUrl,
             name = product.name
+        )
+    }
+
+    fun toProductLikeEntity(product: Product, user: User): ProductLike {
+        return ProductLike(
+            product = product,
+            user = user
         )
     }
 

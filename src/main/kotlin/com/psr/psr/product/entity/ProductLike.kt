@@ -7,14 +7,14 @@ import jakarta.persistence.*
 @Entity
 data class ProductLike(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    var id: Long? = null,
 
     @ManyToOne
-        @JoinColumn(nullable = false, name = "product_id")
-        var product: Product,
+    @JoinColumn(nullable = false, name = "product_id")
+    var product: Product,
 
     @ManyToOne
-        @JoinColumn(nullable = false, name = "user_id")
-        var user: User
+    @JoinColumn(nullable = false, name = "user_id")
+    var user: User
 
 ): BaseEntity()

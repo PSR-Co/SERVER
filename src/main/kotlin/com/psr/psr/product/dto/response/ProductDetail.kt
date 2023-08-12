@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection
 
 data class ProductDetail @QueryProjection constructor(
     val productId: Long,
-    val imgUrl: String,
+    val imgUrl: String?,
     val userId: Long,
     val nickname: String,
     val name: String,
