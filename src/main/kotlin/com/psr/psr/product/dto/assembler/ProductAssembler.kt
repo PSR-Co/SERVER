@@ -1,11 +1,13 @@
 package com.psr.psr.product.dto.assembler
 
 import com.psr.psr.global.entity.ReportCategory
+import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.entity.ProductImg
 import com.psr.psr.product.entity.ProductLike
 import com.psr.psr.product.entity.ProductReport
+import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Component
@@ -20,7 +22,7 @@ class ProductAssembler {
     }
     fun toMyProductDto(product: Product, imgUrl: String): MyProduct {
         return MyProduct(
-            productId = product.id,
+            productId = product.id!!,
             imgUrl = imgUrl,
             category = product.category.value,
             name = product.name,
@@ -30,10 +32,10 @@ class ProductAssembler {
 
     fun toMyProductDto(product: Product): MyProduct {
         val imgUrl =
-            if (product.imgs.isNotEmpty()) product.imgs[0].imgUrl
+            if (product.imgs?.isNotEmpty() == true) product.imgs!![0].imgUrl
             else null
         return MyProduct(
-            productId = product.id,
+            productId = product.id!!,
             imgUrl = imgUrl,
             category = product.category.value,
             name = product.name,
@@ -90,7 +92,7 @@ class ProductAssembler {
 
     fun toMainTopProductDto(product: Product): MainTopProduct {
         return MainTopProduct(
-            id = product.id,
+            id = product.id!!,
             category = product.category.value,
             name = product.name,
             description = product.description
@@ -99,12 +101,29 @@ class ProductAssembler {
 
     fun toMainProductDto(product: Product): MainProduct {
         val imgUrl =
-            if (product.imgs.isNotEmpty()) product.imgs[0].imgUrl
+            if (product.imgs?.isNotEmpty() == true) product.imgs!![0].imgUrl
             else null
         return MainProduct(
-            id = product.id,
+            id = product.id!!,
             imgUrl = imgUrl,
             name = product.name
+        )
+    }
+
+    fun toProductEntity(user: User, request: CreateproductReq): Product {
+        return Product(
+            user = user,
+            name = request.name,
+            category = Category.getCategoryByValue(request.category),
+            price = request.price,
+            description = request.description
+        )
+    }
+
+    fun toProductImgEntity(product: Product, imgUrl: String): ProductImg {
+        return ProductImg(
+            product = product,
+            imgUrl = imgUrl
         )
     }
 

@@ -96,7 +96,7 @@ class ReviewService(
 
     fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
         val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
-        val reviewList = product.reviews.sortedByDescending { it.createdAt }.take(5)
+        val reviewList = product.reviews?.sortedByDescending { it.createdAt }!!.take(5)
         return reviewAssembler.toGetProductDetailResDto(reviewList)
     }
 }

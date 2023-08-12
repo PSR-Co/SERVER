@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class Product(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "user_id")
@@ -33,14 +33,14 @@ data class Product(
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var likeNum: List<ProductLike>?,
+        var likeNum: List<ProductLike>? = null,
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var imgs: List<ProductImg>,
+        var imgs: List<ProductImg>? = null,
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var reviews: List<Review>
+        var reviews: List<Review>? = null
 
 ): BaseEntity()

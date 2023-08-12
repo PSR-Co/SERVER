@@ -7,5 +7,5 @@ data class ReviewRes(
     val imgList: List<String>?,
     val nickname: String,
     val productName: String,
-    val productImgUrl: String
+    val productImgUrl: String?
 )

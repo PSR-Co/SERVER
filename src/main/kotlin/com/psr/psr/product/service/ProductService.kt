@@ -6,6 +6,7 @@ import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.product.dto.assembler.ProductAssembler
+import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
 import com.psr.psr.product.repository.ProductImgRepository
@@ -20,6 +21,7 @@ import com.psr.psr.user.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProductService(
@@ -92,6 +94,14 @@ class ProductService(
         val mainTopProductList = userRepository.findByTypeAndStatus(Type.MANAGER, ACTIVE_STATUS)!!.products
         val productList = productRepository.findAllByStatus(ACTIVE_STATUS)
         return productAssembler.toGetHomePageResDto(mainTopProductList, productList)
+    }
+
+    @Transactional
+    fun createProduct(user: User, request: CreateproductReq) {
+        val product = productRepository.save(productAssembler.toProductEntity(user, request))
+        // 이미지 있는 경우만 저장
+        if(request.imgList != null)
+            request.imgList.map { imgUrl: String -> productImgRepository.save(productAssembler.toProductImgEntity(product, imgUrl)) }
     }
 
     fun likeProduct(user: User, productId: Long) {

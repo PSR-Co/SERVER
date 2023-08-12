@@ -3,15 +3,14 @@ package com.psr.psr.product.controller
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.jwt.UserAccount
+import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.request.ReportProductReq
 import com.psr.psr.product.dto.response.GetProductDetailRes
 import com.psr.psr.product.dto.response.GetProductsByUserRes
 import com.psr.psr.product.dto.response.GetProductsRes
-import com.psr.psr.product.dto.response.MyProduct
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.service.ProductService
 import jakarta.validation.Valid
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -87,6 +86,16 @@ class ProductController(
         @GetMapping("/home")
         fun getHomePage(): BaseResponse<GetHomePageRes> {
                 return BaseResponse(productService.getHomePage())
+        }
+
+
+        /**
+         * 상품 등록
+         */
+        @PostMapping("")
+        fun createProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                          @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
+                return BaseResponse(productService.createProduct(userAccount.getUser(), request))
         }
 
         /**
