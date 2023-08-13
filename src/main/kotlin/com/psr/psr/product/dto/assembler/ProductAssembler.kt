@@ -31,12 +31,9 @@ class ProductAssembler {
     }
 
     fun toMyProductDto(product: Product): MyProduct {
-        val imgUrl =
-            if (product.imgs?.isNotEmpty() == true) product.imgs!![0].imgUrl
-            else null
         return MyProduct(
             productId = product.id!!,
-            imgUrl = imgUrl,
+            imgUrl = product.imgs?.firstOrNull()?.imgUrl,
             category = product.category.value,
             name = product.name,
             price = product.price
