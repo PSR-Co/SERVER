@@ -37,14 +37,14 @@ data class Product(
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var likeNum: List<ProductLike>? = null,
+        var likeNum: List<ProductLike>? = ArrayList(),
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var imgs: List<ProductImg>? = null,
+        var imgs: List<ProductImg>? = ArrayList(),
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var reviews: List<Review>? = null
+        var reviews: List<Review>? = ArrayList()
 
 ): BaseEntity()

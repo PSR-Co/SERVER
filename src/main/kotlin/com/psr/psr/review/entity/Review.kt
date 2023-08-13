@@ -28,6 +28,6 @@ data class Review(
     var content: String,
 
     @OneToMany(mappedBy = "review")
-    var imgs: List<ReviewImg>? = null
+    var imgs: List<ReviewImg>? = ArrayList()
 
 ) : BaseEntity()
