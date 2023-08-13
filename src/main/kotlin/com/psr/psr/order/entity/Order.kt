@@ -3,6 +3,7 @@ package com.psr.psr.order.entity
 import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.order.dto.OrderReq
 import com.psr.psr.product.entity.Product
+import com.psr.psr.review.entity.Review
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
@@ -37,8 +38,9 @@ data class Order(
     @NotNull
     var description: String,
 
-    @NotNull
-    var isReviewed: Boolean = false
+    @OneToOne
+    @JoinColumn(name = "review_id")
+    var review: Review? = null
 
 ) : BaseEntity() {
     fun editOrder(orderReq: OrderReq?, orderStatus: OrderStatus?) {
@@ -53,8 +55,8 @@ data class Order(
         }
     }
 
-    fun changeReviewStatus(): Order {
-        this.isReviewed = !this.isReviewed
+    fun setReview(review: Review?): Order {
+        this.review = review
         return this
     }
 }

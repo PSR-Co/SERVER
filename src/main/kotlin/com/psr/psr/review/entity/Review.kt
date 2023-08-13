@@ -18,8 +18,7 @@ data class Review(
     @JoinColumn(nullable = false, name = "product_id")
     var product: Product,
 
-    @OneToOne
-    @JoinColumn(nullable = false, name = "order_id")
+    @OneToOne(mappedBy = "review")
     var order: Order,
 
     @NotNull

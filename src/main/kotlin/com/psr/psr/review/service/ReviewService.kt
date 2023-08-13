@@ -39,11 +39,11 @@ class ReviewService(
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
 
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
-        if (order.isReviewed) throw BaseException(BaseResponseCode.REVIEW_ALREADY_COMPLETE)
+        if (order.review != null) throw BaseException(BaseResponseCode.REVIEW_ALREADY_COMPLETE)
         if (order.orderStatus != OrderStatus.COMPLETED)  throw BaseException(BaseResponseCode.ORDER_NOT_COMPLETE)
 
         val review = reviewRepository.save(reviewAssembler.toEntity(order, reviewReq))
-        orderRepository.save(order.changeReviewStatus())
+        orderRepository.save(order.setReview(review))
 
         if (reviewReq.imgList != null) {
             val reviewImgs = reviewReq.imgList.map { img: String -> reviewAssembler.toImgEntity(review, img) }
@@ -60,7 +60,7 @@ class ReviewService(
 
         reviewImgRepository.deleteByReview(review)
         reviewRepository.delete(review)
-        orderRepository.save(review.order.changeReviewStatus())
+        orderRepository.save(review.order.setReview(null))
     }
 
     // 상품별 리뷰 목록 조회
@@ -94,6 +94,7 @@ class ReviewService(
         reviewReportRepository.save(reviewAssembler.toReportEntity(review, user, reportCategory))
     }
 
+    // 상품 조회 시 리뷰 목록 조회(5개)
     fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
         val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
         val reviewList = product.reviews?.sortedByDescending { it.createdAt }!!.take(5)
