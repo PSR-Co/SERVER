@@ -43,12 +43,12 @@ class ProductAssembler {
         )
     }
 
-    fun toGetProductsByUserResDto(user: User, productList: Page<MyProduct>?): GetProductsByUserRes {
+    fun toGetProductsByUserResDto(user: User, productList: Page<Product>?): GetProductsByUserRes {
         return GetProductsByUserRes(
             imgUrl = user.imgUrl,
             type = user.type.value,
             nickname = user.nickname,
-            productList = productList
+            productList = productList?.map { p -> toMyProductDto(p) }
         )
     }
 

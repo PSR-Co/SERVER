@@ -58,11 +58,7 @@ class ProductService(
         val user: User = userRepository.findByIdAndStatus(userId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_USER)
         val products: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
 
-        val productList = products?.map { p: Product ->
-            val productImg = productImgRepository.findTop1ByProductAndStatusOrderByCreatedAtDesc(p, ACTIVE_STATUS)
-            productAssembler.toMyProductDto(p, productImg.imgUrl)
-        }
-        return productAssembler.toGetProductsByUserResDto(user, productList)
+        return productAssembler.toGetProductsByUserResDto(user, products)
     }
 
     fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
