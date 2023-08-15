@@ -33,7 +33,7 @@ class ProductAssembler {
     fun toMyProductDto(product: Product): MyProduct {
         return MyProduct(
             productId = product.id!!,
-            imgUrl = product.imgs?.firstOrNull()?.imgUrl,
+            imgUrl = product.imgs.firstOrNull()?.imgUrl,
             category = product.category.value,
             name = product.name,
             price = product.price
@@ -97,12 +97,9 @@ class ProductAssembler {
     }
 
     fun toMainProductDto(product: Product): MainProduct {
-        val imgUrl =
-            if (product.imgs?.isNotEmpty() == true) product.imgs!![0].imgUrl
-            else null
         return MainProduct(
             id = product.id!!,
-            imgUrl = imgUrl,
+            imgUrl = product.imgs.firstOrNull()?.imgUrl,
             name = product.name
         )
     }

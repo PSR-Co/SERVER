@@ -41,7 +41,7 @@ data class Product(
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")
-        var imgs: List<ProductImg>? = ArrayList(),
+        var imgs: List<ProductImg> = ArrayList(),
 
         @OneToMany(mappedBy = "product")
         @Where(clause = "status = 'active'")

@@ -31,6 +31,16 @@ class ReviewController(
         return BaseResponse(reviewService.makeReview(userAccount.getUser(), orderId, reviewReq))
     }
 
+    // 리뷰 수정
+    @PatchMapping("/reviews/{reviewId}")
+    fun editReview(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @PathVariable reviewId: Long,
+        @RequestBody @Valid reviewReq: ReviewReq
+    ): BaseResponse<Unit> {
+        return BaseResponse(reviewService.editReview(userAccount.getUser(), reviewId, reviewReq))
+    }
+
     // 리뷰 삭제
     @DeleteMapping("/reviews/{reviewId}")
     fun deleteReview(
