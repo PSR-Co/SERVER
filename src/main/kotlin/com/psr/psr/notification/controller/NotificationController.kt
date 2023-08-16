@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 class NotificationController(
     private val notificationService: NotificationService
 ) {
+    // 알림 목록 조회
     @GetMapping
     fun getNotiList(
         @AuthenticationPrincipal userAccount: UserAccount,
