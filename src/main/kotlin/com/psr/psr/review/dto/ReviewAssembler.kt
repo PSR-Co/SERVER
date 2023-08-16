@@ -37,7 +37,7 @@ class ReviewAssembler {
 
     fun toListDto(review: Review): ReviewListRes {
         val reviewImgs =
-            if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgUrl }
+            if (review.imgs.isNotEmpty()) review.imgs.map { img -> img.imgUrl }
             else null
         return ReviewListRes(
             reviewId = review.id!!,
@@ -52,7 +52,7 @@ class ReviewAssembler {
 
     fun toDto(review: Review): ReviewRes {
         val reviewImgs =
-            if (review.imgs?.size != 0) review.imgs?.map { img -> img.imgUrl }
+            if (review.imgs.isNotEmpty()) review.imgs.map { img -> img.imgUrl }
             else null
         return ReviewRes(
             reviewId = review.id!!,
@@ -61,7 +61,7 @@ class ReviewAssembler {
             imgList = reviewImgs,
             nickname = review.product.user.nickname,
             productName = review.product.name,
-            productImgUrl = review.product.imgs?.get(0)?.imgUrl
+            productImgUrl = review.product.imgs.firstOrNull()?.imgUrl
         )
     }
 
@@ -78,11 +78,8 @@ class ReviewAssembler {
     }
 
     private fun toReviewDetailTopDto(review: Review): ReviewDetailTop {
-        val imgUrl =
-            if (review.imgs?.size != 0) review.imgs!![0].imgUrl
-            else null
         return ReviewDetailTop(
-                imgUrl = imgUrl,
+                imgUrl = review.imgs.firstOrNull()?.imgUrl,
                 rating = review.rating,
                 content = review.content
             )

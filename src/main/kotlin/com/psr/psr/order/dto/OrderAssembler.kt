@@ -46,7 +46,7 @@ class OrderAssembler {
             userName = userName,
             productId = order.product.id!!,
             productName = order.product.name,
-            productImgUrl = order.product.imgs?.get(0)?.imgUrl,
+            productImgUrl = order.product.imgs.firstOrNull()?.imgUrl,
             reviewId = order.review?.id
         )
     }
