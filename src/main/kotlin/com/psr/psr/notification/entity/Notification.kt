@@ -1,19 +1,24 @@
 package com.psr.psr.notification.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
 data class Notification(
-        @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long,
 
-        @NotNull
-        @Column(length = 100)
-        var title: String,
+    @ManyToOne
+    @JoinColumn(nullable = false, name = "user_id")
+    var user: User,
 
-        @NotNull
-        var content: String
+    @NotNull
+    @Column(length = 100)
+    var title: String,
 
-): BaseEntity()
+    @NotNull
+    var content: String
+
+) : BaseEntity()
