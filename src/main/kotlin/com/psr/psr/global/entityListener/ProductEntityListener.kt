@@ -5,8 +5,6 @@ import com.psr.psr.product.repository.ProductImgRepository
 import com.psr.psr.product.repository.ProductLikeRepository
 import jakarta.persistence.PreRemove
 
-
-
 class ProductEntityListener {
     @PreRemove
     fun onUpdate(product: Product) {
