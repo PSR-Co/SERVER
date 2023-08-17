@@ -6,6 +6,7 @@ import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.utils.JwtUtils
+import com.psr.psr.user.service.RedisService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -15,7 +16,7 @@ import org.springframework.util.ObjectUtils
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
 
-class JwtFilter(private val jwtUtils: JwtUtils, private val redisTemplate: RedisTemplate<String, String>) : OncePerRequestFilter() {
+class JwtFilter(private val jwtUtils: JwtUtils, private val redisService: RedisService) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -28,7 +29,7 @@ class JwtFilter(private val jwtUtils: JwtUtils, private val redisTemplate: Redis
             // 유효한 token 인지 확인
             if(StringUtils.hasText(token) && jwtUtils.validateToken(token)){
                 // 이미 blacklist 가 된 토큰인지 아닌지 확인
-                if(!ObjectUtils.isEmpty(redisTemplate.opsForValue().get(token!!))){
+                if(!ObjectUtils.isEmpty(redisService.getValue(token!!))){
                     throw BaseException(BaseResponseCode.BLACKLIST_TOKEN)
                 }
                 val authentication = jwtUtils.getAuthentication(token)

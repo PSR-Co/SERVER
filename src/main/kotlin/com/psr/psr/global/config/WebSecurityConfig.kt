@@ -3,6 +3,7 @@ package com.psr.psr.global.config
 import com.psr.psr.global.jwt.exception.JwtAccessDeniedHandler
 import com.psr.psr.global.jwt.exception.JwtAuthenticationEntryPoint
 import com.psr.psr.global.jwt.utils.JwtUtils
+import com.psr.psr.user.service.RedisService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.core.RedisTemplate
@@ -18,7 +19,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 @EnableWebSecurity
 class WebSecurityConfig(
     private val jwtUtils: JwtUtils,
-    private val redisTemplate: RedisTemplate<String, String>,
+    private val redisService: RedisService,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
 ) {
@@ -54,7 +55,7 @@ class WebSecurityConfig(
                 c.requestMatchers("/users/password").permitAll()
                 c.anyRequest().authenticated()
             }
-            .apply(JwtSecurityConfig(jwtUtils, redisTemplate))
+            .apply(JwtSecurityConfig(jwtUtils, redisService))
 
         return http.build()
     }
