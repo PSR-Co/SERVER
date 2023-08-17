@@ -72,7 +72,7 @@ class UserAssembler {
      * toDto
      */
     fun toMyPageInfoRes(user: User) : MyPageInfoRes {
-        return MyPageInfoRes(user.email, user.imgUrl, user.type.value, user.phone)
+        return MyPageInfoRes(user.email, user.imgUrl, user.type.value, user.phone, user.nickname)
     }
 
     fun toProfileRes(user: User) : ProfileRes {
