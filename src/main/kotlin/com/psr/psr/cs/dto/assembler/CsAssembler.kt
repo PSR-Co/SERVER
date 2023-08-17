@@ -1,9 +1,9 @@
 package com.psr.psr.cs.dto.assembler
 
-import com.psr.psr.cs.dto.FaqListRes
-import com.psr.psr.cs.dto.FaqRes
-import com.psr.psr.cs.dto.NoticeListRes
-import com.psr.psr.cs.dto.NoticeRes
+import com.psr.psr.cs.dto.response.FaqListRes
+import com.psr.psr.cs.dto.response.FaqRes
+import com.psr.psr.cs.dto.response.NoticeListRes
+import com.psr.psr.cs.dto.response.NoticeRes
 import com.psr.psr.cs.entity.Faq
 import com.psr.psr.cs.entity.Notice
 import org.springframework.stereotype.Component

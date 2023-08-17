@@ -1,9 +1,9 @@
 package com.psr.psr.cs.service
 
-import com.psr.psr.cs.dto.FaqListRes
-import com.psr.psr.cs.dto.FaqRes
-import com.psr.psr.cs.dto.NoticeListRes
-import com.psr.psr.cs.dto.NoticeRes
+import com.psr.psr.cs.dto.response.FaqListRes
+import com.psr.psr.cs.dto.response.FaqRes
+import com.psr.psr.cs.dto.response.NoticeListRes
+import com.psr.psr.cs.dto.response.NoticeRes
 import com.psr.psr.cs.dto.assembler.CsAssembler
 import com.psr.psr.cs.entity.FaqType
 import com.psr.psr.cs.repository.FaqRepository
@@ -21,12 +21,12 @@ class CsService(
 
 ) {
         // 공지사항 메인
-        fun getNotices() : NoticeListRes{
+        fun getNotices() : NoticeListRes {
                 return csAssembler.toNoticeListRes(noticeRepository.findByStatusOrderByCreatedAtDesc(ACTIVE_STATUS))
         }
 
         // 공지사항 상세
-        fun getNotice(noticeId: Long) : NoticeRes{
+        fun getNotice(noticeId: Long) : NoticeRes {
                 val notice = noticeRepository.findByIdAndStatus(noticeId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_NOTICE)
                 return csAssembler.toNoticeRes(notice)
         }

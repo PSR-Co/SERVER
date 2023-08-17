@@ -1,4 +1,4 @@
-package com.psr.psr.cs.dto
+package com.psr.psr.cs.dto.response
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonInclude
