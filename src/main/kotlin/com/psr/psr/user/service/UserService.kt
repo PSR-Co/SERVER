@@ -17,6 +17,7 @@ import com.psr.psr.global.Constant.UserPhone.UserPhone.TIMESTAMP_HEADER
 import com.psr.psr.global.Constant.UserPhone.UserPhone.UTF_8
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
+import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
@@ -33,6 +34,7 @@ import com.psr.psr.user.entity.User
 import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
+import com.psr.psr.user.utils.SmsUtils
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
@@ -43,8 +45,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.util.ObjectUtils
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.DefaultUriBuilderFactory
+import java.time.Duration
 import java.util.stream.Collectors
 import javax.crypto.Mac
 
@@ -58,6 +62,7 @@ class UserService(
     private val businessInfoRepository: BusinessInfoRepository,
     private val authenticationManagerBuilder: AuthenticationManagerBuilder,
     private val jwtUtils: JwtUtils,
+    private val smsUtils: SmsUtils,
     private val passwordEncoder: PasswordEncoder,
     @Value("\${eid.key}")
     private val serviceKey: String,
@@ -290,12 +295,12 @@ class UserService(
             }
             .bodyToMono(String::class.java)
             .block()
-        jwtUtils.createSmsKey(validPhoneReq.phone, smsKey)
+        smsUtils.createSmsKey(validPhoneReq.phone, smsKey)
     }
 
     // 휴대폰 인증번호 조회
     fun checkValidSmsKey(phone: String, smsKey: String) {
-        val sms = jwtUtils.getSmsKey(phone)
+        val sms = smsUtils.getSmsKey(phone)
         // 인증코드가 같지 않은 경우 예외처리 발생
         if(sms != smsKey) throw BaseException(INVALID_SMS_KEY)
     }

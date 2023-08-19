@@ -7,19 +7,18 @@ import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserDetailsServiceImpl
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.user.entity.Type
+import com.psr.psr.user.service.RedisService
 import io.jsonwebtoken.*
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SecurityException
 import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-import org.springframework.util.ObjectUtils
 import java.security.Key
 import java.time.Duration
 import java.util.*
@@ -31,14 +30,13 @@ import java.util.stream.Collectors
 class JwtUtils(
     private val userDetailsService: UserDetailsServiceImpl,
     @Value("\${jwt.secret}") private val secret: String,
-    private val redisTemplate: RedisTemplate<String, String>
+    private val redisService: RedisService
 ) {
     val logger = KotlinLogging.logger {}
 
 //    private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 30 // 30 분
     private final val ACCESS_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 14 // 2주일 (임시)
     private final val REFRESH_TOKEN_EXPIRE_TIME: Long = 1000L * 60 * 60 * 24 * 7 // 일주일
-    private final val SMS_KEY_EXPIRE_TIME: Long = 1000L * 60 * 6 // 2분
 
     private val keyBytes = Decoders.BASE64.decode(secret)
     val key: Key = Keys.hmacShaKeyFor(keyBytes)
@@ -63,8 +61,8 @@ class JwtUtils(
             .setExpiration(Date(now + REFRESH_TOKEN_EXPIRE_TIME))
             .signWith(key, SignatureAlgorithm.HS512)
             .compact()
-        redisTemplate.opsForValue().set(authentication.name, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME))
 
+        redisService.setValue(authentication.name, refreshToken, Duration.ofMillis(REFRESH_TOKEN_EXPIRE_TIME))
         return TokenDto(BEARER_PREFIX + accessToken, BEARER_PREFIX + refreshToken, type.value)
     }
 
@@ -116,8 +114,7 @@ class JwtUtils(
     fun expireToken(token: String, status: String){
         val accessToken = token.replace(BEARER_PREFIX, "")
         val expiration = getExpiration(accessToken)
-        redisTemplate.opsForValue().set(accessToken, status, expiration, TimeUnit.MILLISECONDS)
-
+        redisService.setValue(accessToken, status, expiration, TimeUnit.MILLISECONDS)
     }
 
     /**
@@ -133,34 +130,14 @@ class JwtUtils(
      * refresh token 삭제
      */
     fun deleteRefreshToken(userId: Long) {
-        if(redisTemplate.opsForValue().get(userId.toString()) != null) redisTemplate.delete(userId.toString())
+        if(redisService.getValue(userId.toString()) != null) redisService.deleteValue(userId.toString())
     }
 
     /**
      * check Token in Redis DB
      */
     fun validateRefreshToken(userId: Long, refreshToken: String) {
-        val redisToken = redisTemplate.opsForValue().get(userId.toString())
+        val redisToken = redisService.getValue(userId.toString())
         if(redisToken == null || redisToken != refreshToken) throw BaseException(BaseResponseCode.INVALID_TOKEN)
-    }
-
-    /**
-     * 휴대폰 smsKey 만료시간
-     */
-    fun createSmsKey(phone: String, smsKey: String){
-        // 재발급을 받은 경우 기존 인증코드 삭제
-        if (redisTemplate.opsForValue().get(phone) != null) redisTemplate.delete(phone)
-        // 인증코드 생성
-        redisTemplate.opsForValue().set(phone, smsKey, Duration.ofMillis(SMS_KEY_EXPIRE_TIME))
-    }
-
-    /**
-     * 휴대폰 인증코드 정보 불러오기
-     */
-    fun getSmsKey(phone: String) : String {
-        val key = redisTemplate.opsForValue().get(phone)
-        // sms key 가 없거나 만료된 경우 예외처리
-        if(ObjectUtils.isEmpty(key) || key == null) throw BaseException(BaseResponseCode.BLACKLIST_PHONE)
-        return key
     }
 }
