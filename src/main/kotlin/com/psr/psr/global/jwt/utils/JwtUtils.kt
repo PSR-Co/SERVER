@@ -101,11 +101,15 @@ class JwtUtils(
     }
 
     private fun parseClaims(token: String): Claims {
-        return Jwts.parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
+        return try {
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .body
+        } catch (e: ExpiredJwtException){ // 토큰이 만료되더라도 사용자 정보를 불러올 수 있도록 예외처리
+            return e.claims
+        }
     }
 
     /**
