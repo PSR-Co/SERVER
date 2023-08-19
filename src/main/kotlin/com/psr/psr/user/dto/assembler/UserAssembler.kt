@@ -30,7 +30,7 @@ class UserAssembler {
     fun toEntity(signUpReq: SignUpReq): User {
         return User(email = signUpReq.email,
             password = signUpReq.password,
-            type = Type.getTypeByName(signUpReq.type),
+            type = Type.getTypeByValue(signUpReq.type),
             phone = signUpReq.phone,
             imgUrl = signUpReq.imgUrl,
             provider = Provider.LOCAL,
@@ -43,7 +43,7 @@ class UserAssembler {
     fun toInterestListEntity(user: User, signUpReq: SignUpReq): List<UserInterest> {
         return signUpReq.interestList.stream()
             .map { i ->
-                UserInterest(category = Category.getCategoryByName(i.category),
+                UserInterest(category = Category.getCategoryByValue(i.category),
                     user = user)
             }.collect(Collectors.toList())
     }

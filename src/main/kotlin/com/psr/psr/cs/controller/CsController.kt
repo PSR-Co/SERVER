@@ -1,9 +1,9 @@
 package com.psr.psr.cs.controller
 
-import com.psr.psr.cs.dto.FaqListRes
-import com.psr.psr.cs.dto.FaqRes
-import com.psr.psr.cs.dto.NoticeListRes
-import com.psr.psr.cs.dto.NoticeRes
+import com.psr.psr.cs.dto.response.FaqListRes
+import com.psr.psr.cs.dto.response.FaqRes
+import com.psr.psr.cs.dto.response.NoticeListRes
+import com.psr.psr.cs.dto.response.NoticeRes
 import com.psr.psr.cs.service.CsService
 import com.psr.psr.global.dto.BaseResponse
 import org.springframework.web.bind.annotation.*

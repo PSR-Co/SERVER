@@ -80,7 +80,8 @@ class UserService(
     // 회원가입
     @Transactional
     fun signUp(signUpReq: SignUpReq): TokenDto {
-        val categoryCheck = signUpReq.interestList.stream().map { i -> i.checkInterestCategory() }.collect(Collectors.toList()).groupingBy { it }.eachCount().any { it.value > 1 }
+        // 중복 값 확인
+        val categoryCheck = signUpReq.interestList.groupingBy { it }.eachCount().any { it.value > 1 }
         if(categoryCheck) throw BaseException(INVALID_USER_INTEREST_COUNT)
         // category 의 사이즈 확인
         val listSize = signUpReq.interestList.size
@@ -242,7 +243,7 @@ class UserService(
     // 관심 목록 변경
     @Transactional
     fun patchWatchLists(user: User,  userInterestListReq: UserInterestListDto) {
-        val reqLists = userInterestListReq.interestList!!.map { i -> Category.getCategoryByName(i.category) }
+        val reqLists = userInterestListReq.interestList!!.map { i -> Category.getCategoryByValue(i.category) }
         if(reqLists.isEmpty() || reqLists.size > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
         val userWatchLists = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS)
         val categoryLists = userWatchLists.map { c -> c.category }

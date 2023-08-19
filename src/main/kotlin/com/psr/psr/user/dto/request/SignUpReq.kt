@@ -1,6 +1,9 @@
 package com.psr.psr.user.dto.request
 
+import com.psr.psr.global.resolver.EnumValid
 import com.psr.psr.user.dto.UserInterestDto
+import com.psr.psr.user.entity.Category
+import com.psr.psr.user.entity.Type
 import jakarta.annotation.Nullable
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
@@ -20,6 +23,7 @@ data class SignUpReq (
     )
     var password: String,
     @field:NotBlank
+    @EnumValid(enumClass = Type::class, message = "올바르지 않은 사용자 역할니다.")
     val type: String,
     @field:Pattern(
         regexp = "^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})\$",
