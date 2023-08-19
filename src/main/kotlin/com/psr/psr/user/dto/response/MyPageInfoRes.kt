@@ -6,4 +6,5 @@ data class MyPageInfoRes(
     val imgUrl: String ?= null,
     val type: String,
     val phone: String,
+    val nickname: String,
 )
