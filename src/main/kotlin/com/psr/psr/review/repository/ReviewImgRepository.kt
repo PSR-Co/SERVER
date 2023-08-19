@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface ReviewImgRepository: JpaRepository<ReviewImg, Long> {
+    fun deleteByReview(review: Review)
 }

@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository
 @Repository
 interface ReviewReportRepository: JpaRepository<ReviewReport, Long> {
     fun findByReviewAndUserAndStatus(review: Review, user: User, status: String): ReviewReport?
+    fun deleteByReview(review: Review)
 }

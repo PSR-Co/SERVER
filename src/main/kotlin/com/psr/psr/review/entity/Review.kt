@@ -1,6 +1,7 @@
 package com.psr.psr.review.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.global.entityListener.ReviewEntityListener
 import com.psr.psr.order.entity.Order
 import com.psr.psr.product.entity.Product
 import com.psr.psr.review.dto.ReviewReq
@@ -10,6 +11,7 @@ import org.hibernate.annotations.Where
 import org.jetbrains.annotations.NotNull
 
 @Entity
+@EntityListeners(ReviewEntityListener::class)
 @SQLDelete(sql = "UPDATE review SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
 data class Review(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

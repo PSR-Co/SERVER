@@ -4,9 +4,11 @@ import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity
+@SQLDelete(sql = "UPDATE review_report SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
 data class ReviewReport(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
