@@ -128,5 +128,11 @@ class ProductAssembler {
         )
     }
 
+    fun toGetSearchProductsDto(productList: Page<ProductDetail>): GetSearchProducts {
+        return GetSearchProducts(
+            productList = productList
+        )
+    }
+
 
 }

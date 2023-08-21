@@ -73,4 +73,75 @@ class ProductRepositoryImpl(
         return PageImpl(result, pageable, result.size.toLong())
 
     }
+
+    // 인기순
+    override fun searchProductsByLike(target: User, keyword: String, pageable: Pageable): Page<ProductDetail> {
+        val result = queryFactory
+            .select(
+                QProductDetail(
+                    product.id,
+                    JPAExpressions.select(productImg.imgUrl).from(productImg).where(
+                        productImg.id.eq(
+                            JPAExpressions.select(productImg.id.min()).from(productImg)
+                                .where(productImg.product.eq(product).and(productImg.status.eq(ACTIVE_STATUS)))
+                        )
+                    ),
+                    product.user.id,
+                    product.user.nickname,
+                    product.name,
+                    product.price,
+                    Expressions.asBoolean(
+                        JPAExpressions.selectFrom(productLike).where(
+                            productLike.user.eq(target).and(productLike.product.eq(product))
+                                .and(productLike.status.eq(ACTIVE_STATUS))
+                        ).exists()
+                    )
+                )
+            )
+            .from(product)
+            .where(product.name.contains(keyword).and(product.status.eq(ACTIVE_STATUS)))
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .groupBy(product.id)
+            .orderBy(product.likeNum.size().desc())
+            .fetch()
+
+        return PageImpl(result, pageable, result.size.toLong())
+
+    }
+
+    // 최신순
+    override fun searchProductsByCreatedAt(target: User, keyword: String, pageable: Pageable): Page<ProductDetail> {
+        val result = queryFactory
+            .select(
+                QProductDetail(
+                    product.id,
+                    JPAExpressions.select(productImg.imgUrl).from(productImg).where(
+                        productImg.id.eq(
+                            JPAExpressions.select(productImg.id.min()).from(productImg)
+                                .where(productImg.product.eq(product).and(productImg.status.eq(ACTIVE_STATUS)))
+                        )
+                    ),
+                    product.user.id,
+                    product.user.nickname,
+                    product.name,
+                    product.price,
+                    Expressions.asBoolean(
+                        JPAExpressions.selectFrom(productLike).where(
+                            productLike.user.eq(target).and(productLike.product.eq(product))
+                                .and(productLike.status.eq(ACTIVE_STATUS))
+                        ).exists()
+                    )
+                )
+            )
+            .from(product)
+            .where(product.name.contains(keyword).and(product.status.eq(ACTIVE_STATUS)))
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
+            .groupBy(product.id)
+            .orderBy(product.createdAt.desc())
+            .fetch()
+
+        return PageImpl(result, pageable, result.size.toLong())
+    }
 }

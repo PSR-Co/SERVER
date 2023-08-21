@@ -1,5 +1,6 @@
 package com.psr.psr.product.service
 
+import com.psr.psr.global.Constant.SortType.OrderType.POPULAR
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.Constant.UserStatus.UserStatus.INACTIVE_STATUS
 import com.psr.psr.global.entity.ReportCategory
@@ -123,6 +124,15 @@ class ProductService(
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
         if(product.user != user) throw BaseException(BaseResponseCode.INVALID_PRODUCT_USER)
         productRepository.deleteById(productId)
+    }
+
+    fun searchProducts(user: User, keyword: String, sortType: String, pageable: Pageable): GetSearchProducts {
+        val productList: Page<ProductDetail> = if(sortType == POPULAR) {
+            productRepository.searchProductsByLike(user, keyword, pageable)
+        } else {
+            productRepository.searchProductsByCreatedAt(user, keyword, pageable)
+        }
+        return productAssembler.toGetSearchProductsDto(productList)
     }
 
 
