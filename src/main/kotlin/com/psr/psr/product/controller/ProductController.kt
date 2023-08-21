@@ -128,4 +128,14 @@ class ProductController(
                 return BaseResponse(productService.searchProducts(userAccount.getUser(), keyword, sortType, pageable))
         }
 
+        /**
+         * 상품 수정
+         */
+        @PatchMapping("/{productId}")
+        fun modifyProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                          @PathVariable productId: Long,
+                          @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
+                return BaseResponse(productService.modifyProduct(userAccount.getUser(), productId, request))
+        }
+
 }
