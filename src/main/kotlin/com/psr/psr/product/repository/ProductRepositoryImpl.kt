@@ -31,17 +31,16 @@ class ProductRepositoryImpl(
         return queryFactory
             .select(QPopularProductDetail(
                 product.id,
-                JPAExpressions.select(productImg.imgUrl).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product)))),
+                JPAExpressions.select(productImg.imgUrl).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product).and(productImg.status.eq(ACTIVE_STATUS))))),
                 product.name,
                 product.price,
                 ExpressionUtils.`as`(product.likeNum.size(), "numOfLike"),
-                Expressions.asBoolean(JPAExpressions.selectFrom(productLike).where(productLike.user.eq(target).and(productLike.product.eq(product)).and(productLike.status.eq("active"))).exists()),
-                ExpressionUtils.`as`(JPAExpressions.select(review.rating.avg()).from(review).where(review.product.eq(product)), "avgOfRating"),
-                ExpressionUtils.`as`(JPAExpressions.select(review.count().intValue()).from(review).where(review.product.eq(product)), "numOfReview")
+                Expressions.asBoolean(JPAExpressions.selectFrom(productLike).where(productLike.user.eq(target).and(productLike.product.eq(product)).and(productLike.status.eq(ACTIVE_STATUS))).exists()),
+                ExpressionUtils.`as`(JPAExpressions.select(review.rating.avg()).from(review).where(review.product.eq(product).and(review.status.eq(ACTIVE_STATUS))), "avgOfRating"),
+                ExpressionUtils.`as`(product.reviews.size(), "numOfReview")
                 ))
             .from(product)
-            .leftJoin(product).on(product.eq(productLike.product))
-            .where(product.category.`in`(category))
+            .where(product.category.`in`(category).and(product.status.eq(ACTIVE_STATUS)))
             .groupBy(product.id)
             .orderBy(product.likeNum.size().desc())
             .limit(5)
@@ -54,26 +53,17 @@ class ProductRepositoryImpl(
             .select(
                 QProductDetail(
                     product.id,
-                    JPAExpressions.select(productImg.imgUrl).from(productImg).where(
-                        productImg.id.eq(
-                            JPAExpressions.select(productImg.id.min()).from(productImg)
-                                .where(productImg.product.eq(product))
-                        )
-                    ),
+                    JPAExpressions.select(productImg.imgUrl).from(productImg).where(productImg.id.eq(JPAExpressions.select(productImg.id.min()).from(productImg).where(productImg.product.eq(product).and(productImg.status.eq(ACTIVE_STATUS))))),
                     product.user.id,
                     product.user.nickname,
                     product.name,
                     product.price,
-                    Expressions.asBoolean(
-                        JPAExpressions.selectFrom(productLike).where(
-                            productLike.user.eq(target).and(productLike.product.eq(product))
-                                .and(productLike.status.eq(ACTIVE_STATUS))
-                        ).exists()
+                    Expressions.asBoolean(JPAExpressions.selectFrom(productLike).where(productLike.user.eq(target).and(productLike.product.eq(product)).and(productLike.status.eq(ACTIVE_STATUS))).exists()
                     )
                 )
             )
             .from(product)
-            .where(product.category.`in`(category))
+            .where(product.category.`in`(category).and(product.status.eq(ACTIVE_STATUS)))
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .groupBy(product.id)
