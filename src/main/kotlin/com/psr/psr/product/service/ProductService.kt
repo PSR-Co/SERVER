@@ -124,4 +124,20 @@ class ProductService(
         if(product.user != user) throw BaseException(BaseResponseCode.INVALID_PRODUCT_USER)
         productRepository.deleteById(productId)
     }
+
+
+    @Transactional
+    fun modifyProduct(user: User, productId: Long, request: CreateproductReq) {
+        val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
+        if(product.user != user) throw BaseException(BaseResponseCode.INVALID_PRODUCT_USER)
+
+        product.modifyProduct(request)
+        productImgRepository.deleteByProduct(product)
+        // 이미지가 있는 경우 저장
+        if (request.imgList != null) {
+            val imgList = request.imgList.map { productAssembler.toProductImgEntity(product, it) }
+            productImgRepository.saveAll(imgList)
+        }
+    }
 }

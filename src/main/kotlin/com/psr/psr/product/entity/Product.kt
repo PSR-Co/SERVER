@@ -2,6 +2,7 @@ package com.psr.psr.product.entity
 
 import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.global.entityListener.ProductEntityListener
+import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.review.entity.Review
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
@@ -47,4 +48,12 @@ data class Product(
         @Where(clause = "status = 'active'")
         var reviews: List<Review>? = ArrayList()
 
-): BaseEntity()
+): BaseEntity() {
+        fun modifyProduct(request: CreateproductReq): Product {
+                this.name = request.name
+                this.category = Category.getCategoryByValue(request.category)
+                this.price = request.price
+                this.description = request.description
+                return this
+        }
+}

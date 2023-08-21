@@ -113,4 +113,11 @@ class ProductController(
                 return BaseResponse(productService.deleteProduct(userAccount.getUser(), productId))
         }
 
+        @PatchMapping("/{productId}")
+        fun modifyProduct(@AuthenticationPrincipal userAccount: UserAccount,
+                          @PathVariable productId: Long,
+                          @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
+                return BaseResponse(productService.modifyProduct(userAccount.getUser(), productId, request))
+        }
+
 }
