@@ -1,5 +1,6 @@
 package com.psr.psr.product.controller
 
+import com.psr.psr.global.Constant.SortType.OrderType.RECENT
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.jwt.UserAccount
@@ -107,10 +108,24 @@ class ProductController(
                 return BaseResponse(productService.likeProduct(userAccount.getUser(), productId))
         }
 
+        /**
+         * 상품 삭제
+         */
         @DeleteMapping("/{productId}")
         fun deleteProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @PathVariable productId: Long): BaseResponse<Unit> {
                 return BaseResponse(productService.deleteProduct(userAccount.getUser(), productId))
+        }
+
+        /**
+         * 상품 검색
+         */
+        @GetMapping("/search")
+        fun searchProducts(@AuthenticationPrincipal userAccount: UserAccount,
+                           @RequestParam(required = true) keyword: String,
+                           @RequestParam(required = false, defaultValue = RECENT) sortType: String,
+                           @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetSearchProducts> {
+                return BaseResponse(productService.searchProducts(userAccount.getUser(), keyword, sortType, pageable))
         }
 
 }

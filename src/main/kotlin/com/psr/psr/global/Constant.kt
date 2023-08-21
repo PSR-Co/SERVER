@@ -51,4 +51,11 @@ class Constant {
             const val CATEGORY = "category"
         }
     }
+
+    class SortType{
+        companion object OrderType{
+            const val RECENT = "최신순"
+            const val POPULAR = "인기순"
+        }
+    }
 }
