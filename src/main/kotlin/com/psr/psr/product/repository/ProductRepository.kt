@@ -14,4 +14,5 @@ interface ProductRepository: JpaRepository<Product, Long>, ProductCustom {
     fun findAllByUserAndStatusOrderByCreatedAtDesc(user: User, activeStatus: String, pageable: Pageable): Page<Product>?
     fun findByIdAndStatus(productId: Long, activeStatus: String): Product?
     fun findAllByStatus(activeStatus: String): List<Product>?
+    fun deleteByUser(user: User)
 }

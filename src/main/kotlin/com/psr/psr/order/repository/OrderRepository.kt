@@ -15,4 +15,5 @@ interface OrderRepository: JpaRepository<Order, Long> {
     fun findByProductUserAndOrderStatusAndStatus(seller: User, orderStatus: OrderStatus, status: String, pageable: Pageable): Page<Order>
     fun findByUserAndStatus(orderer: User, status: String, pageable: Pageable): Page<Order>
     fun findByProductUserAndStatus(seller: User, status: String, pageable: Pageable): Page<Order>
+    fun deleteByUser(user: User)
 }

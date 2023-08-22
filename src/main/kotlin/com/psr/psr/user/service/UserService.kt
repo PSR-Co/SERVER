@@ -35,6 +35,8 @@ import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import com.psr.psr.user.utils.SmsUtils
+import jakarta.persistence.EntityManager
+import jakarta.persistence.Persistence
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
@@ -158,8 +160,8 @@ class UserService(
     }
 
     // 회원 탈퇴
+    @Transactional
     fun signOut(user: User) {
-        // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
         userRepository.delete(user)
     }
 
