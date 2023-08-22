@@ -11,5 +11,5 @@ interface UserInterestRepository: JpaRepository<UserInterest, Long> {
 
     fun findByUserAndStatus(user: User, status: String): List<UserInterest>
     fun findByUserAndCategory(user: User, category: Category): UserInterest ?
-
+    fun deleteByUser(user: User)
 }

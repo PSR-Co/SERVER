@@ -6,9 +6,11 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 
 @Entity
+@SQLDelete(sql = "UPDATE notice SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
 data class Notice(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         var id: Long,
