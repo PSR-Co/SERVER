@@ -10,6 +10,7 @@ import org.hibernate.annotations.SQLDelete
 import org.hibernate.annotations.Where
 import org.jetbrains.annotations.NotNull
 
+@DynamicUpdate
 @DynamicInsert
 @Entity
 @EntityListeners(UserEntityListener::class)
@@ -58,7 +59,7 @@ class User(
         @Where(clause = "status = 'active'")
         var products: List<Product>? = ArrayList(),
 
-        @OneToMany(mappedBy = "user", orphanRemoval = true)
+        @OneToMany(mappedBy = "user")
         @Where(clause = "status = 'active'")
         var interests: List<UserInterest>? = ArrayList()
 
