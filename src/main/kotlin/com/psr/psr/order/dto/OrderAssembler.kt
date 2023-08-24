@@ -23,7 +23,7 @@ class OrderAssembler {
     fun toOrderResDTO(order: Order, isSeller: Boolean): OrderRes {
         return OrderRes(
             isSeller = isSeller,
-            status = order.orderStatus.statusName,
+            status = order.orderStatus.value,
             orderUserId = order.user.id!!,
             orderDate = order.createdAt.format(DateTimeFormatter.ISO_DATE),
             productId = order.product.id!!,

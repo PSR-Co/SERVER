@@ -55,6 +55,8 @@ class User(
         @NotNull
         var notification: Boolean,
 
+        var deviceToken: String? = null,
+
         @OneToMany(mappedBy = "user")
         @Where(clause = "status = 'active'")
         var products: List<Product>? = ArrayList(),

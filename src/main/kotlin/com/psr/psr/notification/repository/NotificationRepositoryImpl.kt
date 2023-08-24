@@ -2,7 +2,7 @@ package com.psr.psr.notification.repository
 
 import com.psr.psr.notification.dto.NotiList
 import com.psr.psr.notification.dto.NotificationListRes
-import com.psr.psr.notification.entity.QNotification.notification
+import com.psr.psr.notification.entity.QPushNotification.pushNotification
 import com.psr.psr.user.entity.User
 import com.querydsl.core.group.GroupBy.groupBy
 import com.querydsl.core.group.GroupBy.list
@@ -23,19 +23,19 @@ class NotificationRepositoryImpl(
     override fun findNotificationByUserGroupByDate(user: User, pageable: Pageable): Page<NotificationListRes> {
         val formattedDate: StringTemplate = Expressions.stringTemplate(
             "DATE_FORMAT({0}, {1})",
-            notification.createdAt,
+            pushNotification.createdAt,
             ConstantImpl.create("%Y-%m-%d")
         )
 
         val result = queryFactory
-            .selectFrom(notification)
-            .where(notification.user.eq(user))
-            .orderBy(notification.id.desc())
+            .selectFrom(pushNotification)
+            .where(pushNotification.user.eq(user))
+            .orderBy(pushNotification.id.desc())
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .transform(groupBy(formattedDate)
                 .list(Projections.constructor(NotificationListRes::class.java, formattedDate,
-                    list(Projections.constructor(NotiList::class.java, notification.title, notification.content)))))
+                    list(Projections.constructor(NotiList::class.java, pushNotification.title, pushNotification.content)))))
         return PageImpl(result, pageable, result.size.toLong())
     }
 

@@ -43,6 +43,7 @@ data class SignUpReq (
     val marketing: Boolean,
     @field:NotNull
     val notification: Boolean,
+    val deviceToken: String? = null,
     @field:NotEmpty
     val interestList: List<UserInterestDto>,
     val entreInfo: UserEidReq?= null

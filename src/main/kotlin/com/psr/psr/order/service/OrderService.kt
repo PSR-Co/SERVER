@@ -49,7 +49,7 @@ class OrderService(
 
     // 요청 목록 조회(요청 상태별)
     fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListRes> {
-        val orderStatus = OrderStatus.findByName(status)
+        val orderStatus = OrderStatus.findByValue(status)
         val orderList: Page<Order> =
             if (type == SELL)
                 orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
@@ -65,7 +65,7 @@ class OrderService(
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
         var orderStatus: OrderStatus? = null
-        if (status != null) orderStatus = OrderStatus.findByName(status)
+        if (status != null) orderStatus = OrderStatus.findByValue(status)
 
         order.editOrder(orderReq, orderStatus)
         orderRepository.save(order)

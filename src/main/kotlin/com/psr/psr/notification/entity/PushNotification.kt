@@ -6,9 +6,9 @@ import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
-data class Notification(
+data class PushNotification(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "user_id")
@@ -19,6 +19,12 @@ data class Notification(
     var title: String,
 
     @NotNull
-    var content: String
+    var content: String,
+
+    // 알림의 주체인 요청, 채팅 등의 ID
+    var relatedId: Long,
+
+    @NotNull
+    var type: NotificationType
 
 ) : BaseEntity()
