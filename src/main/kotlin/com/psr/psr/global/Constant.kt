@@ -58,4 +58,11 @@ class Constant {
             const val POPULAR = "인기순"
         }
     }
+
+    class NotiSentence{
+        companion object NotiSentence{
+            const val NEW_ORDER_SENTENCE = "님의 요청을 확인해주세요!"
+            const val TWO_MONTH_ORDER_SENTENCE = "님의 요청 상태를 확인해주세요!"
+        }
+    }
 }
