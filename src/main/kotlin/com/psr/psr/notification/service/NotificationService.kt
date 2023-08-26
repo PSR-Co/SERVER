@@ -44,7 +44,7 @@ class NotificationService(
             NotificationType.NEW_ORDER
         ))
 
-        if (orderReceiver.deviceToken != null) {
+        if (isPushNotiAvailable(orderReceiver)) {
             val message: FcmMessage = notiAssembler.makeMessage(
                 orderReceiver.deviceToken!!,
                 productName,
@@ -67,7 +67,7 @@ class NotificationService(
             NotificationType.CHANGED_ORDER_STATUS
         ))
 
-        if (orderer.deviceToken != null) {
+        if (isPushNotiAvailable(orderer)) {
             val message: FcmMessage = notiAssembler.makeMessage(
                 orderer.deviceToken!!,
                 productName,
@@ -90,7 +90,7 @@ class NotificationService(
             NotificationType.TWO_MONTH_ORDER
         ))
 
-        if (orderer.deviceToken != null) {
+        if (isPushNotiAvailable(orderer)) {
             val message: FcmMessage = notiAssembler.makeMessage(
                 orderer.deviceToken!!,
                 productName,
@@ -100,6 +100,11 @@ class NotificationService(
             )
             sendMessage(objectMapper.writeValueAsString(message))
         }
+    }
+
+    // 알림 수신 상태 체크
+    fun isPushNotiAvailable(user: User): Boolean {
+        return user.deviceToken != null && user.notification
     }
 
     // firebase accessToken 발급
