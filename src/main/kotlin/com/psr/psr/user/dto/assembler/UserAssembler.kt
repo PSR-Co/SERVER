@@ -37,7 +37,8 @@ class UserAssembler {
             marketing = signUpReq.marketing,
             notification = signUpReq.notification,
             name = signUpReq.name,
-            nickname = signUpReq.nickname)
+            nickname = signUpReq.nickname,
+            deviceToken = signUpReq.deviceToken)
     }
 
     fun toInterestListEntity(user: User, signUpReq: SignUpReq): List<UserInterest> {

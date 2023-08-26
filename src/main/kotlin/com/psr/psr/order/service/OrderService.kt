@@ -4,6 +4,7 @@ import com.psr.psr.global.Constant.OrderType.OrderType.SELL
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
+import com.psr.psr.notification.service.NotificationService
 import com.psr.psr.order.dto.*
 import com.psr.psr.order.entity.Order
 import com.psr.psr.order.entity.OrderStatus
@@ -19,13 +20,15 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val orderAssembler: OrderAssembler
+    private val orderAssembler: OrderAssembler,
+    private val notificationService: NotificationService
 ) {
     // 요청하기
     fun makeOrder(user: User, orderReq: OrderReq) {
         val product: Product = orderReq.productId?.let { productRepository.findByIdAndStatus(it, ACTIVE_STATUS) }
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
-        orderRepository.save(orderAssembler.toEntity(user, orderReq, product))
+        val order = orderRepository.save(orderAssembler.toEntity(user, orderReq, product))
+        notificationService.sendNewOrderNoti(order.product.name, order.product.user, order.ordererName, order.id!!)
     }
 
     // 요청 상세 조회
@@ -49,7 +52,7 @@ class OrderService(
 
     // 요청 목록 조회(요청 상태별)
     fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListRes> {
-        val orderStatus = OrderStatus.findByName(status)
+        val orderStatus = OrderStatus.findByValue(status)
         val orderList: Page<Order> =
             if (type == SELL)
                 orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
@@ -65,9 +68,12 @@ class OrderService(
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
         var orderStatus: OrderStatus? = null
-        if (status != null) orderStatus = OrderStatus.findByName(status)
+        if (status != null) orderStatus = OrderStatus.findByValue(status)
 
         order.editOrder(orderReq, orderStatus)
-        orderRepository.save(order)
+        val saveOrder = orderRepository.save(order)
+
+        if (status != null)
+            notificationService.sendChangeOrderStatusNoti(order.product.name, order.product.user, saveOrder.orderStatus, order.id!!)
     }
 }
