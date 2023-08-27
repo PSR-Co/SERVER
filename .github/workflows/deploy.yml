@@ -26,16 +26,19 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      
+
       - name: Set up JDK 17
         uses: actions/setup-java@v1
         with:
           java-version: 17
 
-
-      - run: touch ./src/main/resources/firebase-service-key.json
-      - run: echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/firebase-service-key.json
-      - run: cat ./src/main/resources/firebase-service-key.json
+      - name: Create Firebase json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "firebase-service-key.json"
+          json: ${{ secrets.FIREBASE_KEY }}
+          dir: "src/main/resources"
 
       - run: touch ./src/main/resources/application-secret.yaml
       - run: echo "${{ secrets.DB_SECRET }}" > ./src/main/resources/application-secret.yaml
@@ -47,18 +50,18 @@ jobs:
 
       - name: Build and Test
         run: ./gradlew build -x test
-        
+
       - name: Make zip file
         run: zip -qq -r ./$GITHUB_SHA.zip .
         shell: bash
-        
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_PRIVATE_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION}}
-      
+
       - name: Upload to S3
         run: aws s3 cp --region ${{ secrets.AWS_REGION}} ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
 
