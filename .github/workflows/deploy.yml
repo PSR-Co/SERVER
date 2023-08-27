@@ -34,7 +34,7 @@ jobs:
 
 
       - run: touch ./src/main/resources/firebase-service-key.json
-      - run: echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/firebase-service-key.json.yaml
+      - run: echo "${{ secrets.FIREBASE_KEY }}" > ./src/main/resources/firebase-service-key.json
       - run: cat ./src/main/resources/firebase-service-key.json
 
       - run: touch ./src/main/resources/application-secret.yaml
