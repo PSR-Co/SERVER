@@ -119,6 +119,7 @@ class UserService(
     fun login(loginReq: LoginReq) : TokenDto{
         val user = userRepository.findByEmail(loginReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
+        if (loginReq.deviceToken != null) user.deviceToken = loginReq.deviceToken
         return createToken(user, loginReq.password)
     }
 
