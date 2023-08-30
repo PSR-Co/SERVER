@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 interface OrderRepository: JpaRepository<Order, Long> {
@@ -16,4 +17,5 @@ interface OrderRepository: JpaRepository<Order, Long> {
     fun findByUserAndStatus(orderer: User, status: String, pageable: Pageable): Page<Order>
     fun findByProductUserAndStatus(seller: User, status: String, pageable: Pageable): Page<Order>
     fun deleteByUser(user: User)
+    fun findByCreatedAt_DateAndOrderStatusAndStatus(date: LocalDate, orderStatus: OrderStatus, status: String): List<Order>
 }

@@ -80,19 +80,19 @@ class NotificationService(
     }
 
     // 2달 뒤 요청상태 입력 요망 알림
-    fun send2MonthOrderNoti(productName: String, orderer: User, ordererName: String, orderId: Long) {
+    fun send2MonthOrderNoti(productName: String, orderReceiver: User, ordererName: String, orderId: Long) {
         val messageBody = ordererName + TWO_MONTH_ORDER_SENTENCE
         notificationRepository.save(notiAssembler.toEntity(
-            orderer,
+            orderReceiver,
             productName,
             messageBody,
             orderId,
             NotificationType.TWO_MONTH_ORDER
         ))
 
-        if (isPushNotiAvailable(orderer)) {
+        if (isPushNotiAvailable(orderReceiver)) {
             val message: FcmMessage = notiAssembler.makeMessage(
-                orderer.deviceToken!!,
+                orderReceiver.deviceToken!!,
                 productName,
                 messageBody,
                 orderId,

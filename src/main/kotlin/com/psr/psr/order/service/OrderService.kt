@@ -5,7 +5,10 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.notification.service.NotificationService
-import com.psr.psr.order.dto.*
+import com.psr.psr.order.dto.OrderAssembler
+import com.psr.psr.order.dto.OrderListRes
+import com.psr.psr.order.dto.OrderReq
+import com.psr.psr.order.dto.OrderRes
 import com.psr.psr.order.entity.Order
 import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.order.repository.OrderRepository
@@ -14,7 +17,9 @@ import com.psr.psr.product.repository.ProductRepository
 import com.psr.psr.user.entity.User
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class OrderService(
@@ -75,5 +80,39 @@ class OrderService(
 
         if (status != null)
             notificationService.sendChangeOrderStatusNoti(order.product.name, order.product.user, saveOrder.orderStatus, order.id!!)
+    }
+
+    // 2달 뒤 요청상태 입력 요망 알림(오후 1시마다 실행)
+    @Scheduled(cron = "0 0 13 * * ?", zone = "Asia/Seoul")
+    fun notify2MonthOrders() {
+        // 진행 중인 요청
+        orderRepository.findByCreatedAt_DateAndOrderStatusAndStatus(
+            LocalDate.now(),
+            OrderStatus.PROGRESSING,
+            ACTIVE_STATUS
+        )
+            .forEach {
+                notificationService.send2MonthOrderNoti(
+                    it.product.name,
+                    it.product.user,
+                    it.ordererName,
+                    it.id!!
+                )
+            }
+
+        // 대기중인 요청
+        orderRepository.findByCreatedAt_DateAndOrderStatusAndStatus(
+            LocalDate.now(),
+            OrderStatus.ORDER_WAITING,
+            ACTIVE_STATUS
+        )
+            .forEach {
+                notificationService.send2MonthOrderNoti(
+                    it.product.name,
+                    it.product.user,
+                    it.ordererName,
+                    it.id!!
+                )
+            }
     }
 }
