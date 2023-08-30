@@ -102,6 +102,20 @@ class NotificationService(
         }
     }
 
+    // 채팅 알림
+    fun sendChatNoti(chatReceiver: User, senderNickname: String, chatMessage: String, chatRoomId: Long) {
+        if (isPushNotiAvailable(chatReceiver)) {
+            val message: FcmMessage = notiAssembler.makeMessage(
+                chatReceiver.deviceToken!!,
+                senderNickname,
+                chatMessage,
+                chatRoomId,
+                NotificationType.CHAT.name
+            )
+            sendMessage(objectMapper.writeValueAsString(message))
+        }
+    }
+
     // 알림 수신 상태 체크
     fun isPushNotiAvailable(user: User): Boolean {
         return user.deviceToken != null && user.notification
