@@ -86,11 +86,7 @@ class OrderService(
     @Scheduled(cron = "0 0 13 * * ?", zone = "Asia/Seoul")
     fun notify2MonthOrders() {
         // 진행 중인 요청
-        orderRepository.findByCreatedAt_DateAndOrderStatusAndStatus(
-            LocalDate.now(),
-            OrderStatus.PROGRESSING,
-            ACTIVE_STATUS
-        )
+        orderRepository.find2MonthAgoOrders(OrderStatus.PROGRESSING)
             .forEach {
                 notificationService.send2MonthOrderNoti(
                     it.product.name,
@@ -101,11 +97,7 @@ class OrderService(
             }
 
         // 대기중인 요청
-        orderRepository.findByCreatedAt_DateAndOrderStatusAndStatus(
-            LocalDate.now(),
-            OrderStatus.ORDER_WAITING,
-            ACTIVE_STATUS
-        )
+        orderRepository.find2MonthAgoOrders(OrderStatus.ORDER_WAITING)
             .forEach {
                 notificationService.send2MonthOrderNoti(
                     it.product.name,
