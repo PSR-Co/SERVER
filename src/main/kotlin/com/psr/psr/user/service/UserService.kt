@@ -17,7 +17,6 @@ import com.psr.psr.global.Constant.UserPhone.UserPhone.TIMESTAMP_HEADER
 import com.psr.psr.global.Constant.UserPhone.UserPhone.UTF_8
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
-import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
@@ -35,8 +34,6 @@ import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import com.psr.psr.user.utils.SmsUtils
-import jakarta.persistence.EntityManager
-import jakarta.persistence.Persistence
 import jakarta.servlet.http.HttpServletRequest
 import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
@@ -47,11 +44,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.util.ObjectUtils
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.util.DefaultUriBuilderFactory
-import java.time.Duration
-import java.util.stream.Collectors
 import javax.crypto.Mac
 
 import javax.crypto.spec.SecretKeySpec
@@ -90,9 +84,9 @@ class UserService(
         if(listSize < 1 || listSize > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
 
         // 이미 가지고 있는 이메일, 닉네임, 휴대폰 번호인지 확인
-        if(userRepository.existsByEmail(signUpReq.email)) throw BaseException(EXISTS_EMAIL)
-        if(userRepository.existsByPhone(signUpReq.phone)) throw BaseException(EXISTS_PHONE)
-        if(userRepository.existsByNickname(signUpReq.nickname)) throw BaseException(EXISTS_NICKNAME)
+        if(userRepository.existsByEmailAndStatus(signUpReq.email, ACTIVE_STATUS)) throw BaseException(EXISTS_EMAIL)
+        if(userRepository.existsByPhoneAndStatus(signUpReq.phone, ACTIVE_STATUS)) throw BaseException(EXISTS_PHONE)
+        if(userRepository.existsByNicknameAndStatus(signUpReq.nickname, ACTIVE_STATUS)) throw BaseException(EXISTS_NICKNAME)
 
 
         // 암호화되지 않은 password 값 저장
@@ -117,7 +111,7 @@ class UserService(
     // 로그인
     @Transactional
     fun login(loginReq: LoginReq) : TokenDto{
-        val user = userRepository.findByEmail(loginReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
+        val user = userRepository.findByEmailAndStatus(loginReq.email, ACTIVE_STATUS).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
         if (loginReq.deviceToken != null) user.deviceToken = loginReq.deviceToken
         return createToken(user, loginReq.password)
@@ -125,7 +119,7 @@ class UserService(
 
     // 닉네임 중복 체크
     fun checkDuplicateNickname(nickname: String): Boolean {
-        return userRepository.existsByNickname(nickname)
+        return userRepository.existsByNicknameAndStatus(nickname, ACTIVE_STATUS)
     }
 
     // token 생성 extract method
@@ -144,7 +138,7 @@ class UserService(
     @Transactional
     fun postProfile(user: User, profileReq: ProfileReq) {
         if(user.nickname != profileReq.nickname) {
-            if(userRepository.existsByNickname(profileReq.nickname)) throw BaseException(EXISTS_NICKNAME)
+            if(userRepository.existsByNicknameAndStatus(profileReq.nickname, ACTIVE_STATUS)) throw BaseException(EXISTS_NICKNAME)
             user.nickname = profileReq.nickname
         }
         if(user.imgUrl != profileReq.profileImgUrl) user.imgUrl = profileReq.profileImgUrl
@@ -234,7 +228,7 @@ class UserService(
     // 비밀번호 재설정
     @Transactional
     fun resetPassword(passwordReq: ResetPasswordReq) {
-        val user = userRepository.findByEmail(passwordReq.email).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
+        val user = userRepository.findByEmailAndStatus(passwordReq.email, ACTIVE_STATUS).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(user.phone != passwordReq.phone) throw BaseException(INVALID_PHONE)
         if(passwordEncoder.matches(passwordReq.password, user.password)) throw BaseException(DUPLICATE_PASSWORD)
 
