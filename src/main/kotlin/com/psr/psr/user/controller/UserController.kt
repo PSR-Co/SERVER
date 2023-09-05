@@ -185,9 +185,8 @@ class UserController(
         /**
          * 마이페이지 알림 수신 여부
          */
-        @PostMapping("/noti")
-        fun postNotiStatus(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated postNotiReq: PostNotiReq): BaseResponse<Any>{
-                userService.postNotiStatus(userAccount.getUser(), postNotiReq)
-                return BaseResponse(BaseResponseCode.SUCCESS)
+        @PostMapping("/notification")
+        fun postNotiStatus(@AuthenticationPrincipal userAccount: UserAccount): BaseResponse<Any>{
+                return BaseResponse(userService.postNotiStatus(userAccount.getUser()))
         }
 }

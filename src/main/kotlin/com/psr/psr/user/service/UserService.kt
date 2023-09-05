@@ -26,6 +26,7 @@ import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.dto.request.*
 import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.PostNotiRes
 import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.Type
@@ -320,9 +321,10 @@ class UserService(
 
     // 마이페이지 알림 수신 여부
     @Transactional
-    fun postNotiStatus(user: User, postNotiReq: PostNotiReq){
-        user.notification = postNotiReq.notification
+    fun postNotiStatus(user: User) : PostNotiRes{
+        user.notification = !user.notification
         userRepository.save(user)
+        return PostNotiRes.toDto(user.notification)
     }
 
     // signature
