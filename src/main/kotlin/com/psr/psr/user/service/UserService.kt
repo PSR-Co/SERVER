@@ -318,6 +318,13 @@ class UserService(
         userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
     }
 
+    // 마이페이지 알림 수신 여부
+    @Transactional
+    fun postNotiStatus(user: User, postNotiReq: PostNotiReq){
+        user.notification = postNotiReq.notification
+        userRepository.save(user)
+    }
+
     // signature
     private fun makeSignature(time: Long): String {
         val message = StringBuilder()
