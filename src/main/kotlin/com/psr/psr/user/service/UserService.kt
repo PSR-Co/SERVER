@@ -26,6 +26,7 @@ import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.dto.request.*
 import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.dto.response.MyPageInfoRes
+import com.psr.psr.user.dto.response.PostNotiRes
 import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.Type
@@ -316,6 +317,14 @@ class UserService(
         // 인증번호 확인
         checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
         userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+    }
+
+    // 마이페이지 알림 수신 여부
+    @Transactional
+    fun postNotiStatus(user: User) : PostNotiRes{
+        user.notification = !user.notification
+        userRepository.save(user)
+        return PostNotiRes.toDto(user.notification)
     }
 
     // signature

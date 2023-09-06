@@ -179,6 +179,14 @@ class UserController(
         fun findPWSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<Any>{
                 if(!StringUtils.hasText(findIdPwReq.email)) throw BaseException(BaseResponseCode.NOT_EMPTY_EMAIL)
                 userService.findPWSearch(findIdPwReq)
-                return BaseResponse(BaseResponseCode.SUCCESS);
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+        /**
+         * 마이페이지 알림 수신 여부
+         */
+        @PostMapping("/notification")
+        fun postNotiStatus(@AuthenticationPrincipal userAccount: UserAccount): BaseResponse<Any>{
+                return BaseResponse(userService.postNotiStatus(userAccount.getUser()))
         }
 }
