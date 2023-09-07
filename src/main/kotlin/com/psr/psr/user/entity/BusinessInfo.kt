@@ -1,10 +1,12 @@
 package com.psr.psr.user.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.user.dto.request.SignUpReq
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
 import org.jetbrains.annotations.NotNull
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Entity
 @SQLDelete(sql = "UPDATE business_info SET status = 'inactive', updated_at = current_timestamp WHERE id = ?")
@@ -27,4 +29,16 @@ data class BusinessInfo(
 
         @NotNull
         var date: LocalDate
-): BaseEntity()
+): BaseEntity(){
+        companion object{
+                fun toBusinessEntity(user: User, signUpReq: SignUpReq): BusinessInfo {
+                        val format = DateTimeFormatter.ofPattern("yyyyMMdd")
+                        return BusinessInfo(user = user,
+                                companyName = signUpReq.entreInfo!!.companyName,
+                                ownerName = signUpReq.entreInfo.ownerName,
+                                number = signUpReq.entreInfo.number,
+                                date = LocalDate.parse(signUpReq.entreInfo.companyDate, format)
+                        )
+                }
+        }
+}
