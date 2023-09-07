@@ -21,7 +21,6 @@ import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
-import com.psr.psr.user.dto.assembler.UserAssembler
 import com.psr.psr.user.dto.eidReq.BusinessListReq
 import com.psr.psr.user.dto.eidReq.BusinessListRes
 import com.psr.psr.user.dto.phoneReq.SMSReq
@@ -72,8 +71,6 @@ class UserService(
     private val serviceId: String,
     @Value("\${naver.cloud.sms.send-phone}")
     private val sendPhone: String,
-    private val userAssembler: UserAssembler
-
 ) {
     // 회원가입
     @Transactional
