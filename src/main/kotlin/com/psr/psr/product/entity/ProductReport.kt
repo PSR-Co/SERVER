@@ -23,4 +23,14 @@ data class ProductReport(
         @Enumerated(EnumType.STRING)
         var category: ReportCategory
 
-): BaseEntity()
+): BaseEntity() {
+    companion object {
+        fun toEntity(product: Product, user: User, category: ReportCategory): ProductReport {
+            return ProductReport(
+                product = product,
+                user = user,
+                category = category
+            )
+        }
+    }
+}

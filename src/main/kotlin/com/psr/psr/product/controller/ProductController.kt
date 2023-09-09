@@ -6,9 +6,6 @@ import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.request.ReportProductReq
-import com.psr.psr.product.dto.response.GetProductDetailRes
-import com.psr.psr.product.dto.response.GetProductsByUserRes
-import com.psr.psr.product.dto.response.GetProductsRes
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.service.ProductService
 import jakarta.validation.Valid

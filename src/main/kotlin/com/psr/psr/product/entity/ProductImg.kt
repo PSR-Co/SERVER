@@ -1,12 +1,7 @@
 package com.psr.psr.product.entity
 
 import com.psr.psr.global.entity.BaseEntity
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.ManyToOne
-import org.hibernate.annotations.SQLDelete
+import jakarta.persistence.*
 import org.jetbrains.annotations.NotNull
 
 @Entity
@@ -20,4 +15,13 @@ data class ProductImg(
     @NotNull
     var imgUrl: String
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(product: Product, imgUrl: String): ProductImg {
+            return ProductImg(
+                product = product,
+                imgUrl = imgUrl
+            )
+        }
+    }
+}

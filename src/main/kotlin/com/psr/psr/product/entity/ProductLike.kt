@@ -19,4 +19,13 @@ data class ProductLike(
     @JoinColumn(nullable = false, name = "user_id")
     var user: User
 
-): BaseEntity()
+): BaseEntity() {
+    companion object {
+        fun toEntity(product: Product, user: User): ProductLike {
+            return ProductLike(
+                product = product,
+                user = user
+            )
+        }
+    }
+}
