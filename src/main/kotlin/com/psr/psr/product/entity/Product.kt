@@ -56,4 +56,16 @@ data class Product(
                 this.description = request.description
                 return this
         }
+
+    companion object {
+            fun toEntity(user: User, request: CreateproductReq): Product {
+                    return Product(
+                            user = user,
+                            name = request.name,
+                            category = Category.getCategoryByValue(request.category),
+                            price = request.price,
+                            description = request.description
+                    )
+            }
+    }
 }

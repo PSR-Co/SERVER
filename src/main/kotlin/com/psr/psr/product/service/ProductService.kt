@@ -10,6 +10,9 @@ import com.psr.psr.product.dto.assembler.ProductAssembler
 import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
+import com.psr.psr.product.entity.ProductImg
+import com.psr.psr.product.entity.ProductLike
+import com.psr.psr.product.entity.ProductReport
 import com.psr.psr.product.repository.ProductImgRepository
 import com.psr.psr.product.repository.ProductLikeRepository
 import com.psr.psr.product.repository.ProductReportRepository
@@ -52,14 +55,14 @@ class ProductService(
 
     fun getMyProducts(user: User, pageable: Pageable): GetMyProductsRes {
         val myProductList: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
-        return productAssembler.toGetMyProductsDto(myProductList)
+        return GetMyProductsRes.toDto(myProductList)
     }
 
     fun getProductsByUser(userId: Long, pageable: Pageable): GetProductsByUserRes {
         val user: User = userRepository.findByIdAndStatus(userId, ACTIVE_STATUS) ?: throw BaseException(BaseResponseCode.NOT_FOUND_USER)
         val products: Page<Product>? = productRepository.findAllByUserAndStatusOrderByCreatedAtDesc(user, ACTIVE_STATUS, pageable)
 
-        return productAssembler.toGetProductsByUserResDto(user, products)
+        return GetProductsByUserRes.toDto(user, products)
     }
 
     fun getProductDetail(user: User, productId: Long): GetProductDetailRes {
@@ -69,7 +72,7 @@ class ProductService(
         val numOfLikes = productLikeRepository.countByProductAndStatus(product, ACTIVE_STATUS)
         val isLike = productLikeRepository.existsByProductAndUserAndStatus(product, user, ACTIVE_STATUS)
 
-        return productAssembler.toGetProductDetailResDto(isOwner, product, imgList, numOfLikes, isLike)
+        return GetProductDetailRes.toDto(isOwner, product, imgList, numOfLikes, isLike)
     }
 
     fun reportProduct(user: User, productId: Long, category: ReportCategory) {
@@ -78,27 +81,27 @@ class ProductService(
         if (productReportRepository.findByProductAndUserAndStatus(product, user, ACTIVE_STATUS) != null)
             throw BaseException(BaseResponseCode.REPORT_ALREADY_COMPLETE)
 
-        productReportRepository.save(productAssembler.toReportEntity(product, user, category))
+        productReportRepository.save(ProductReport.toEntity(product, user, category))
     }
 
     fun getLikeProducts(user: User, pageable: Pageable): GetLikeProductsRes {
         val productList: Page<Product>? = productLikeRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)?.map { it.product }
-        return productAssembler.toGetLikeProductsResDto(productList)
+        return GetLikeProductsRes.toDto(productList)
     }
 
     fun getHomePage(): GetHomePageRes {
         // MANAGER 상품
         val mainTopProductList = userRepository.findByTypeAndStatus(Type.MANAGER, ACTIVE_STATUS)!!.products
         val productList = productRepository.findAllByStatus(ACTIVE_STATUS)
-        return productAssembler.toGetHomePageResDto(mainTopProductList, productList)
+        return GetHomePageRes.toDto(mainTopProductList, productList)
     }
 
     @Transactional
     fun createProduct(user: User, request: CreateproductReq) {
-        val product = productRepository.save(productAssembler.toProductEntity(user, request))
+        val product = productRepository.save(Product.toEntity(user, request))
         // 이미지 있는 경우만 저장
         if(request.imgList != null)
-            request.imgList.map { imgUrl: String -> productImgRepository.save(productAssembler.toProductImgEntity(product, imgUrl)) }
+            request.imgList.map { imgUrl: String -> productImgRepository.save(ProductImg.toEntity(product, imgUrl)) }
     }
 
     fun likeProduct(user: User, productId: Long) {
@@ -108,7 +111,7 @@ class ProductService(
 
         // 없는 경우 새로 생성
         if (productLike == null) {
-            val newProductLike = productAssembler.toProductLikeEntity(product, user)
+            val newProductLike = ProductLike.toEntity(product, user)
             productLikeRepository.save(newProductLike)
         } else {
             val status = productLike.status
@@ -132,7 +135,7 @@ class ProductService(
         } else {
             productRepository.searchProductsByCreatedAt(user, keyword, pageable)
         }
-        return productAssembler.toGetSearchProductsDto(productList)
+        return GetSearchProducts.toDto(productList)
     }
 
 
@@ -146,7 +149,7 @@ class ProductService(
         productImgRepository.deleteByProduct(product)
         // 이미지가 있는 경우 저장
         if (request.imgList != null) {
-            val imgList = request.imgList.map { productAssembler.toProductImgEntity(product, it) }
+            val imgList = request.imgList.map { ProductImg.toEntity(product, it) }
             productImgRepository.saveAll(imgList)
         }
     }

@@ -20,4 +20,13 @@ data class ProductImg(
     @NotNull
     var imgUrl: String
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(product: Product, imgUrl: String): ProductImg {
+            return ProductImg(
+                product = product,
+                imgUrl = imgUrl
+            )
+        }
+    }
+}
