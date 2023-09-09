@@ -3,6 +3,7 @@ package com.psr.psr.user.entity
 import com.psr.psr.global.entity.BaseEntity
 import com.psr.psr.global.entityListener.UserEntityListener
 import com.psr.psr.product.entity.Product
+import com.psr.psr.user.dto.request.SignUpReq
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicInsert
 import org.hibernate.annotations.DynamicUpdate
@@ -65,4 +66,20 @@ class User(
         @Where(clause = "status = 'active'")
         var interests: List<UserInterest>? = ArrayList()
 
-): BaseEntity()
+): BaseEntity(){
+        companion object{
+                fun toEntity(signUpReq: SignUpReq): User {
+                        return User(email = signUpReq.email,
+                                password = signUpReq.password,
+                                type = Type.getTypeByValue(signUpReq.type),
+                                phone = signUpReq.phone,
+                                imgUrl = signUpReq.imgUrl,
+                                provider = Provider.LOCAL,
+                                marketing = signUpReq.marketing,
+                                notification = signUpReq.notification,
+                                name = signUpReq.name,
+                                nickname = signUpReq.nickname,
+                                deviceToken = signUpReq.deviceToken)
+                }
+        }
+}

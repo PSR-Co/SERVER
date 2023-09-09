@@ -21,21 +21,21 @@ import com.psr.psr.global.exception.BaseResponseCode.*
 import com.psr.psr.global.jwt.dto.TokenDto
 import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.dto.*
-import com.psr.psr.user.dto.assembler.UserAssembler
+import com.psr.psr.user.dto.eidReq.BusinessListReq
 import com.psr.psr.user.dto.eidReq.BusinessListRes
+import com.psr.psr.user.dto.phoneReq.SMSReq
 import com.psr.psr.user.dto.request.*
 import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.dto.response.MyPageInfoRes
 import com.psr.psr.user.dto.response.PostNotiRes
 import com.psr.psr.user.dto.response.ProfileRes
-import com.psr.psr.user.entity.Category
-import com.psr.psr.user.entity.Type
-import com.psr.psr.user.entity.User
+import com.psr.psr.user.entity.*
 import com.psr.psr.user.repository.BusinessInfoRepository
 import com.psr.psr.user.repository.UserInterestRepository
 import com.psr.psr.user.repository.UserRepository
 import com.psr.psr.user.utils.SmsUtils
 import jakarta.servlet.http.HttpServletRequest
+import org.apache.commons.lang3.RandomStringUtils
 import org.apache.tomcat.util.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -71,8 +71,6 @@ class UserService(
     private val serviceId: String,
     @Value("\${naver.cloud.sms.send-phone}")
     private val sendPhone: String,
-    private val userAssembler: UserAssembler
-
 ) {
     // 회원가입
     @Transactional
@@ -96,13 +94,13 @@ class UserService(
         val encodedPassword = passwordEncoder.encode(signUpReq.password)
         signUpReq.password = encodedPassword
         // user 저장
-        val user = userRepository.save(userAssembler.toEntity(signUpReq))
-        userInterestRepository.saveAll(userAssembler.toInterestListEntity(user, signUpReq))
+        val user = userRepository.save(User.toEntity(signUpReq))
+        userInterestRepository.saveAll(UserInterest.toInterestListEntity(user, signUpReq))
 
         // 사업자인경우
         if (user.type == Type.ENTREPRENEUR){
             if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
-            businessInfoRepository.save(userAssembler.toBusinessEntity(user, signUpReq))
+            businessInfoRepository.save(BusinessInfo.toBusinessEntity(user, signUpReq))
         }
 
         // token 생성
@@ -132,7 +130,7 @@ class UserService(
 
     // 사용자 프로필 불러오기
     fun getProfile(user: User): ProfileRes {
-        return userAssembler.toProfileRes(user)
+        return ProfileRes.toProfileRes(user)
     }
 
     // 사용자 프로필 변경
@@ -171,7 +169,7 @@ class UserService(
     // 공공데이터포털에서 사용자 불러오기
     private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
         val url = EID_URL + serviceKey
-        val businesses = userAssembler.toUserEidList(userEidReq)
+        val businesses = BusinessListReq.toUserEidList(userEidReq)
         val json = ObjectMapper().writeValueAsString(businesses)
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
@@ -193,13 +191,13 @@ class UserService(
 
     // 마이페이지 정보 불러오기
     fun getMyPageInfo(user: User): MyPageInfoRes {
-        return userAssembler.toMyPageInfoRes(user)
+        return MyPageInfoRes.toMyPageInfoRes(user)
     }
 
     // 토큰 재발급
     fun reissueToken(tokenDto: TokenDto): TokenDto {
         // bearer String replace blank
-        userAssembler.toTokenDto(tokenDto)
+        TokenDto.toTokenDto(tokenDto)
         // refresh token 검증
         jwtUtils.validateToken(tokenDto.refreshToken)
         // accessToken 내 사용자 정보
@@ -251,7 +249,7 @@ class UserService(
             .forEach { interest ->
                 if(!categoryLists.contains(interest)) {
                     // 과거에 삭제했던 경우 / 새롭게 생성하는 경우
-                    val interestE = userInterestRepository.findByUserAndCategory(user, interest)?: userAssembler.toInterestEntity(user, interest)
+                    val interestE = userInterestRepository.findByUserAndCategory(user, interest)?: UserInterest.toInterestEntity(user, interest)
                     interestE.status = ACTIVE_STATUS
                     userInterestRepository.save(interestE)
                 }
@@ -267,7 +265,7 @@ class UserService(
 
     // 관심 목록 조회
     fun getWatchList(user: User) :UserInterestListDto {
-        return userAssembler.toUserInterestListDto(user.interests)
+        return UserInterestListDto.toUserInterestListDto(user.interests)
     }
 
     // 유효 휴대폰 검증
@@ -277,7 +275,7 @@ class UserService(
         val url = FIRST_URL + MIDDLE_URL + serviceId + FINAL_URL
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY
-        val smsKey = userAssembler.createSmsKey()
+        val smsKey = createSmsKey()
 
         WebClient.builder()
             .uriBuilderFactory(factory)
@@ -287,7 +285,7 @@ class UserService(
             .defaultHeader(ACCESS_KEY_HEADER, accessKey)
             .defaultHeader(SIGNATURE_HEADER, makeSignature(time))
             .build().post()
-            .bodyValue(this.userAssembler.toSMSReqDto(validPhoneReq, smsKey, sendPhone))
+            .bodyValue(SMSReq.toSMSReqDto(validPhoneReq, smsKey, sendPhone))
             .retrieve()
             .onStatus({ it.isError }) { response ->
                 throw BaseException(PHONE_ERROR)
@@ -309,7 +307,7 @@ class UserService(
         // 인증번호 확인
         checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
         val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
-        return userAssembler.toEmailResDto(user)
+        return EmailRes.toEmailResDto(user)
     }
 
     // 비밀번호 변경을 위한 인증
@@ -345,5 +343,9 @@ class UserService(
 
         val rawHmac = mac.doFinal(message.toByteArray(charset(UTF_8)))
         return Base64.encodeBase64String(rawHmac)
+    }
+
+    fun createSmsKey() : String{
+        return RandomStringUtils.random(5, false, true);
     }
 }
