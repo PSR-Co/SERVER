@@ -6,7 +6,6 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.INACTIVE_STATUS
 import com.psr.psr.global.entity.ReportCategory
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
-import com.psr.psr.product.dto.assembler.ProductAssembler
 import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.entity.Product
@@ -35,7 +34,6 @@ class ProductService(
     private val productLikeRepository: ProductLikeRepository,
     private val productReportRepository: ProductReportRepository,
     private val userRepository: UserRepository,
-    private val productAssembler: ProductAssembler
 ) {
     fun getProducts(user: User, category: String, pageable: Pageable): GetProductsRes {
         var interestCategoryList: MutableList<Category> = ArrayList()
