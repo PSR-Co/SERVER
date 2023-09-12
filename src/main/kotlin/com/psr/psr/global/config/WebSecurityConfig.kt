@@ -33,6 +33,7 @@ class WebSecurityConfig(
         http
             .csrf { c -> c.disable() }
             .cors { c -> c.disable() }
+            // frontend error 처리 401, 403
             .exceptionHandling {
                 e ->
                 e.authenticationEntryPoint(jwtAuthenticationEntryPoint)

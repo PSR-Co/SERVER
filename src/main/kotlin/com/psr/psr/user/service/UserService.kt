@@ -75,7 +75,7 @@ class UserService(
     // 회원가입
     @Transactional
     fun signUp(signUpReq: SignUpReq): TokenDto {
-        // 중복 값 확인
+        // 카테고리 내 중복 값 확인
         val categoryCheck = signUpReq.interestList.groupingBy { it }.eachCount().any { it.value > 1 }
         if(categoryCheck) throw BaseException(INVALID_USER_INTEREST_COUNT)
         // category 의 사이즈 확인
@@ -87,8 +87,7 @@ class UserService(
         if(userRepository.existsByPhoneAndStatus(signUpReq.phone, ACTIVE_STATUS)) throw BaseException(EXISTS_PHONE)
         if(userRepository.existsByNicknameAndStatus(signUpReq.nickname, ACTIVE_STATUS)) throw BaseException(EXISTS_NICKNAME)
 
-
-        // 암호화되지 않은 password 값 저장
+        // 암호화되지 않은 password 값 변수에 저장
         val password = signUpReq.password
         // password 암호화
         val encodedPassword = passwordEncoder.encode(signUpReq.password)
@@ -96,13 +95,11 @@ class UserService(
         // user 저장
         val user = userRepository.save(User.toEntity(signUpReq))
         userInterestRepository.saveAll(UserInterest.toInterestListEntity(user, signUpReq))
-
         // 사업자인경우
         if (user.type == Type.ENTREPRENEUR){
             if(signUpReq.entreInfo == null) throw BaseException(NOT_EMPTY_EID)
             businessInfoRepository.save(BusinessInfo.toBusinessEntity(user, signUpReq))
         }
-
         // token 생성
         return createToken(user, password)
     }
@@ -110,9 +107,14 @@ class UserService(
     // 로그인
     @Transactional
     fun login(loginReq: LoginReq) : TokenDto{
+        // 이메일이 일치 확인
         val user = userRepository.findByEmailAndStatus(loginReq.email, ACTIVE_STATUS).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
+        // 비밀번호 일치 확인
         if(!passwordEncoder.matches(loginReq.password, user.password)) throw BaseException(INVALID_PASSWORD)
+        // 알림을 위한 사용자 디바이스 토큰 저장
         if (loginReq.deviceToken != null) user.deviceToken = loginReq.deviceToken
+
+        // token 생성
         return createToken(user, loginReq.password)
     }
 
@@ -135,17 +137,22 @@ class UserService(
 
     // 사용자 프로필 변경
     @Transactional
-    fun postProfile(user: User, profileReq: ProfileReq) {
+    fun patchProfile(user: User, profileReq: ProfileReq) {
+        // 닉네임이 변경이 되었으면
         if(user.nickname != profileReq.nickname) {
+            // todo: 코드 변경 필요 -> 자기 자신 닉네임 제외
             if(userRepository.existsByNicknameAndStatus(profileReq.nickname, ACTIVE_STATUS)) throw BaseException(EXISTS_NICKNAME)
             user.nickname = profileReq.nickname
         }
-        if(user.imgUrl != profileReq.profileImgUrl) user.imgUrl = profileReq.profileImgUrl
+        // 프로필 이미지가 변경이 되었으면
+        if(user.imgUrl != profileReq.imgUrl) user.imgUrl = profileReq.imgUrl
+        // 변경된 값 저장
         userRepository.save(user)
     }
 
     // 토큰 자동 토큰 만료 및 RefreshToken 삭제
     fun blackListToken(user: User, request: HttpServletRequest, loginStatus: String) {
+        // header 에서 token 불러오기
         val token = getHeaderAuthorization(request)
         // 토큰 만료
         jwtUtils.expireToken(token, loginStatus);
@@ -161,18 +168,26 @@ class UserService(
 
     // 사업자 정보 확인 API
     fun validateEid(userEidReq: UserEidReq) {
+        // 공공데이터 Open API 사용자 정보 불러오기
         val eidInfo = getEidInfo(userEidReq)
+        // 검증을 할 수 없는 경우 (사업자를 찾지 못한 경우)
         if(eidInfo.valid_cnt == null) throw BaseException(NOT_FOUND_EID)
+        // 정상 사업자가 아닌 경우
         if(eidInfo.data[0].status!!.b_stt_cd != PAY_STATUS) throw BaseException(INVALID_EID)
     }
 
     // 공공데이터포털에서 사용자 불러오기
     private fun getEidInfo(userEidReq: UserEidReq): BusinessListRes {
         val url = EID_URL + serviceKey
+        // open api 정보 전달 객체 형태로 변경
         val businesses = BusinessListReq.toUserEidList(userEidReq)
+        // json 형식으로 변경
         val json = ObjectMapper().writeValueAsString(businesses)
+        // -> 이미 인코딩이 되어 있는 serviceKey이 재인코딩이 되지 않기 위해
         val factory = DefaultUriBuilderFactory(url)
-        factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY;
+        factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY
+
+        // open api 접근
         return WebClient.builder()
             .uriBuilderFactory(factory)
             .baseUrl(url)
@@ -227,6 +242,7 @@ class UserService(
     // 비밀번호 재설정
     @Transactional
     fun resetPassword(passwordReq: ResetPasswordReq) {
+        // 사용자 이메일 있는 경우
         val user = userRepository.findByEmailAndStatus(passwordReq.email, ACTIVE_STATUS).orElseThrow{BaseException(NOT_EXIST_EMAIL)}
         if(user.phone != passwordReq.phone) throw BaseException(INVALID_PHONE)
         if(passwordEncoder.matches(passwordReq.password, user.password)) throw BaseException(DUPLICATE_PASSWORD)
@@ -239,9 +255,13 @@ class UserService(
     // 관심 목록 변경
     @Transactional
     fun patchWatchLists(user: User,  userInterestListReq: UserInterestListDto) {
+        // 카테고리 내 중복 값 확인
         val reqLists = userInterestListReq.interestList!!.map { i -> Category.getCategoryByValue(i.category) }
+        // category 의 사이즈 확인
         if(reqLists.isEmpty() || reqLists.size > 3) throw BaseException(INVALID_USER_INTEREST_COUNT)
+        // 사용자 관심 목록 불러오기
         val userWatchLists = userInterestRepository.findByUserAndStatus(user, ACTIVE_STATUS)
+        // string list로 변경
         val categoryLists = userWatchLists.map { c -> c.category }
 
         // 사용자 관심 목록에 최근 추가한 리스트(REQUEST) 관심 목록이 없다면? => 저장
@@ -258,7 +278,6 @@ class UserService(
         // 최근 추가한 리스트(REQUEST)에 사용자 관심 목록이 없다면? => 삭제
         userWatchLists.stream()
             .forEach { interest ->
-                // todo: cascade 적용 후 모두 삭제 되었는지 확인 필요
                 if(!reqLists.contains(interest.category)) userInterestRepository.delete(interest)
             }
     }
@@ -273,16 +292,18 @@ class UserService(
     fun checkValidPhone(validPhoneReq: ValidPhoneReq) {
         val time = System.currentTimeMillis()
         val url = FIRST_URL + MIDDLE_URL + serviceId + FINAL_URL
+        // -> 이미 인코딩이 되어 있는 serviceKey이 재인코딩이 되지 않기 위해
         val factory = DefaultUriBuilderFactory(url)
         factory.encodingMode = DefaultUriBuilderFactory.EncodingMode.VALUES_ONLY
+        // 인증번호 생성
         val smsKey = createSmsKey()
-
+        // open api 접근
         WebClient.builder()
             .uriBuilderFactory(factory)
             .baseUrl(url)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader(TIMESTAMP_HEADER, time.toString())
-            .defaultHeader(ACCESS_KEY_HEADER, accessKey)
+            .defaultHeader(ACCESS_KEY_HEADER, accessKey) // accessKey
             .defaultHeader(SIGNATURE_HEADER, makeSignature(time))
             .build().post()
             .bodyValue(SMSReq.toSMSReqDto(validPhoneReq, smsKey, sendPhone))
@@ -292,11 +313,13 @@ class UserService(
             }
             .bodyToMono(String::class.java)
             .block()
+        // 휴대폰 smsKey 만료시간
         smsUtils.createSmsKey(validPhoneReq.phone, smsKey)
     }
 
     // 휴대폰 인증번호 조회
     fun checkValidSmsKey(phone: String, smsKey: String) {
+        // 휴대폰 인증 번호 불러오기
         val sms = smsUtils.getSmsKey(phone)
         // 인증코드가 같지 않은 경우 예외처리 발생
         if(sms != smsKey) throw BaseException(INVALID_SMS_KEY)
@@ -307,6 +330,7 @@ class UserService(
         // 인증번호 확인
         checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
         val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+        // 사용자 이메일 전달
         return EmailRes.toEmailResDto(user)
     }
 
@@ -325,7 +349,7 @@ class UserService(
         return PostNotiRes.toDto(user.notification)
     }
 
-    // signature
+    // signature For post sms
     private fun makeSignature(time: Long): String {
         val message = StringBuilder()
             .append(METHOD)
@@ -345,6 +369,7 @@ class UserService(
         return Base64.encodeBase64String(rawHmac)
     }
 
+    // 인증번호 생성
     fun createSmsKey() : String{
         return RandomStringUtils.random(5, false, true);
     }
