@@ -5,6 +5,11 @@ import org.springframework.http.HttpStatus
 enum class BaseResponseCode(status: HttpStatus, message: String) {
     SUCCESS(HttpStatus.OK, "요청에 성공했습니다."),
 
+    // exception handling
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 관련 에러입니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 관련 에러입니다."),
+    URL_NOT_FOUND(HttpStatus.NOT_FOUND, "API URL을 확인할 수 없습니다."),
+
     // token
     NULL_TOKEN(HttpStatus.UNAUTHORIZED, "토큰 값을 입력해주세요."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰 값입니다."),
