@@ -140,8 +140,7 @@ class UserService(
     fun patchProfile(user: User, profileReq: ProfileReq) {
         // 닉네임이 변경이 되었으면
         if(user.nickname != profileReq.nickname) {
-            // todo: 코드 변경 필요 -> 자기 자신 닉네임 제외
-            if(userRepository.existsByNicknameAndStatus(profileReq.nickname, ACTIVE_STATUS)) throw BaseException(EXISTS_NICKNAME)
+            if(userRepository.existsByNicknameAndStatusAndIdNot(profileReq.nickname, ACTIVE_STATUS, user.id!!)) throw BaseException(EXISTS_NICKNAME)
             user.nickname = profileReq.nickname
         }
         // 프로필 이미지가 변경이 되었으면
