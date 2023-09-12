@@ -16,4 +16,13 @@ data class ReviewImg(
     @NotNull
     var imgUrl: String
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(review: Review, imgUrl: String): ReviewImg {
+            return ReviewImg(
+                review = review,
+                imgUrl = imgUrl
+            )
+        }
+    }
+}

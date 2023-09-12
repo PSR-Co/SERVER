@@ -13,33 +13,34 @@ import org.springframework.stereotype.Service
 
 @Service
 class InquiryService(
-    private val inquiryRepository: InquiryRepository,
-    private val inquiryAssembler: InquiryAssembler
+    private val inquiryRepository: InquiryRepository
 ) {
     // 문의 등록
     fun makeInquiry(user: User, inquiryReq: InquiryReq) {
-        inquiryRepository.save(inquiryAssembler.toEntity(user, inquiryReq))
+        inquiryRepository.save(Inquiry.toEntity(user, inquiryReq))
     }
 
     // 문의 상세 조회
     fun getInquiryDetails(user: User, inquiryId: Long): InquiryRes {
         val inquiry: Inquiry = inquiryRepository.findByIdAndStatus(inquiryId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_INQUIRY)
-        return inquiryAssembler.toDto(inquiry)
+        return InquiryRes.toDto(inquiry)
     }
 
     // 문의 목록 조회
     fun getInquiryList(user: User, status: String): InquiryListRes {
         val inquiryStatus: InquiryStatus = InquiryStatus.findByName(status)
         val inquiries: List<InquiryRes> = (
+                // 관리자일 때 전체 조회
                 if (user.type == Type.MANAGER)
                     inquiryRepository.findByInquiryStatusAndStatus(inquiryStatus, ACTIVE_STATUS)
+                // 관리자 아닐 때 본인 것만 조회
                 else
                     inquiryRepository.findByUserAndInquiryStatusAndStatus(user, inquiryStatus, ACTIVE_STATUS)
                 )
-            .map { inquiry: Inquiry -> inquiryAssembler.toPrepareListDto(inquiry) }
+            .map { inquiry: Inquiry -> InquiryRes.toTitleDto(inquiry) }
 
-        return inquiryAssembler.toListDto(inquiries)
+        return InquiryListRes.toDto(inquiries)
     }
 
     // 문의 답변 등록

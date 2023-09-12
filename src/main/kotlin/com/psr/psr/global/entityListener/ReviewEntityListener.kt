@@ -1,5 +1,6 @@
 package com.psr.psr.global.entityListener
 
+import com.psr.psr.order.repository.OrderRepository
 import com.psr.psr.review.entity.Review
 import com.psr.psr.review.repository.ReviewImgRepository
 import com.psr.psr.review.repository.ReviewReportRepository
@@ -12,5 +13,7 @@ class ReviewEntityListener {
         reviewImgRepository.deleteByReview(review)
         val reviewReportRepository: ReviewReportRepository = BeanUtils.getBean(ReviewReportRepository::class.java)
         reviewReportRepository.deleteByReview(review)
+        val orderRepository: OrderRepository = BeanUtils.getBean(OrderRepository::class.java)
+        orderRepository.save(review.order.setReview(null))
     }
 }

@@ -59,4 +59,17 @@ data class Order(
         this.review = review
         return this
     }
+
+    companion object {
+        fun toEntity(user: User, orderReq: OrderReq, product: Product): Order {
+            return Order(
+                user = user,
+                product = product,
+                ordererName = orderReq.ordererName,
+                websiteUrl = orderReq.websiteUrl,
+                inquiry = orderReq.inquiry,
+                description = orderReq.description
+            )
+        }
+    }
 }

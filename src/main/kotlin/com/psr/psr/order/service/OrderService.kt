@@ -5,7 +5,6 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.notification.service.NotificationService
-import com.psr.psr.order.dto.OrderAssembler
 import com.psr.psr.order.dto.OrderListRes
 import com.psr.psr.order.dto.OrderReq
 import com.psr.psr.order.dto.OrderRes
@@ -19,20 +18,18 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import java.time.LocalDate
 
 @Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val productRepository: ProductRepository,
-    private val orderAssembler: OrderAssembler,
     private val notificationService: NotificationService
 ) {
     // 요청하기
     fun makeOrder(user: User, orderReq: OrderReq) {
         val product: Product = orderReq.productId?.let { productRepository.findByIdAndStatus(it, ACTIVE_STATUS) }
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
-        val order = orderRepository.save(orderAssembler.toEntity(user, orderReq, product))
+        val order = orderRepository.save(Order.toEntity(user, orderReq, product))
         notificationService.sendNewOrderNoti(order.product.name, order.product.user, order.ordererName, order.id!!)
     }
 
@@ -40,30 +37,36 @@ class OrderService(
     fun getOrderDetail(user: User, orderId: Long): OrderRes {
         val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
+        // 요청자 or 판매자 아니면 예외처리
         val isSeller = order.product.user.id == user.id
         if (order.user.id != user.id && !isSeller) throw BaseException(BaseResponseCode.NO_PERMISSION)
-        return orderAssembler.toOrderResDTO(order, isSeller)
+
+        return OrderRes.toOrderResDTO(order, isSeller)
     }
 
     // 요청 목록 조회(전체 상태)
     fun getOrderList(user: User, type: String, pageable: Pageable): Page<OrderListRes> {
         val orderList: Page<Order> =
+            // 요청 받은 목록
             if (type == SELL)
                 orderRepository.findByProductUserAndStatus(user, ACTIVE_STATUS, pageable)
+            // 요청한 목록
             else
                 orderRepository.findByUserAndStatus(user, ACTIVE_STATUS, pageable)
-        return orderList.map { order: Order -> orderAssembler.toListDto(order, type) }
+        return orderList.map { order: Order -> OrderListRes.toListDto(order, type) }
     }
 
     // 요청 목록 조회(요청 상태별)
     fun getOrderListByOrderStatus(user: User, type: String, status: String, pageable: Pageable): Page<OrderListRes> {
         val orderStatus = OrderStatus.findByValue(status)
         val orderList: Page<Order> =
+            // 요청 받은 목록
             if (type == SELL)
                 orderRepository.findByProductUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
+            // 요청한 목록
             else
                 orderRepository.findByUserAndOrderStatusAndStatus(user, orderStatus, ACTIVE_STATUS, pageable)
-        return orderList.map { order: Order -> orderAssembler.toListDto(order, type) }
+        return orderList.map { order: Order -> OrderListRes.toListDto(order, type) }
     }
 
     // 요청 수정
@@ -78,6 +81,7 @@ class OrderService(
         order.editOrder(orderReq, orderStatus)
         val saveOrder = orderRepository.save(order)
 
+        // 요청 상태 변경 시 알림 전송
         if (status != null)
             notificationService.sendChangeOrderStatusNoti(order.product.name, order.product.user, saveOrder.orderStatus, order.id!!)
     }
