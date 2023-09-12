@@ -123,6 +123,11 @@ class UserService(
         return userRepository.existsByNicknameAndStatus(nickname, ACTIVE_STATUS)
     }
 
+    // 휴대폰번호 중복체크
+    fun checkDuplicatePhone(phone: String): Boolean{
+        return userRepository.existsByPhoneAndStatus(phone, ACTIVE_STATUS)
+    }
+
     // token 생성 extract method
     private fun createToken(user: User, password: String): TokenDto {
         val authenticationToken = UsernamePasswordAuthenticationToken(user.id.toString(), password)
