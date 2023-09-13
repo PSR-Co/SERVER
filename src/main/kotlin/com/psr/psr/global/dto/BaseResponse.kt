@@ -44,5 +44,9 @@ class BaseResponse<T> {
         fun error(code: Int, message: String): BaseResponse<*> {
             return BaseResponse<Any>(code, message)
         }
+
+        fun error(baseResponseCode: BaseResponseCode): BaseResponse<*> {
+            return BaseResponse<Any>(baseResponseCode)
+        }
     }
 }

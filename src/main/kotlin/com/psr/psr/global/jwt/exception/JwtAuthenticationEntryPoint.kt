@@ -27,7 +27,7 @@ class JwtAuthenticationEntryPoint(private val objectMapper: ObjectMapper) : Auth
         val exception = request?.getAttribute("exception")
         val writer = response.writer
         if (exception == null){
-            writer.println(objectMapper.writeValueAsString(BaseResponse<Any>(BaseResponseCode.NULL_TOKEN)))
+            writer.println(objectMapper.writeValueAsString(BaseResponse<Any>(BaseResponseCode.URL_NOT_FOUND)))
         }else {
             writer.println(objectMapper.writeValueAsString(exception))
         }
