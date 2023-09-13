@@ -60,9 +60,9 @@ class UserController(
         /**
          * 사용자 프로필 변경하기
          */
-        @PostMapping("/profile")
-        fun postProfile(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated profileReq: ProfileReq) : BaseResponse<Any> {
-                userService.postProfile(userAccount.getUser(), profileReq)
+        @PatchMapping("/profile")
+        fun patchProfile(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated profileReq: ProfileReq) : BaseResponse<Any> {
+                userService.patchProfile(userAccount.getUser(), profileReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 

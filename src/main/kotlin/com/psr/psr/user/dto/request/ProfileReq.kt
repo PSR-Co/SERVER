@@ -10,5 +10,5 @@ data class ProfileReq(
         message = "한글, 영어, 숫자만 입력해주세요. (10글자)"
     )
     val nickname: String,
-    val profileImgUrl: String? = null
+    val imgUrl: String
 )

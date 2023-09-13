@@ -39,7 +39,6 @@ class JwtFilter(private val jwtUtils: JwtUtils, private val redisService: RedisS
             request.setAttribute("exception", BaseResponse<Any>(e.baseResponseCode))
         }
         filterChain.doFilter(request, response);
-
     }
 
     /**
