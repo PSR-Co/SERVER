@@ -146,10 +146,22 @@ class UserController(
         }
 
         /**
-         * 휴대폰번호 유효
+         * 휴대폰번호 전송
          */
         @PostMapping("/phone/check")
         fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
+                userService.checkValidPhone(validPhoneReq)
+                return BaseResponse(BaseResponseCode.SUCCESS)
+        }
+
+        /**
+         * 회원가입을 위한 휴대폰번호 전송
+         */
+        @PostMapping("/phone/check/signup")
+        fun checkValidPhoneForSignUp(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
+                // 이미 있는 휴대폰 번호인지 확인
+                if(userService.checkDuplicatePhone(validPhoneReq.phone)) throw BaseException(BaseResponseCode.EXISTS_PHONE)
+                // 휴대폰 번호 전송
                 userService.checkValidPhone(validPhoneReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
