@@ -38,4 +38,15 @@ data class Review(
         this.content = reviewReq.content
         return this
     }
+
+    companion object {
+        fun toEntity(order: Order, reviewReq: ReviewReq): Review {
+            return Review(
+                order = order,
+                product = order.product,
+                rating = reviewReq.rating,
+                content = reviewReq.content
+            )
+        }
+    }
 }

@@ -29,6 +29,7 @@ class OrderController(
         @RequestBody @Valid orderReq: OrderReq
     ): BaseResponse<Unit> {
         if (orderReq.productId == null) return BaseResponse(BaseResponseCode.NULL_PRODUCT_ID)
+        // 선택사항 미입력 시 null 처리
         if (orderReq.websiteUrl.isNullOrBlank()) orderReq.websiteUrl = null
         return BaseResponse(orderService.makeOrder(userAccount.getUser(), orderReq))
     }

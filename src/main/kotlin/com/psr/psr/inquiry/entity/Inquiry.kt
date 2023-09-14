@@ -1,6 +1,7 @@
 package com.psr.psr.inquiry.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.inquiry.dto.InquiryReq
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 import org.hibernate.annotations.SQLDelete
@@ -33,5 +34,15 @@ data class Inquiry(
     fun registerAnswer(answer: String){
         this.answer = answer
         this.inquiryStatus = InquiryStatus.COMPLETED
+    }
+
+    companion object {
+        fun toEntity(user: User, inquiryReq: InquiryReq): Inquiry {
+            return Inquiry(
+                user = user,
+                title = inquiryReq.title,
+                content = inquiryReq.content
+            )
+        }
     }
 }

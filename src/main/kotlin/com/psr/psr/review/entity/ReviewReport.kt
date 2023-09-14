@@ -25,4 +25,14 @@ data class ReviewReport(
     @Enumerated(EnumType.STRING)
     var category: ReportCategory
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(review: Review, user: User, reportCategory: ReportCategory): ReviewReport {
+            return ReviewReport(
+                review = review,
+                category = reportCategory,
+                user = user
+            )
+        }
+    }
+}

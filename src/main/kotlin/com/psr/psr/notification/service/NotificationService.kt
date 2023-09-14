@@ -5,9 +5,9 @@ import com.google.auth.oauth2.GoogleCredentials
 import com.psr.psr.global.Constant.NotiSentence.NotiSentence.NEW_ORDER_SENTENCE
 import com.psr.psr.global.Constant.NotiSentence.NotiSentence.TWO_MONTH_ORDER_SENTENCE
 import com.psr.psr.notification.dto.FcmMessage
-import com.psr.psr.notification.dto.NotiAssembler
 import com.psr.psr.notification.dto.NotificationListRes
 import com.psr.psr.notification.entity.NotificationType
+import com.psr.psr.notification.entity.PushNotification
 import com.psr.psr.notification.repository.NotificationRepository
 import com.psr.psr.order.entity.OrderStatus
 import com.psr.psr.user.entity.User
@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service
 @Service
 class NotificationService(
     private val notificationRepository: NotificationRepository,
-    private val notiAssembler: NotiAssembler,
     @Value("\${firebase.sendUrl}") private val sendUrl: String,
     private val objectMapper: ObjectMapper
 ) {
@@ -36,81 +35,56 @@ class NotificationService(
     // 새로운 요청 알림
     fun sendNewOrderNoti(productName: String, orderReceiver: User, ordererName: String, orderId: Long) {
         val messageBody = ordererName + NEW_ORDER_SENTENCE
-        notificationRepository.save(notiAssembler.toEntity(
+        notificationRepository.save(PushNotification.toEntity(
             orderReceiver,
             productName,
             messageBody,
             orderId,
             NotificationType.NEW_ORDER
         ))
-
-        if (isPushNotiAvailable(orderReceiver)) {
-            val message: FcmMessage = notiAssembler.makeMessage(
-                orderReceiver.deviceToken!!,
-                productName,
-                messageBody,
-                orderId,
-                NotificationType.NEW_ORDER.name
-            )
-            sendMessage(objectMapper.writeValueAsString(message))
-        }
+        sendPushNoti(orderReceiver, productName, messageBody, orderId, NotificationType.NEW_ORDER)
     }
 
     // 요청 상태 변경 알림
     fun sendChangeOrderStatusNoti(productName: String, orderer: User, orderStatus: OrderStatus, orderId: Long) {
         val messageBody = orderStatus.notiSentence!!
-        notificationRepository.save(notiAssembler.toEntity(
+        notificationRepository.save(PushNotification.toEntity(
             orderer,
             productName,
             messageBody,
             orderId,
             NotificationType.CHANGED_ORDER_STATUS
         ))
-
-        if (isPushNotiAvailable(orderer)) {
-            val message: FcmMessage = notiAssembler.makeMessage(
-                orderer.deviceToken!!,
-                productName,
-                messageBody,
-                orderId,
-                NotificationType.CHANGED_ORDER_STATUS.name
-            )
-            sendMessage(objectMapper.writeValueAsString(message))
-        }
+        sendPushNoti(orderer, productName, messageBody, orderId, NotificationType.CHANGED_ORDER_STATUS)
     }
 
     // 2달 뒤 요청상태 입력 요망 알림
     fun send2MonthOrderNoti(productName: String, orderReceiver: User, ordererName: String, orderId: Long) {
         val messageBody = ordererName + TWO_MONTH_ORDER_SENTENCE
-        notificationRepository.save(notiAssembler.toEntity(
+        notificationRepository.save(PushNotification.toEntity(
             orderReceiver,
             productName,
             messageBody,
             orderId,
             NotificationType.TWO_MONTH_ORDER
         ))
-
-        if (isPushNotiAvailable(orderReceiver)) {
-            val message: FcmMessage = notiAssembler.makeMessage(
-                orderReceiver.deviceToken!!,
-                productName,
-                messageBody,
-                orderId,
-                NotificationType.TWO_MONTH_ORDER.name
-            )
-            sendMessage(objectMapper.writeValueAsString(message))
-        }
+        sendPushNoti(orderReceiver, productName, messageBody, orderId, NotificationType.TWO_MONTH_ORDER)
     }
 
     // 채팅 알림
     fun sendChatNoti(chatReceiver: User, senderNickname: String, chatMessage: String, chatRoomId: Long) {
-        if (isPushNotiAvailable(chatReceiver)) {
-            val message: FcmMessage = notiAssembler.makeMessage(
-                chatReceiver.deviceToken!!,
-                senderNickname,
-                chatMessage,
-                chatRoomId,
-                NotificationType.CHAT.name
+        sendPushNoti(chatReceiver, senderNickname, chatMessage, chatRoomId, NotificationType.CHAT)
+    }
+
+    // 알림 전송
+    private fun sendPushNoti(receiver: User, title: String, content: String, relatedId: Long, notiType: NotificationType) {
+        if (isPushNotiAvailable(receiver)) {
+            val message: FcmMessage = FcmMessage.makeMessage(
+                receiver.deviceToken!!,
+                title,
+                content,
+                relatedId,
+                notiType.name
             )
             sendMessage(objectMapper.writeValueAsString(message))
         }

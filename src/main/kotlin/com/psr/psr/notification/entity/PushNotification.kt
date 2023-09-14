@@ -27,4 +27,16 @@ data class PushNotification(
     @NotNull
     var type: NotificationType
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(receiver: User, title: String, content: String, relatedId: Long, type: NotificationType): PushNotification {
+            return PushNotification(
+                user = receiver,
+                title = title,
+                content = content,
+                relatedId = relatedId,
+                type = type
+            )
+        }
+    }
+}
