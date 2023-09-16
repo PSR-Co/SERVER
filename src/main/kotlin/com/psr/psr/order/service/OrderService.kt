@@ -1,6 +1,6 @@
 package com.psr.psr.order.service
 
-import com.psr.psr.global.Constant.OrderType.OrderType.SELL
+import com.psr.psr.global.Constant.Order.Order.SELL
 import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.global.exception.BaseException
 import com.psr.psr.global.exception.BaseResponseCode
@@ -69,21 +69,29 @@ class OrderService(
         return orderList.map { order: Order -> OrderListRes.toListDto(order, type) }
     }
 
-    // 요청 수정
-    fun editOrder(user: User, orderReq: OrderReq?, status: String?, orderId: Long) {
+    // 요청 수정(요청자만 수정 가능)
+    fun editOrder(user: User, orderReq: OrderReq, orderId: Long) {
         val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
         if (order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
-        var orderStatus: OrderStatus? = null
-        if (status != null) orderStatus = OrderStatus.findByValue(status)
+        order.editOrder(orderReq)
+        orderRepository.save(order)
+    }
 
-        order.editOrder(orderReq, orderStatus)
+    // 요청 상태 수정(판매자만 수정 가능)
+    fun editOrderStatus(user: User, status: String, orderId: Long) {
+        val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
+        if (order.product.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
+
+        val orderStatus = OrderStatus.findByValue(status)
+
+        order.editOrderStatus(orderStatus)
         val saveOrder = orderRepository.save(order)
 
-        // 요청 상태 변경 시 알림 전송
-        if (status != null)
-            notificationService.sendChangeOrderStatusNoti(order.product.name, order.product.user, saveOrder.orderStatus, order.id!!)
+        // 요청 상태 변경 알림 전송
+        notificationService.sendChangeOrderStatusNoti(order.product.name, order.product.user, saveOrder.orderStatus, order.id!!)
     }
 
     // 2달 뒤 요청상태 입력 요망 알림(오후 1시마다 실행)

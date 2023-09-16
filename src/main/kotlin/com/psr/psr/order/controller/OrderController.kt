@@ -1,7 +1,9 @@
 package com.psr.psr.order.controller
 
-import com.psr.psr.global.Constant.OrderType.OrderType.ORDER
-import com.psr.psr.global.Constant.OrderType.OrderType.SELL
+import com.psr.psr.global.Constant
+import com.psr.psr.global.Constant.Order.Order.ORDER
+import com.psr.psr.global.Constant.Order.Order.SELL
+import com.psr.psr.global.Constant.Order.Order.STATUS
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.exception.BaseResponseCode
 import com.psr.psr.global.jwt.UserAccount
@@ -64,10 +66,20 @@ class OrderController(
     fun editOrder(
         @AuthenticationPrincipal userAccount: UserAccount,
         @PathVariable orderId: Long,
-        @RequestBody(required = false) @Valid orderReq: OrderReq?,
-        @RequestParam(required = false) status: String?
+        @RequestBody @Valid orderReq: OrderReq
     ): BaseResponse<Unit> {
-        if (orderReq != null && orderReq.websiteUrl.isNullOrBlank()) orderReq.websiteUrl = null
-        return BaseResponse(orderService.editOrder(userAccount.getUser(), orderReq, status, orderId))
+        if (orderReq.websiteUrl.isNullOrBlank()) orderReq.websiteUrl = null
+        return BaseResponse(orderService.editOrder(userAccount.getUser(), orderReq, orderId))
+    }
+
+    // 요청 상태 수정
+    @PatchMapping("/{orderId}/status")
+    fun editOrderStatus(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @PathVariable orderId: Long,
+        @RequestBody status: Map<String, String>
+    ): BaseResponse<Unit> {
+        status[Constant.Order.STATUS] ?: return BaseResponse(BaseResponseCode.NULL_ORDER_STATUS)
+        return BaseResponse(orderService.editOrderStatus(userAccount.getUser(), status[STATUS]!!, orderId))
     }
 }
