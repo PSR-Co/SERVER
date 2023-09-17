@@ -1,6 +1,7 @@
 package com.psr.psr.review.dto
 
 import com.psr.psr.review.entity.Review
+import com.psr.psr.user.entity.User
 import java.time.format.DateTimeFormatter
 
 data class ReviewListRes(
@@ -10,10 +11,11 @@ data class ReviewListRes(
     val imgList: List<String>?,
     val reviewedDate: String,
     val nickName: String,
-    val profileImgUrl: String?
+    val profileImgUrl: String?,
+    val isMyReview: Boolean
 ) {
     companion object {
-        fun toDto(review: Review): ReviewListRes {
+        fun toDto(review: Review, user: User): ReviewListRes {
             val reviewImgs =
                 if (review.imgs.isNotEmpty()) review.imgs.map { img -> img.imgUrl }
                 else null
@@ -24,7 +26,8 @@ data class ReviewListRes(
                 imgList = reviewImgs,
                 reviewedDate = review.createdAt.format(DateTimeFormatter.ISO_DATE),
                 nickName = review.order.user.nickname,
-                profileImgUrl = review.order.user.imgUrl
+                profileImgUrl = review.order.user.imgUrl,
+                isMyReview = review.order.user == user
             )
         }
     }

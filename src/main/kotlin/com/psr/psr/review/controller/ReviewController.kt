@@ -53,10 +53,11 @@ class ReviewController(
     // 상품별 리뷰 목록 조회
     @GetMapping("/products/{productId}/reviews")
     fun getProductReviews(
+        @AuthenticationPrincipal userAccount: UserAccount,
         @PathVariable productId: Long,
         @PageableDefault(size = 8, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): BaseResponse<Page<ReviewListRes>> {
-        return BaseResponse(reviewService.getProductReviews(productId, pageable))
+        return BaseResponse(reviewService.getProductReviews(userAccount.getUser(), productId, pageable))
     }
 
     // 리뷰 개별 조회

@@ -43,16 +43,15 @@ data class Order(
     var review: Review? = null
 
 ) : BaseEntity() {
-    fun editOrder(orderReq: OrderReq?, orderStatus: OrderStatus?) {
-        if (orderReq != null) {
-            this.ordererName = orderReq.ordererName
-            this.websiteUrl = orderReq.websiteUrl
-            this.inquiry = orderReq.inquiry
-            this.description = orderReq.description
-        }
-        if (orderStatus != null) {
-            this.orderStatus = orderStatus
-        }
+    fun editOrder(orderReq: OrderReq) {
+        this.ordererName = orderReq.ordererName
+        this.websiteUrl = orderReq.websiteUrl
+        this.inquiry = orderReq.inquiry
+        this.description = orderReq.description
+    }
+
+    fun editOrderStatus(orderStatus: OrderStatus) {
+        this.orderStatus = orderStatus
     }
 
     fun setReview(review: Review?): Order {

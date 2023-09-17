@@ -16,7 +16,7 @@ data class OrderListRes (
     companion object {
         fun toListDto(order: Order, type: String): OrderListRes {
             val userName =
-                if (type == Constant.OrderType.SELL) order.ordererName
+                if (type == Constant.Order.SELL) order.ordererName
                 else order.product.user.nickname
 
             return OrderListRes(

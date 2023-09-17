@@ -39,10 +39,11 @@ class Constant {
         }
     }
 
-    class OrderType{
-        companion object OrderType{
+    class Order{
+        companion object Order{
             const val SELL = "sell"
             const val ORDER = "order"
+            const val STATUS = "status"
         }
     }
 

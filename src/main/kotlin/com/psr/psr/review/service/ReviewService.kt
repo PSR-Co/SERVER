@@ -96,12 +96,12 @@ class ReviewService(
     }
 
     // 상품별 리뷰 목록 조회
-    fun getProductReviews(productId: Long, pageable: Pageable): Page<ReviewListRes> {
+    fun getProductReviews(user: User, productId: Long, pageable: Pageable): Page<ReviewListRes> {
         val product: Product = productRepository.findByIdAndStatus(productId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_PRODUCT)
 
         return reviewRepository.findByProductAndStatus(product, ACTIVE_STATUS, pageable)
-            .map { review -> ReviewListRes.toDto(review) }
+            .map { review -> ReviewListRes.toDto(review, user) }
     }
 
     // 리뷰 개별 조회
@@ -119,6 +119,7 @@ class ReviewService(
 
         val review: Review = reviewRepository.findByIdAndStatus(reviewId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_REVIEW)
+        if (review.order.user == user) throw BaseException(BaseResponseCode.VALID_REVIEW_USER)
         if (reviewReportRepository.findByReviewAndUserAndStatus(review, user, ACTIVE_STATUS) != null)
             throw BaseException(BaseResponseCode.REPORT_ALREADY_COMPLETE)
 

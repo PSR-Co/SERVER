@@ -53,8 +53,9 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
 
     // report
     INVALID_REPORT_CATEGORY(HttpStatus.BAD_REQUEST, "올바르지 않은 신고 카테고리입니다."),
-    REPORT_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 신고 완료된 리뷰입니다."),
+    REPORT_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 신고 완료되었습니다."),
     NULL_REPORT_CATEGORY(HttpStatus.BAD_REQUEST, "신고 카테고리를 입력해주세요."),
+    VALID_REVIEW_USER(HttpStatus.UNAUTHORIZED, "본인이 작성한 리뷰는 신고할 수 없습니다."),
 
     // inquiry
     NOT_FOUND_INQUIRY(HttpStatus.NOT_FOUND, "해당 문의를 찾을 수 없습니다."),
@@ -65,6 +66,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     NOT_FOUND_ORDER(HttpStatus.NOT_FOUND, "해당 요청을 찾을 수 없습니다."),
     INVALID_ORDER_STATUS(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 상태입니다."),
     INVALID_ORDER_TYPE(HttpStatus.BAD_REQUEST, "올바르지 않은 요청 타입입니다."),
+    NULL_ORDER_STATUS(HttpStatus.BAD_REQUEST, "요청 상태를 입력해주세요."),
 
     // review
     REVIEW_ALREADY_COMPLETE(HttpStatus.CONFLICT, "이미 리뷰 완료된 요청입니다."),
