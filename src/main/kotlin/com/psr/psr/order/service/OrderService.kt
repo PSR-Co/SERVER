@@ -79,13 +79,18 @@ class OrderService(
         orderRepository.save(order)
     }
 
-    // 요청 상태 수정(판매자만 수정 가능)
+    // 요청 상태 수정(요청취소 외에는 판매자만 수정 가능)
     fun editOrderStatus(user: User, status: String, orderId: Long) {
         val order: Order = orderRepository.findByIdAndStatus(orderId, ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
-        if (order.product.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
         val orderStatus = OrderStatus.findByValue(status)
+
+        // 요청대기 상태일 때 구매자나 판매자가 아닌경우
+        if (orderStatus == OrderStatus.ORDER_WAITING)
+            if (order.product.user.id != user.id || order.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
+        // 요청대기 상태가 아닐 때 판매자가 아닌경우
+        else if (order.product.user.id != user.id) throw BaseException(BaseResponseCode.NO_PERMISSION)
 
         order.editOrderStatus(orderStatus)
         val saveOrder = orderRepository.save(order)
