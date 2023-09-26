@@ -75,6 +75,10 @@ class UserService(
     // 회원가입
     @Transactional
     fun signUp(signUpReq: SignUpReq): TokenDto {
+        // 관리자가 회원가입 시, 이미 관리자가 회원가입이 되어 있는 경우
+        if(userRepository.existsByTypeAndStatus(Type.MANAGER, ACTIVE_STATUS)
+            && Type.getTypeByValue(signUpReq.type) == Type.MANAGER) throw BaseException(EXISTS_MANAGER)
+
         // 카테고리 내 중복 값 확인
         val categoryCheck = signUpReq.interestList.groupingBy { it }.eachCount().any { it.value > 1 }
         if(categoryCheck) throw BaseException(INVALID_USER_INTEREST_COUNT)

@@ -21,6 +21,7 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // user
     EXISTS_PHONE(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 휴대폰 번호입니다."),
     EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 이메일입니다."),
+    EXISTS_MANAGER(HttpStatus.BAD_REQUEST, "관리자는 한 명만 가능합니다."),
     EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 닉네임입니다."),
     NOT_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 사용자를 찾을 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
