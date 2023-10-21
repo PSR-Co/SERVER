@@ -13,6 +13,7 @@ import com.psr.psr.user.entity.Category
 import com.psr.psr.user.entity.User
 import com.querydsl.core.types.ExpressionUtils
 import com.querydsl.core.types.dsl.Expressions
+import com.querydsl.core.types.dsl.MathExpressions
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
@@ -35,7 +36,7 @@ class ProductRepositoryImpl(
                 product.price,
                 ExpressionUtils.`as`(product.likeNum.size(), "numOfLike"),
                 Expressions.asBoolean(JPAExpressions.selectFrom(productLike).where(productLike.user.eq(target).and(productLike.product.eq(product)).and(productLike.status.eq(ACTIVE_STATUS))).exists()),
-                ExpressionUtils.`as`(JPAExpressions.select(review.rating.avg()).from(review).where(review.product.eq(product).and(review.status.eq(ACTIVE_STATUS))), "avgOfRating"),
+                ExpressionUtils.`as`(JPAExpressions.select(MathExpressions.round(review.rating.avg(),1)).from(review).where(review.product.eq(product).and(review.status.eq(ACTIVE_STATUS))), "avgOfRating"),
                 ExpressionUtils.`as`(product.reviews.size(), "numOfReview")
                 ))
             .from(product)
