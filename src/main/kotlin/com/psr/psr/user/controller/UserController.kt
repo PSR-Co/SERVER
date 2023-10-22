@@ -13,6 +13,8 @@ import com.psr.psr.user.dto.response.EmailRes
 import com.psr.psr.user.dto.response.MyPageInfoRes
 import com.psr.psr.user.dto.response.ProfileRes
 import com.psr.psr.user.service.UserService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.util.StringUtils
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "Bearer")
+@Tag(name = "User", description = "회원 API")
 class UserController(
         private val userService: UserService
 ) {

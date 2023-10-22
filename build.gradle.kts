@@ -72,6 +72,10 @@ dependencies {
 	// notification
 	implementation("com.google.firebase:firebase-admin:9.2.0")
 	implementation("com.squareup.okhttp3:okhttp:4.10.0")
+
+	// swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+
 }
 
 

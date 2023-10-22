@@ -8,6 +8,8 @@ import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.request.ReportProductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.service.ProductService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -17,6 +19,8 @@ import java.util.*
 
 @RestController
 @RequestMapping("/products")
+@Tag(name = "Product", description = "상품 API")
+@SecurityRequirement(name = "Bearer")
 class ProductController(
         private val productService: ProductService
 ) {
