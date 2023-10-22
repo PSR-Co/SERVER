@@ -13,6 +13,6 @@ data class InquiryReq (
 
     @field:NotBlank(message = "내용을 입력해주세요.")
     @field:Size(max = 250, message = "내용은 최대 250자입니다.")
-    @Schema(description = "문의 제목", example = "문의 내용")
+    @Schema(description = "문의 내용", example = "문의 내용")
     val content: String? = null
 )
