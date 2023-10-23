@@ -4,6 +4,8 @@ import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.UserAccount
 import com.psr.psr.notification.dto.NotificationListRes
 import com.psr.psr.notification.service.NotificationService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/notifications")
+@Tag(name = "Notification", description = "알림 API")
+@SecurityRequirement(name = "Bearer")
 class NotificationController(
     private val notificationService: NotificationService
 ) {

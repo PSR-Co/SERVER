@@ -6,10 +6,14 @@ import com.psr.psr.cs.dto.response.NoticeListRes
 import com.psr.psr.cs.dto.response.NoticeRes
 import com.psr.psr.cs.service.CsService
 import com.psr.psr.global.dto.BaseResponse
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/cs")
+@Tag(name = "CS", description = "CS API")
+@SecurityRequirement(name = "Bearer")
 class CsController(
         private val csService: CsService
 ) {

@@ -11,6 +11,8 @@ import com.psr.psr.order.dto.OrderListRes
 import com.psr.psr.order.dto.OrderReq
 import com.psr.psr.order.dto.OrderRes
 import com.psr.psr.order.service.OrderService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/orders")
+@Tag(name = "Order", description = "요청 API")
+@SecurityRequirement(name = "Bearer")
 class OrderController(
     private val orderService: OrderService
 ) {

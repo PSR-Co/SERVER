@@ -9,7 +9,10 @@ import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
 import com.psr.psr.review.dto.ReviewRes
 import com.psr.psr.review.service.ReviewService
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
@@ -18,6 +21,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@Tag(name = "Review", description = "리뷰 API")
+@SecurityRequirement(name = "Bearer")
 class ReviewController(
     private val reviewService: ReviewService
 ) {
@@ -55,7 +60,7 @@ class ReviewController(
     fun getProductReviews(
         @AuthenticationPrincipal userAccount: UserAccount,
         @PathVariable productId: Long,
-        @PageableDefault(size = 8, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
+        @ParameterObject @PageableDefault(size = 8, sort = ["id"], direction = Sort.Direction.DESC) pageable: Pageable
     ): BaseResponse<Page<ReviewListRes>> {
         return BaseResponse(reviewService.getProductReviews(userAccount.getUser(), productId, pageable))
     }

@@ -6,14 +6,12 @@ import com.psr.psr.global.jwt.utils.JwtUtils
 import com.psr.psr.user.service.RedisService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -55,10 +53,13 @@ class WebSecurityConfig(
                 c.requestMatchers("/users/phone/*").permitAll()
                 c.requestMatchers("/users/email/search").permitAll()
                 c.requestMatchers("/users/password").permitAll()
+                c.requestMatchers("/v3/api-docs/**").permitAll()
+                c.requestMatchers("/api/**", "/graphiql", "/graphql",
+                    "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
+                    "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html").permitAll()
                 c.anyRequest().authenticated()
             }
             .apply(JwtSecurityConfig(jwtUtils, redisService))
-
         return http.build()
     }
 
