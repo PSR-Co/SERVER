@@ -108,9 +108,14 @@ class ProductController(
         /**
          * 찜 목록
          */
+        @Operation(summary = "찜 목록(박소정)", description = "찜 목록을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/likes")
         fun getLikeProducts(@AuthenticationPrincipal userAccount: UserAccount,
-                            @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetLikeProductsRes> {
+                            @ParameterObject @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetLikeProductsRes> {
                 return BaseResponse(productService.getLikeProducts(userAccount.getUser(), pageable))
         }
 
