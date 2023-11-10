@@ -229,11 +229,16 @@ class ProductController(
         /**
          * 상품 검색
          */
+        @Operation(summary = "상품 검색(박소정)", description = "상품을 검색한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/search")
         fun searchProducts(@AuthenticationPrincipal userAccount: UserAccount,
-                           @RequestParam(required = true) keyword: String,
-                           @RequestParam(required = false, defaultValue = RECENT) sortType: String,
-                           @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetSearchProducts> {
+                           @Parameter(description = "(Long) 검색어", example = "목도리") @RequestParam(required = true) keyword: String,
+                           @Parameter(description = "(Long) 상품 정렬 (최신순 <br> 인기순)", example = "최신순") @RequestParam(required = false, defaultValue = RECENT) sortType: String,
+                           @ParameterObject @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetSearchProducts> {
                 return BaseResponse(productService.searchProducts(userAccount.getUser(), keyword, sortType, pageable))
         }
 
