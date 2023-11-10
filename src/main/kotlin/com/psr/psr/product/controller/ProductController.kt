@@ -8,9 +8,16 @@ import com.psr.psr.product.dto.request.CreateproductReq
 import com.psr.psr.product.dto.request.ReportProductReq
 import com.psr.psr.product.dto.response.*
 import com.psr.psr.product.service.ProductService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PageableDefault
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -28,10 +35,21 @@ class ProductController(
         /**
          * 상품 메인 조회
          */
+        @Operation(summary = "상품 메인 조회(박소정)", description = "상품 메인 목록을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "400",
+                    description = "올바르지 않은 사용자 카테고리입니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @GetMapping()
         fun getProducts(@AuthenticationPrincipal userAccount: UserAccount,
-                        @RequestParam(required = false) category: String,
-                        @PageableDefault(size = 8) pageable: Pageable): BaseResponse<GetProductsRes> {
+                        @Parameter(description = "(String) 카테고리(null = 관심목록) <br>" +
+                                "방송가능 상품소싱 <br> 쇼호스트 구인 <br> 라이브커머스 대행 <br> 라이브커머스 교육 <br> 스마트스토어 런칭 <br> 영상편집 <br> 강사매칭 <br> SNS 마케팅 <br> 홍보물 디자인",) @RequestParam(required = false) category: String,
+                        @ParameterObject  @PageableDefault(size = 8) pageable: Pageable): BaseResponse<GetProductsRes> {
                 return BaseResponse(productService.getProducts(userAccount.getUser(), category, pageable));
         }
 
