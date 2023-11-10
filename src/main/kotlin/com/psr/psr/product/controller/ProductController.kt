@@ -205,6 +205,21 @@ class ProductController(
         /**
          * 상품 삭제
          */
+        @Operation(summary = "상품 삭제(박소정)", description = "상품을 삭제한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "400",
+                    description = "해당 상품을 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                ),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "해당 글 작성자가 아닙니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @DeleteMapping("/{productId}")
         fun deleteProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @PathVariable productId: Long): BaseResponse<Unit> {
