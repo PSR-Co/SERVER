@@ -245,9 +245,24 @@ class ProductController(
         /**
          * 상품 수정
          */
+        @Operation(summary = "상품 수정(박소정)", description = "상품을 수정한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "400",
+                    description = "해당 상품을 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                ),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "해당 글 작성자가 아닙니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @PatchMapping("/{productId}")
         fun modifyProduct(@AuthenticationPrincipal userAccount: UserAccount,
-                          @PathVariable productId: Long,
+                          @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long,
                           @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
                 return BaseResponse(productService.modifyProduct(userAccount.getUser(), productId, request))
         }
