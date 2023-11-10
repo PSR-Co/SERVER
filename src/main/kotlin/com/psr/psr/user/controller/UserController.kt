@@ -173,9 +173,25 @@ class UserController(
         /**
          * 사업자 등록 번호 인증
          */
-        @Operation(summary = "사업자 등록 번호 인증 (장채은)", description = "사업자 등록 번호를 인증한다.")
+        @Operation(summary = "[토큰 X] 사업자 등록 번호 인증 (장채은)", description = "사업자 등록 번호를 인증한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "variable + 을(를) 입력해주세요.<br>" +
+                                        "정상 사업자가 아닙니다. (휴업자 or 폐업자)",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),
+                        ApiResponse(
+                                responseCode = "404",
+                                description = "사업자를 찾을 수 없습니다.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/eid")
         fun validateEid(@RequestBody @Validated userEidReq: UserEidReq) : BaseResponse<Boolean> {
+                // todo: 이미 가입되어 있는 사업자인지 질문 필요
                 userService.validateEid(userEidReq)
                 return BaseResponse(true)
         }
@@ -184,6 +200,10 @@ class UserController(
          * 마이페이지 내 정보 화면
          */
         @Operation(summary = "마이페이지 정보 확인 (장채은)", description = "마이페이지 내 정보를 확인한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/mypage")
         fun getMyPageInfo(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<MyPageInfoRes>{
                return BaseResponse(userService.getMyPageInfo(userAccount.getUser()))
@@ -192,7 +212,21 @@ class UserController(
         /**
          * 토큰 재발급
          */
-        @Operation(summary = "토큰 재발급 (장채은)", description = "토큰을 재발급한다.")
+        @Operation(summary = "[토큰 X] 토큰 재발급 (장채은)", description = "토큰을 재발급한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "401",
+                                description = "유효하지 않은 토큰 값입니다.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),
+                        ApiResponse(
+                                responseCode = "404",
+                                description = "사용자를 찾을 수 없습니다.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/reissue")
         fun reissueToken(@RequestBody @Validated tokenDto: TokenDto) : BaseResponse<TokenDto>{
                 return BaseResponse(userService.reissueToken(tokenDto))
@@ -211,7 +245,7 @@ class UserController(
         /**
          * 비밀번호 재설정 except Token
          */
-        @Operation(summary = "비밀번호 재설정 (장채은)", description = "비밀번호를 재설정한다.")
+        @Operation(summary = "[토큰 X] 비밀번호 재설정 (장채은)", description = "비밀번호를 재설정한다.")
         @PatchMapping("/password-reset")
         fun resetPassword(@RequestBody @Validated resetPasswordReq: ResetPasswordReq) : BaseResponse<Any>{
                 userService.resetPassword(resetPasswordReq)
@@ -240,7 +274,7 @@ class UserController(
         /**
          * 휴대폰번호 전송
          */
-        @Operation(summary = "휴대폰 번호 전송 (장채은)", description = "휴대폰 번호를 전송하여 인증 코드를 확인한다.")
+        @Operation(summary = "[토큰 X] 휴대폰 번호 전송 (장채은)", description = "휴대폰 번호를 전송하여 인증 코드를 확인한다.")
         @PostMapping("/phone/check")
         fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 userService.checkValidPhone(validPhoneReq)
@@ -250,7 +284,7 @@ class UserController(
         /**
          * 회원가입을 위한 휴대폰번호 전송
          */
-        @Operation(summary = "회원가입 휴대폰 번호 전송 (장채은)", description = "회원가입을 위해 휴대폰 번호를 전송하여 인증 코드를 확인한다.")
+        @Operation(summary = "[토큰 X] 회원가입 휴대폰 번호 전송 (장채은)", description = "회원가입을 위해 휴대폰 번호를 전송하여 인증 코드를 확인한다.")
         @PostMapping("/phone/check/signup")
         fun checkValidPhoneForSignUp(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 // 이미 있는 휴대폰 번호인지 확인
@@ -263,7 +297,7 @@ class UserController(
         /**
          * 휴대폰 인증번호 조회
          */
-        @Operation(summary = "휴대폰 번호 인증번호 조회 (장채은)", description = "인증코드를 확인하여 일치하는지 확인한다. 유효기간은 5분이다.")
+        @Operation(summary = "[토큰 X] 휴대폰 번호 인증번호 조회 (장채은)", description = "인증코드를 확인하여 일치하는지 확인한다. 유효기간은 5분이다.")
         @PostMapping("/phone/validation")
         fun checkValidSmsKey(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 userService.checkValidSmsKey(validPhoneReq.phone, validPhoneReq.smsKey!!)
@@ -273,7 +307,7 @@ class UserController(
         /**
          * 아이디 + 인증번호 조회
          */
-        @Operation(summary = "아이디 찾기를 위한 인증번호 조회 (장채은)", description = "휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
+        @Operation(summary = "[토큰 X] 아이디 찾기를 위한 인증번호 조회 (장채은)", description = "휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
         @PostMapping("/email/search")
         fun findEmailSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<EmailRes>{
                 if(!StringUtils.hasText(findIdPwReq.name)) throw BaseException(BaseResponseCode.NOT_EMPTY_NAME)
@@ -283,7 +317,7 @@ class UserController(
         /**
          * 비밀번호 변경 + 인증번호 조회
          */
-        @Operation(summary = "비밀번호 재설정을 위한 인증번호 조회  (장채은)", description = "이메일 + 휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
+        @Operation(summary = "[토큰 X] 비밀번호 재설정을 위한 인증번호 조회  (장채은)", description = "이메일 + 휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
         @PostMapping("/password")
         fun findPWSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<Any>{
                 if(!StringUtils.hasText(findIdPwReq.email)) throw BaseException(BaseResponseCode.NOT_EMPTY_EMAIL)

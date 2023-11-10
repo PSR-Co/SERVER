@@ -6,10 +6,10 @@ import org.jetbrains.annotations.NotNull
 
 data class TokenDto(
     @field:NotNull
-    @Schema(type = "String", description = "AccessToken", example = "bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTY3NTg2OTcsInVzZXJJZHgiOjEsInN1YiI6IjEifQ.DSBuBlStkjhT05vuzjWd-cg7naG5KikUxII734u3nUw")
+    @Schema(type = "String", description = "AccessToken", required = true, example = "bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTY3NTg2OTcsInVzZXJJZHgiOjEsInN1YiI6IjEifQ.DSBuBlStkjhT05vuzjWd-cg7naG5KikUxII734u3nUw")
     var accessToken: String,
     @field:NotNull
-    @Schema(type = "String", description = "AccessToken", example = "bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTY3NTg2OTcsInVzZXJJZHgiOjEsInN1YiI6IjEifQ.DSBuBlStkjhT05vuzjWd-cg7naG5KikUxII734u3nUw")
+    @Schema(type = "String", description = "AccessToken", required = true, example = "bearer eyJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2OTY3NTg2OTcsInVzZXJJZHgiOjEsInN1YiI6IjEifQ.DSBuBlStkjhT05vuzjWd-cg7naG5KikUxII734u3nUw")
     var refreshToken: String,
     @Schema(type = "String", description = "역할", example = "일반", allowableValues = ["일반", "사업자", "쇼호스트", "관리자"])
     val type: String ?= null
