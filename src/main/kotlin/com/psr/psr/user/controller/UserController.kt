@@ -47,13 +47,17 @@ class UserController(
                                         "올바르지 않은 휴대폰 형식입니다.<br>" +
                                         "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다<br>" +
                                         "닉네임은 한글, 영어, 숫자만 입력해주세요. (10글자)<br>" +
-                                        "이미 가입되어 있는 이메일입니다.<br>" +
-                                        "이미 가입되어 있는 휴대폰 번호입니다.<br>" +
-                                        "이미 가입되어 있는 닉네임입니다.<br>" +
                                         "사업자 정보를 입력해주세요.<br>" +
                                         "관리자는 한 명만 가능합니다.<br>" +
                                         "올바르지 않은 사용자 역할니다.<br>" +
                                         "variable + 을(를) 입력해주세요.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),
+                        ApiResponse(
+                                responseCode = "409",
+                                description = "이미 가입되어 있는 닉네임입니다.<br>" +
+                                        "이미 가입되어 있는 이메일입니다.<br>" +
+                                        "이미 가입되어 있는 휴대폰 번호입니다.",
                                 content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
                         )]
         )
@@ -88,6 +92,7 @@ class UserController(
         /**
          * 닉네임 중복
          */
+        @Operation(summary = "[토큰 X] 닉네임 중복 확인 (장채은)", description = "닉네임 중복을 확인 한다. 사용 가능 : True, 사용 불가 : False")
         @ApiResponses(
                 value = [
                         ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
@@ -98,7 +103,6 @@ class UserController(
                                 content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
                         )]
         )
-        @Operation(summary = "[토큰 X] 닉네임 중복 확인 (장채은)", description = "닉네임 중복을 확인 한다. 사용 가능 : True, 사용 불가 : False")
         @PostMapping("/nickname")
         fun checkDuplicateNickname (@RequestBody @Validated nicknameReq: CheckNicknameReq) : BaseResponse<Boolean>{
                 // 사용 가능 : True, 사용 불가 : False
@@ -106,9 +110,13 @@ class UserController(
         }
 
         /**
-         * 사용자 프로필 불러오기
+         * 사용자 프로필 조회
          */
-        @Operation(summary = "사용자 프로필 불러오기 (장채은)", description = "사용자 프로필을 불러온다.")
+        @Operation(summary = "사용자 프로필 조회 (장채은)", description = "사용자 프로필을 불러온다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/profile")
         fun getProfile(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<ProfileRes>{
                 return BaseResponse(userService.getProfile(userAccount.getUser()))
@@ -118,6 +126,15 @@ class UserController(
          * 사용자 프로필 변경하기
          */
         @Operation(summary = "사용자 프로필 변경 (장채은)", description = "사용자 프로필을 변경한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "409",
+                                description = "이미 가입되어 있는 닉네임입니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PatchMapping("/profile")
         fun patchProfile(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated profileReq: ProfileReq) : BaseResponse<Any> {
                 userService.patchProfile(userAccount.getUser(), profileReq)

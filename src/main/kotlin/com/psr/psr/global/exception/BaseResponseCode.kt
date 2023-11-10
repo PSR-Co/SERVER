@@ -19,10 +19,10 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     BLACKLIST_TOKEN(HttpStatus.FORBIDDEN, "로그아웃 혹은 회원 탈퇴된 유저의 토큰 값입니다."),
 
     // user
-    EXISTS_PHONE(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 휴대폰 번호입니다."),
-    EXISTS_EMAIL(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 이메일입니다."),
+    EXISTS_PHONE(HttpStatus.CONFLICT, "이미 가입되어 있는 휴대폰 번호입니다."),
+    EXISTS_EMAIL(HttpStatus.CONFLICT, "이미 가입되어 있는 이메일입니다."),
     EXISTS_MANAGER(HttpStatus.BAD_REQUEST, "관리자는 한 명만 가능합니다."),
-    EXISTS_NICKNAME(HttpStatus.BAD_REQUEST, "이미 가입되어 있는 닉네임입니다."),
+    EXISTS_NICKNAME(HttpStatus.CONFLICT, "이미 가입되어 있는 닉네임입니다."),
     NOT_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "해당 이메일로 가입한 사용자를 찾을 수 없습니다."),
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "사용자의 비밀번호가 일치하지 않습니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."),
