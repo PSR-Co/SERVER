@@ -7,6 +7,7 @@ import com.psr.psr.cs.dto.response.NoticeRes
 import com.psr.psr.cs.service.CsService
 import com.psr.psr.global.dto.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -49,7 +50,8 @@ class CsController(
                         )         ]
         )
         @GetMapping("/notices/{noticeId}")
-        fun getNotice(@PathVariable(name = "noticeId") noticeId: Long): BaseResponse<NoticeRes>{
+        fun getNotice(
+                @Parameter(description = "(Long) 공지사항 Id", example = "1") @PathVariable(name = "noticeId") noticeId: Long): BaseResponse<NoticeRes>{
                 return BaseResponse(csService.getNotice(noticeId))
         }
 
@@ -68,7 +70,8 @@ class CsController(
                 ]
         )
         @GetMapping("/faqs")
-        fun getFaqs(@RequestParam(value = "type", required = false) type: String?): BaseResponse<FaqListRes>{
+        fun getFaqs(
+                @Parameter(description = "(String) 자주 묻는 질문 타입 (계정관리/컨설팅/상품)", example = "계정관리") @RequestParam(value = "type", required = false) type: String?): BaseResponse<FaqListRes>{
                 return BaseResponse(csService.getFaqs(type))
         }
 
@@ -87,7 +90,8 @@ class CsController(
                 ]
         )
         @GetMapping("/faqs/{faqId}")
-        fun getFaq(@PathVariable(name = "faqId") faqId: Long): BaseResponse<FaqRes>{
+        fun getFaq(
+                @Parameter(description = "(Long) 자주 묻는 질문 Id", example = "1") @PathVariable(name = "faqId") faqId: Long): BaseResponse<FaqRes>{
                 return BaseResponse(csService.getFaq(faqId))
         }
 
