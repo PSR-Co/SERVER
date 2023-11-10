@@ -1,7 +1,5 @@
 package com.psr.psr.user.dto.phoneReq
 
-import com.psr.psr.user.dto.request.ValidPhoneReq
-
 data class SMSReq (
     val type: String?= "SMS",
     val contentType: String?="COMM",

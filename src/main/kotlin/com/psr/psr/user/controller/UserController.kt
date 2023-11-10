@@ -361,14 +361,17 @@ class UserController(
                         ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
                         ApiResponse(
                                 responseCode = "400",
-                                description = "naver SMS API 관련 에러입니다.<br>" +
-                                        "이미 가입되어 있는 휴대폰 번호입니다.",
+                                description = "SMS 인증코드가 알맞지 않습니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),ApiResponse(
+                                responseCode = "403",
+                                description = "SMS 인증코드 유효 시간이 만료되었습니다.<br>",
                                 content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
                         )]
         )
         @PostMapping("/phone/validation")
         fun checkValidSmsKey(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
-                userService.checkValidSmsKey(validPhoneReq.phone, validPhoneReq.smsKey!!)
+                userService.checkValidSmsKey(validPhoneReq.phone, validPhoneReq.smsKey)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
@@ -376,20 +379,51 @@ class UserController(
          * 아이디 + 인증번호 조회
          */
         @Operation(summary = "[토큰 X] 아이디 찾기를 위한 인증번호 조회 (장채은)", description = "휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "SMS 인증코드가 알맞지 않습니다.<br>" +
+                                        "사용자를 찾을 수 없습니다.<br>" +
+                                        "올바르지 않은 휴대폰 형식입니다.<br>" +
+                                        "variable + 을(를) 입력해주세요.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),ApiResponse(
+                                responseCode = "403",
+                                description = "SMS 인증코드 유효 시간이 만료되었습니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/email/search")
-        fun findEmailSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<EmailRes>{
-                if(!StringUtils.hasText(findIdPwReq.name)) throw BaseException(BaseResponseCode.NOT_EMPTY_NAME)
-                return BaseResponse(userService.findEmailSearch(findIdPwReq))
+        fun findEmailSearch(@RequestBody @Validated findIdReq: FindIdReq): BaseResponse<EmailRes>{
+                return BaseResponse(userService.findEmailSearch(findIdReq))
         }
 
         /**
          * 비밀번호 변경 + 인증번호 조회
          */
         @Operation(summary = "[토큰 X] 비밀번호 재설정을 위한 인증번호 조회  (장채은)", description = "이메일 + 휴대폰 번호로 휴대폰 인증번호 일치를 조회한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "SMS 인증코드가 알맞지 않습니다.<br>" +
+                                        "사용자를 찾을 수 없습니다.<br>" +
+                                        "올바르지 않은 휴대폰 형식입니다.<br>" +
+                                        "올바르지 않은 이메일 형식입니다.<br>" +
+                                        "variable + 을(를) 입력해주세요.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        ),ApiResponse(
+                                responseCode = "403",
+                                description = "SMS 인증코드 유효 시간이 만료되었습니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/password")
-        fun findPWSearch(@RequestBody @Validated findIdPwReq: FindIdPwReq): BaseResponse<Any>{
-                if(!StringUtils.hasText(findIdPwReq.email)) throw BaseException(BaseResponseCode.NOT_EMPTY_EMAIL)
-                userService.findPWSearch(findIdPwReq)
+        fun findPWSearch(@RequestBody @Validated findPwReq: FindPwReq): BaseResponse<Any>{
+                userService.findPWSearch(findPwReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
@@ -397,6 +431,11 @@ class UserController(
          * 마이페이지 알림 수신 여부
          */
         @Operation(summary = "마이페이지 알림 수신 여부 (장채은)", description = "알림 수신 여부를 변경한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")
+                ]
+        )
         @PostMapping("/notification")
         fun postNotiStatus(@AuthenticationPrincipal userAccount: UserAccount): BaseResponse<Any>{
                 return BaseResponse(userService.postNotiStatus(userAccount.getUser()))

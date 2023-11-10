@@ -334,19 +334,19 @@ class UserService(
     }
 
     // 이메일 찾기를 위한 인증
-    fun findEmailSearch(findIdPwReq: FindIdPwReq): EmailRes {
+    fun findEmailSearch(findIdReq: FindIdReq): EmailRes {
         // 인증번호 확인
-        checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
-        val user: User = userRepository.findByNameAndPhoneAndStatus(findIdPwReq.name!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+        checkValidSmsKey(findIdReq.phone, findIdReq.smsKey)
+        val user: User = userRepository.findByNameAndPhoneAndStatus(findIdReq.name, findIdReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
         // 사용자 이메일 전달
         return EmailRes.toEmailResDto(user)
     }
 
     // 비밀번호 변경을 위한 인증
-    fun findPWSearch(findIdPwReq: FindIdPwReq) {
+    fun findPWSearch(findIdPwReq: FindPwReq) {
         // 인증번호 확인
         checkValidSmsKey(findIdPwReq.phone, findIdPwReq.smsKey)
-        userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email!!, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
+        userRepository.findByEmailAndPhoneAndStatus(findIdPwReq.email, findIdPwReq.phone, ACTIVE_STATUS) ?: throw BaseException(NOT_FOUND_USER)
     }
 
     // 마이페이지 알림 수신 여부
