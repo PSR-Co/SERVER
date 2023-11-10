@@ -196,7 +196,6 @@ class OrderController(
         @AuthenticationPrincipal userAccount: UserAccount,
         @Parameter(description = "(Long) 요청 Id", example = "1") @PathVariable orderId: Long,
         @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "요청 상태",
             content = [Content(
                 examples = [ExampleObject(
                     value = "{" +
@@ -204,7 +203,6 @@ class OrderController(
                             "}"
                 )], schema = Schema(title = "status", allowableValues = ["진행중", "진행완료", "요청취소"])
             )]
-
         ) @RequestBody status: Map<String, String>
     ): BaseResponse<Unit> {
         status[Constant.Order.STATUS] ?: return BaseResponse(BaseResponseCode.NULL_ORDER_STATUS)
