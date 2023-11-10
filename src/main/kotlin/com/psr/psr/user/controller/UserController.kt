@@ -50,6 +50,7 @@ class UserController(
                                         "사업자 정보를 입력해주세요.<br>" +
                                         "관리자는 한 명만 가능합니다.<br>" +
                                         "올바르지 않은 사용자 역할니다.<br>" +
+                                        "올바르지 않은 상품 카테고리입니다.<br>" +
                                         "variable + 을(를) 입력해주세요.",
                                 content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
                         ),
@@ -280,6 +281,16 @@ class UserController(
          * 관심 목록 변경
          */
         @Operation(summary = "관심 목록 변경 (장채은)", description = "관심 목록을 변경한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "사용자 관심 주제는 1개이상, 3개 이하여야하며, 중복된 값이 포함되어 있지 않아야 합니다<br>" +
+                                        "올바르지 않은 상품 카테고리입니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PatchMapping("/watchlist")
         fun patchWatchLists(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated userInterestListReq: UserInterestListDto) : BaseResponse<Any>{
                 userService.patchWatchLists(userAccount.getUser(), userInterestListReq)
@@ -290,6 +301,10 @@ class UserController(
          * 관심 목록 조회
          */
         @Operation(summary = "관심 목록 조회 (장채은)", description = "관심 목록을 조회한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/watchlist")
         fun getWatchList(@AuthenticationPrincipal userAccount: UserAccount) : BaseResponse<UserInterestListDto>{
                 return BaseResponse(userService.getWatchList(userAccount.getUser()))
