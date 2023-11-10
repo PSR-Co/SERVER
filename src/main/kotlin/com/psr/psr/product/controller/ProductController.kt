@@ -153,6 +153,11 @@ class ProductController(
         /**
          * 홈 화면 조회 - 상품
          */
+        @Operation(summary = "홈 화면 조회 - 상품(박소정)", description = "홈 화면 - 상품을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/home")
         fun getHomePage(): BaseResponse<GetHomePageRes> {
                 return BaseResponse(productService.getHomePage())
