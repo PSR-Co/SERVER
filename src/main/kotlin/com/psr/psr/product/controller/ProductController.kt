@@ -122,9 +122,29 @@ class ProductController(
         /**
          * 상품 신고
          */
+        @Operation(summary = "상품 신고(박소정)", description = "상품을 신고한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "400",
+                    description = "올바르지 않은 신고 카테고리입니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                ),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "해당 상품을 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                ),
+                ApiResponse(
+                    responseCode = "409",
+                    description = "이미 신고 완료되었습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @PostMapping("/{productId}/report")
         fun reportProduct(@AuthenticationPrincipal userAccount: UserAccount,
-                          @PathVariable productId: Long,
+                          @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long,
                           @RequestBody @Valid request: ReportProductReq): BaseResponse<Unit> {
                 val category = ReportCategory.findByValue(request.category)
                 return BaseResponse(productService.reportProduct(userAccount.getUser(), productId, category))
