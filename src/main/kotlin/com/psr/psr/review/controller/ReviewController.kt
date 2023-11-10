@@ -9,6 +9,12 @@ import com.psr.psr.review.dto.ReviewListRes
 import com.psr.psr.review.dto.ReviewReq
 import com.psr.psr.review.dto.ReviewRes
 import com.psr.psr.review.service.ReviewService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -88,9 +94,19 @@ class ReviewController(
     /**
      * 상품 상세 조회 - 리뷰
      */
+    @Operation(summary = "상품 상세 조회 - 리뷰(박소정)", description = "상품 상세의 리뷰를 조회한다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+            ApiResponse(
+                responseCode = "404",
+                description = "해당 상품을 찾을 수 없습니다.",
+                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+            )]
+    )
     @GetMapping("products/{productId}/reviews/top")
     fun getProductDetail(@AuthenticationPrincipal userAccount: UserAccount,
-                         @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
+                         @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
         return BaseResponse(reviewService.getProductDetail(userAccount.getUser(), productId));
     }
 }

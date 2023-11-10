@@ -94,6 +94,11 @@ class CsController(
         /**
          * 홈 화면 조회 - 공지사항
          */
+        @Operation(summary = "홈 화면 조회 - 공지사항(박소정)", description = "홈 화면의 공지사항을 조회한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/notices/home")
         fun getHomePage(): BaseResponse<NoticeListRes> {
                 return BaseResponse(csService.getHomePage())
