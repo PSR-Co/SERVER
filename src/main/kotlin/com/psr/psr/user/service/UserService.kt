@@ -297,7 +297,7 @@ class UserService(
 
     // 유효 휴대폰 검증
     @Transactional
-    fun checkValidPhone(validPhoneReq: ValidPhoneReq) {
+    fun checkValidPhone(smsReq: SendSmsReq) {
         val time = System.currentTimeMillis()
         val url = FIRST_URL + MIDDLE_URL + serviceId + FINAL_URL
         // -> 이미 인코딩이 되어 있는 serviceKey이 재인코딩이 되지 않기 위해
@@ -314,7 +314,7 @@ class UserService(
             .defaultHeader(ACCESS_KEY_HEADER, accessKey) // accessKey
             .defaultHeader(SIGNATURE_HEADER, makeSignature(time))
             .build().post()
-            .bodyValue(SMSReq.toSMSReqDto(validPhoneReq, smsKey, sendPhone))
+            .bodyValue(SMSReq.toSMSReqDto(smsReq.phone, smsKey, sendPhone))
             .retrieve()
             .onStatus({ it.isError }) { response ->
                 throw BaseException(PHONE_ERROR)
@@ -322,7 +322,7 @@ class UserService(
             .bodyToMono(String::class.java)
             .block()
         // 휴대폰 smsKey 만료시간
-        smsUtils.createSmsKey(validPhoneReq.phone, smsKey)
+        smsUtils.createSmsKey(smsReq.phone, smsKey)
     }
 
     // 휴대폰 인증번호 조회

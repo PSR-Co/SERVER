@@ -324,8 +324,8 @@ class UserController(
                         )]
         )
         @PostMapping("/phone/check")
-        fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
-                userService.checkValidPhone(validPhoneReq)
+        fun checkValidPhone(@RequestBody @Validated sendSmsReq: SendSmsReq) : BaseResponse<Any>{
+                userService.checkValidPhone(sendSmsReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
@@ -344,11 +344,11 @@ class UserController(
                         )]
         )
         @PostMapping("/phone/check/signup")
-        fun checkValidPhoneForSignUp(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
+        fun checkValidPhoneForSignUp(@RequestBody @Validated sendSmsReq: SendSmsReq) : BaseResponse<Any>{
                 // 이미 있는 휴대폰 번호인지 확인
-                if(userService.checkDuplicatePhone(validPhoneReq.phone)) throw BaseException(BaseResponseCode.EXISTS_PHONE)
+                if(userService.checkDuplicatePhone(sendSmsReq.phone)) throw BaseException(BaseResponseCode.EXISTS_PHONE)
                 // 휴대폰 번호 전송
-                userService.checkValidPhone(validPhoneReq)
+                userService.checkValidPhone(sendSmsReq)
                 return BaseResponse(BaseResponseCode.SUCCESS)
         }
 
@@ -356,6 +356,16 @@ class UserController(
          * 휴대폰 인증번호 조회
          */
         @Operation(summary = "[토큰 X] 휴대폰 번호 인증번호 조회 (장채은)", description = "인증코드를 확인하여 일치하는지 확인한다. 유효기간은 5분이다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "naver SMS API 관련 에러입니다.<br>" +
+                                        "이미 가입되어 있는 휴대폰 번호입니다.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/phone/validation")
         fun checkValidSmsKey(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 userService.checkValidSmsKey(validPhoneReq.phone, validPhoneReq.smsKey!!)

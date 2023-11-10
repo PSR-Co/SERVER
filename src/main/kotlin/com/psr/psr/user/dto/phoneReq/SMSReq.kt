@@ -11,8 +11,8 @@ data class SMSReq (
     val messages: List<MessageReq>
 ){
     companion object{
-        fun toSMSReqDto(validPhoneReq: ValidPhoneReq, key: String, sendPhone: String) : SMSReq{
-            val message = MessageReq(to = validPhoneReq.phone)
+        fun toSMSReqDto(phone: String, key: String, sendPhone: String) : SMSReq{
+            val message = MessageReq(to = phone)
             return SMSReq(
                 from = sendPhone,
                 content = "[PSR] 인증번호는 [ $key ] 을 입력해주세요",
