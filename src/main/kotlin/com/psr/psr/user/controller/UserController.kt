@@ -314,6 +314,15 @@ class UserController(
          * 휴대폰번호 전송
          */
         @Operation(summary = "[토큰 X] 휴대폰 번호 전송 (장채은)", description = "휴대폰 번호를 전송하여 인증 코드를 확인한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "naver SMS API 관련 에러입니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/phone/check")
         fun checkValidPhone(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 userService.checkValidPhone(validPhoneReq)
@@ -324,6 +333,16 @@ class UserController(
          * 회원가입을 위한 휴대폰번호 전송
          */
         @Operation(summary = "[토큰 X] 회원가입 휴대폰 번호 전송 (장채은)", description = "회원가입을 위해 휴대폰 번호를 전송하여 인증 코드를 확인한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "naver SMS API 관련 에러입니다.<br>" +
+                                        "이미 가입되어 있는 휴대폰 번호입니다.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PostMapping("/phone/check/signup")
         fun checkValidPhoneForSignUp(@RequestBody @Validated validPhoneReq: ValidPhoneReq) : BaseResponse<Any>{
                 // 이미 있는 휴대폰 번호인지 확인
