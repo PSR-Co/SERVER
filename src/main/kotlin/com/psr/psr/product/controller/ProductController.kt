@@ -89,9 +89,19 @@ class ProductController(
         /**
          * 유저 상품 목록
          */
+        @Operation(summary = "유저 상품 목록(박소정)", description = "유저의 상품 목록을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "사용자를 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @GetMapping("/users/{userId}")
-        fun getProductsByUser(@PathVariable userId: Long,
-                              @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetProductsByUserRes> {
+        fun getProductsByUser(@Parameter(description = "(Long) 유저 id", example = "1") @PathVariable userId: Long,
+                              @ParameterObject @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetProductsByUserRes> {
                 return BaseResponse(productService.getProductsByUser(userId, pageable))
         }
 
