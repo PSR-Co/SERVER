@@ -56,9 +56,19 @@ class ProductController(
         /**
          * 상품 상세 조회 - 상품
          */
+        @Operation(summary = "상품 상세 조회 - 상품(박소정)", description = "상품 상세 조회의 상품을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "해당 상품을 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @GetMapping("/{productId}")
         fun getProductDetail(@AuthenticationPrincipal userAccount: UserAccount,
-                             @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
+                             @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long): BaseResponse<GetProductDetailRes> {
                 return BaseResponse(productService.getProductDetail(userAccount.getUser(), productId));
         }
 
