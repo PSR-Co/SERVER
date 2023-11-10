@@ -75,9 +75,14 @@ class ProductController(
         /**
          * 마이 게시글
          */
+        @Operation(summary = "마이 게시글(박소정)", description = "나의 게시글을 조회한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @GetMapping("/myproducts")
         fun getMyProducts(@AuthenticationPrincipal userAccount: UserAccount,
-                          @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetMyProductsRes> {
+                          @ParameterObject @PageableDefault(size = 10) pageable: Pageable): BaseResponse<GetMyProductsRes> {
                 return BaseResponse(productService.getMyProducts(userAccount.getUser(), pageable));
         }
 
