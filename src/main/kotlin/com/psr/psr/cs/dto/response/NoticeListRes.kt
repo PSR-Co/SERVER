@@ -2,9 +2,11 @@ package com.psr.psr.cs.dto.response
 
 import com.psr.psr.cs.dto.response.NoticeRes.Companion.toNoticeResHome
 import com.psr.psr.cs.entity.Notice
+import io.swagger.v3.oas.annotations.media.Schema
 import java.util.stream.Collectors
 
 data class NoticeListRes (
+    @Schema(description = "공지사항 리스트")
     val noticeLists: List<NoticeRes>?
 ){
     companion object{
