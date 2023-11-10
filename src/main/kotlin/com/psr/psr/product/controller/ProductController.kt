@@ -167,6 +167,16 @@ class ProductController(
         /**
          * 상품 등록
          */
+        @Operation(summary = "상품 등록(박소정)", description = "상품을 등록한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "400",
+                    description = "상품 카테고리을 선택해주세요. <br> 상품명을 입력해주세요. <br> 상품 가격은 양수이어야 합니다. <br> 상품 설명을 입력해주세요. <br> imgUrl은 null 또는 1~5개이어야 합니다. <br> 올바르지 않은 상품 카테고리입니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @PostMapping("")
         fun createProduct(@AuthenticationPrincipal userAccount: UserAccount,
                           @RequestBody @Valid request: CreateproductReq): BaseResponse<Unit> {
