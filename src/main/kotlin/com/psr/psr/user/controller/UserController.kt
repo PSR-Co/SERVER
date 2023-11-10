@@ -131,7 +131,8 @@ class UserController(
                         ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
                         ApiResponse(
                                 responseCode = "409",
-                                description = "이미 가입되어 있는 닉네임입니다.<br>",
+                                description = "이미 가입되어 있는 닉네임입니다.<br>" +
+                                        "variable + 을(를) 입력해주세요.",
                                 content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
                         )]
         )
@@ -236,6 +237,18 @@ class UserController(
          * 비밀번호 변경화면 with Token
          */
         @Operation(summary = "비밀번호 변경 - Token (장채은)", description = "토큰을 헤더에 넣어 비밀번호를 변경한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "사용자의 비밀번호가 일치하지 않습니다.<br>" +
+                                        "사용자의 비밀번호와 변경하려는 비밀번호가 동일합니다.<br>" +
+                                        "비밀번호를 숫자, 문자, 특수문자 포함 8~15자리 이내로 입력해주세요. <br>" +
+                                        "variable + 을(를) 입력해주세요.",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PatchMapping("/password-change")
         fun changePassword(@AuthenticationPrincipal userAccount: UserAccount, @RequestBody @Validated passwordReq: ChangePasswordReq) : BaseResponse<Any>{
                 userService.changePassword(userAccount.getUser(), passwordReq)
@@ -246,6 +259,17 @@ class UserController(
          * 비밀번호 재설정 except Token
          */
         @Operation(summary = "[토큰 X] 비밀번호 재설정 (장채은)", description = "비밀번호를 재설정한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                        ApiResponse(
+                                responseCode = "400",
+                                description = "해당 이메일로 가입한 사용자를 찾을 수 없습니다.<br>" +
+                                        "사용자의 휴대폰 번호와 일치하지 않습니다.<br>" +
+                                        "사용자의 비밀번호와 변경하려는 비밀번호가 동일합니다.<br>",
+                                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                        )]
+        )
         @PatchMapping("/password-reset")
         fun resetPassword(@RequestBody @Validated resetPasswordReq: ResetPasswordReq) : BaseResponse<Any>{
                 userService.resetPassword(resetPasswordReq)
