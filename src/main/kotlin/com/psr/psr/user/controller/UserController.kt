@@ -145,6 +145,10 @@ class UserController(
          * 로그아웃
          */
         @Operation(summary = "로그아웃 (장채은)", description = "로그아웃을 한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @PatchMapping("/logout")
         fun logout(@AuthenticationPrincipal userAccount: UserAccount, request: HttpServletRequest) : BaseResponse<Any> {
                 userService.blackListToken(userAccount.getUser(), request, LOGOUT)
@@ -155,6 +159,10 @@ class UserController(
          * 회원 탈퇴
          */
         @Operation(summary = "회원탈퇴 (장채은)", description = "회원 탈퇴를 한다.")
+        @ApiResponses(
+                value = [
+                        ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+        )
         @DeleteMapping("/signout")
         fun signOut(@AuthenticationPrincipal userAccount: UserAccount, request: HttpServletRequest) : BaseResponse<Any> {
                 userService.blackListToken(userAccount.getUser(), request, INACTIVE_STATUS)
