@@ -198,7 +198,7 @@ class ProductController(
         )
         @PostMapping("/{productId}/likes")
         fun likeProduct(@AuthenticationPrincipal userAccount: UserAccount,
-                        @PathVariable productId: Long): BaseResponse<Unit> {
+                        @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long): BaseResponse<Unit> {
                 return BaseResponse(productService.likeProduct(userAccount.getUser(), productId))
         }
 
@@ -222,7 +222,7 @@ class ProductController(
         )
         @DeleteMapping("/{productId}")
         fun deleteProduct(@AuthenticationPrincipal userAccount: UserAccount,
-                          @PathVariable productId: Long): BaseResponse<Unit> {
+                          @Parameter(description = "(Long) 상품 id", example = "1") @PathVariable productId: Long): BaseResponse<Unit> {
                 return BaseResponse(productService.deleteProduct(userAccount.getUser(), productId))
         }
 
