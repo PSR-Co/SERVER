@@ -186,6 +186,16 @@ class ProductController(
         /**
          * 상품 찜
          */
+        @Operation(summary = "상품 찜(박소정)", description = "상품을 찜한다.")
+        @ApiResponses(
+            value = [
+                ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+                ApiResponse(
+                    responseCode = "404",
+                    description = "해당 상품을 찾을 수 없습니다.",
+                    content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+                )]
+        )
         @PostMapping("/{productId}/likes")
         fun likeProduct(@AuthenticationPrincipal userAccount: UserAccount,
                         @PathVariable productId: Long): BaseResponse<Unit> {
