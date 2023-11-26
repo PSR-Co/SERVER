@@ -20,6 +20,19 @@ class ChatRoomService(
     fun createChatRoom(user: User, orderId: Long) {
         val order: Order = orderRepository.findByIdAndStatus(orderId, Constant.UserStatus.ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_ORDER)
-        chatRoomRepository.save(ChatRoom.toEntity(user, order));
+        chatRoomRepository.save(ChatRoom.toEntity(user, order))
+    }
+
+    @Transactional
+    fun leaveChatRoom(user: User, chatRoomId: Long) {
+        val chatRoom: ChatRoom = chatRoomRepository.findByIdAndStatus(chatRoomId, Constant.UserStatus.ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_CHATROOM)
+        chatRoom.leave(user)
+        checkChatRoom(chatRoom)
+    }
+
+    private fun checkChatRoom(chatRoom: ChatRoom) {
+        if(chatRoom.senderUser==null && chatRoom.receiverUser==null)
+            chatRoomRepository.delete(chatRoom)
     }
 }

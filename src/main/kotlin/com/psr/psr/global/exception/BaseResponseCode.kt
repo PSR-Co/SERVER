@@ -77,7 +77,10 @@ enum class BaseResponseCode(status: HttpStatus, message: String) {
     // product
     NOT_FOUND_PRODUCT(HttpStatus.NOT_FOUND, "해당 상품을 찾을 수 없습니다."),
     NULL_PRODUCT_ID(HttpStatus.BAD_REQUEST, "상품ID를 입력해주세요."),
-    INVALID_PRODUCT_USER(HttpStatus.BAD_REQUEST, "해당 글 작성자가 아닙니다.");
+    INVALID_PRODUCT_USER(HttpStatus.BAD_REQUEST, "해당 글 작성자가 아닙니다."),
+
+    // chatRoom
+    NOT_FOUND_CHATROOM(HttpStatus.NOT_FOUND, "해당 채팅방을 찾을 수 없습니다.");
 
     val status: HttpStatus = status
     val message: String = message
