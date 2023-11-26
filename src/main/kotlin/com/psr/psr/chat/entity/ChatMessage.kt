@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull
 @Entity
 data class ChatMessage(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(nullable = false, name = "sender_user_id")
@@ -21,4 +21,14 @@ data class ChatMessage(
     @NotNull
     var message: String
 
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun toEntity(user: User, chatRoom: ChatRoom, message: String): ChatMessage {
+            return ChatMessage(
+                senderUser = user,
+                chatRoom = chatRoom,
+                message = message
+            )
+        }
+    }
+}
