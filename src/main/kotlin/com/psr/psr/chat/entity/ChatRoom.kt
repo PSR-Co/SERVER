@@ -1,13 +1,14 @@
 package com.psr.psr.chat.entity
 
 import com.psr.psr.global.entity.BaseEntity
+import com.psr.psr.order.entity.Order
 import com.psr.psr.user.entity.User
 import jakarta.persistence.*
 
 @Entity
 data class ChatRoom(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "sender_user_id")
@@ -15,6 +16,21 @@ data class ChatRoom(
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "receiver_user_id")
-        var receiverUser: User
+        var receiverUser: User,
 
-): BaseEntity()
+        @OneToOne
+        @JoinColumn(nullable = true, name = "order_id")
+        var order: Order
+
+) : BaseEntity() {
+        companion object {
+                fun toEntity(user: User, order: Order): ChatRoom {
+                        return ChatRoom(
+                                senderUser = user,
+                                receiverUser = order.user,
+                                order = order
+                        )
+                }
+        }
+}
+
