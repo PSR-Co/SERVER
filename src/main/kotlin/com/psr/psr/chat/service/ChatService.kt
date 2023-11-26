@@ -1,6 +1,9 @@
 package com.psr.psr.chat.service
 
+import com.psr.psr.chat.dto.request.ChatMessageReq
+import com.psr.psr.chat.entity.ChatMessage
 import com.psr.psr.chat.entity.ChatRoom
+import com.psr.psr.chat.repository.ChatMessageRepository
 import com.psr.psr.chat.repository.ChatRoomRepository
 import com.psr.psr.global.Constant
 import com.psr.psr.global.exception.BaseException
@@ -12,9 +15,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
-class ChatRoomService(
+class ChatService(
     private val orderRepository: OrderRepository,
-    private val chatRoomRepository: ChatRoomRepository
+    private val chatRoomRepository: ChatRoomRepository,
+    private val chatMessageRepository: ChatMessageRepository
 ) {
     @Transactional
     fun createChatRoom(user: User, orderId: Long) {
@@ -34,5 +38,12 @@ class ChatRoomService(
     private fun checkChatRoom(chatRoom: ChatRoom) {
         if(chatRoom.senderUser==null && chatRoom.receiverUser==null)
             chatRoomRepository.delete(chatRoom)
+    }
+
+    @Transactional
+    fun createChatMessage(user: User, chatRoomId: Long, request: ChatMessageReq) {
+        val chatRoom: ChatRoom = chatRoomRepository.findByIdAndStatus(chatRoomId, Constant.UserStatus.ACTIVE_STATUS)
+            ?: throw BaseException(BaseResponseCode.NOT_FOUND_CHATROOM)
+        chatMessageRepository.save(ChatMessage.toEntity(user, chatRoom, request.message))
     }
 }
