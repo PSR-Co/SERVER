@@ -11,18 +11,23 @@ data class ChatRoom(
         var id: Long? = null,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "sender_user_id")
-        var senderUser: User,
+        @JoinColumn(nullable = true, name = "sender_user_id")
+        var senderUser: User?,
 
         @ManyToOne
-        @JoinColumn(nullable = false, name = "receiver_user_id")
-        var receiverUser: User,
+        @JoinColumn(nullable = true, name = "receiver_user_id")
+        var receiverUser: User?,
 
         @OneToOne
-        @JoinColumn(nullable = true, name = "order_id")
-        var order: Order
+        @JoinColumn(nullable = false, name = "order_id")
+        var order: Order?
 
 ) : BaseEntity() {
+        fun leave(user: User) {
+                if (senderUser == user) senderUser = null
+                if (receiverUser == user) receiverUser = null
+        }
+
         companion object {
                 fun toEntity(user: User, order: Order): ChatRoom {
                         return ChatRoom(
