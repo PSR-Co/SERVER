@@ -8,7 +8,7 @@ import jakarta.persistence.*
 @Entity
 data class ChatRoom(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-        var id: Long,
+        var id: Long? = null,
 
         @ManyToOne
         @JoinColumn(nullable = false, name = "sender_user_id")
@@ -22,4 +22,15 @@ data class ChatRoom(
         @JoinColumn(nullable = true, name = "order_id")
         var order: Order
 
-): BaseEntity()
+) : BaseEntity() {
+        companion object {
+                fun toEntity(user: User, order: Order): ChatRoom {
+                        return ChatRoom(
+                                senderUser = user,
+                                receiverUser = order.user,
+                                order = order
+                        )
+                }
+        }
+}
+
