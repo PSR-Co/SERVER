@@ -1,6 +1,7 @@
 package com.psr.psr.chat.service
 
 import com.psr.psr.chat.dto.request.ChatMessageReq
+import com.psr.psr.chat.dto.response.GetChatRoomsRes
 import com.psr.psr.chat.entity.ChatMessage
 import com.psr.psr.chat.entity.ChatRoom
 import com.psr.psr.chat.repository.ChatMessageRepository
@@ -36,7 +37,7 @@ class ChatService(
     }
 
     private fun checkChatRoom(chatRoom: ChatRoom) {
-        if(chatRoom.senderUser==null && chatRoom.receiverUser==null)
+        if (chatRoom.senderUser == null && chatRoom.receiverUser == null)
             chatRoomRepository.delete(chatRoom)
     }
 
@@ -45,5 +46,11 @@ class ChatService(
         val chatRoom: ChatRoom = chatRoomRepository.findByIdAndStatus(chatRoomId, Constant.UserStatus.ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_CHATROOM)
         chatMessageRepository.save(ChatMessage.toEntity(user, chatRoom, request.message))
+    }
+
+    fun getChatRooms(user: User): GetChatRoomsRes? {
+        val chatRooms: List<ChatRoom>? = chatRoomRepository.getChatRooms(user)
+        if (chatRooms?.isEmpty() == true) return null;
+        return chatMessageRepository.getRecentChat(user, chatRooms!!)
     }
 }

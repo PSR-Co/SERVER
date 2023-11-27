@@ -1,6 +1,7 @@
 package com.psr.psr.chat.controller
 
 import com.psr.psr.chat.dto.request.ChatMessageReq
+import com.psr.psr.chat.dto.response.GetChatRoomsRes
 import com.psr.psr.chat.service.ChatService
 import com.psr.psr.global.dto.BaseResponse
 import com.psr.psr.global.jwt.UserAccount
@@ -78,11 +79,28 @@ class ChatController(
             )]
     )
     @PostMapping("/{chatRoomId}")
-    fun createChatMessage(@AuthenticationPrincipal userAccount: UserAccount,
-                          @Parameter(description = "(Long) 채팅방 id", example = "1") @PathVariable chatRoomId: Long,
-                          @RequestBody @Valid request: ChatMessageReq
+    fun createChatMessage(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @Parameter(description = "(Long) 채팅방 id", example = "1") @PathVariable chatRoomId: Long,
+        @RequestBody @Valid request: ChatMessageReq
     ): BaseResponse<Unit> {
         return BaseResponse(chatService.createChatMessage(userAccount.getUser(), chatRoomId, request))
+    }
+
+
+    /**
+     * 채팅방 목록 조회
+     */
+    @Operation(summary = "채팅방 목록 조회(박소정)", description = "채팅방 목록을 조회한다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "요청에 성공했습니다.")]
+    )
+    @GetMapping("/rooms")
+    fun getChatRooms(
+        @AuthenticationPrincipal userAccount: UserAccount
+    ): BaseResponse<GetChatRoomsRes?> {
+        return BaseResponse(chatService.getChatRooms(userAccount.getUser()));
     }
 
 

@@ -19,9 +19,12 @@ data class ChatMessage(
     var chatRoom: ChatRoom,
 
     @NotNull
-    var message: String
+    var message: String,
 
-) : BaseEntity() {
+    @NotNull
+    var isRead: Boolean = false,
+
+    ) : BaseEntity() {
     companion object {
         fun toEntity(user: User, chatRoom: ChatRoom, message: String): ChatMessage {
             return ChatMessage(
