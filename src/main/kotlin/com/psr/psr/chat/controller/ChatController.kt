@@ -1,6 +1,8 @@
 package com.psr.psr.chat.controller
 
 import com.psr.psr.chat.dto.request.ChatMessageReq
+import com.psr.psr.chat.dto.response.ChatMessagesRes
+import com.psr.psr.chat.dto.response.GetChatMessagesRes
 import com.psr.psr.chat.dto.response.GetChatRoomsRes
 import com.psr.psr.chat.service.ChatService
 import com.psr.psr.global.dto.BaseResponse
@@ -101,6 +103,26 @@ class ChatController(
         @AuthenticationPrincipal userAccount: UserAccount
     ): BaseResponse<GetChatRoomsRes?> {
         return BaseResponse(chatService.getChatRooms(userAccount.getUser()));
+    }
+
+    /**
+     * 채팅 상세 조회
+     */
+    @Operation(summary = "채팅 상세 조회(박소정)", description = "채팅방 채팅을 조회한다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "요청에 성공했습니다."),
+            ApiResponse(
+                responseCode = "404",
+                description = "해당 채팅방을 찾을 수 없습니다.",
+                content = arrayOf(Content(schema = Schema(implementation = BaseResponse::class)))
+            )])
+    @GetMapping("/{chatRoomId}")
+    fun getChatMessages(
+        @AuthenticationPrincipal userAccount: UserAccount,
+        @Parameter(description = "(Long) 채팅방 id", example = "1") @PathVariable chatRoomId: Long,
+    ): BaseResponse<GetChatMessagesRes> {
+        return BaseResponse(chatService.getChatMessages(userAccount.getUser(), chatRoomId));
     }
 
 
