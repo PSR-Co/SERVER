@@ -20,7 +20,7 @@ data class ChatRoom(
 
         @OneToOne
         @JoinColumn(nullable = false, name = "order_id")
-        var order: Order?
+        var order: Order
 
 ) : BaseEntity() {
         fun leave(user: User) {
