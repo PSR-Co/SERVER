@@ -1,19 +1,12 @@
-name: deploy
+name: Docker-Push
 
 on:
   push:
     branches: [ "develop" ]
 
-env:
-  PROJECT_NAME: psr_project
-  BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-  CODE_DEPLOY_APP_NAME: ${{ secrets.CODE_DEPLOY_APP_NAME}}
-  DEPLOYMENT_GROUP_NAME: ${{ secrets.DEPLOYMENT_GROUP_NAME}}
-  # AWS_REGION: ${{ secrets.AWS_REGION}}
-
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
 
@@ -48,26 +41,26 @@ jobs:
         run: chmod +x ./gradlew
         shell: bash
 
-      - name: Build and Test
+      - name: Build and no Test
         run: ./gradlew build -x test
 
-      - name: Make zip file
-        run: zip -qq -r ./$GITHUB_SHA.zip .
-        shell: bash
+      - name: Docker build & push to dev
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/psr-dev .
+          docker push ${{ secrets.DOCKER_USERNAME }}/psr-dev
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: Deploy to dev
+        uses: appleboy/ssh-action@master
+        id: deploy-dev
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_PRIVATE_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION}}
-
-      - name: Upload to S3
-        run: aws s3 cp --region ${{ secrets.AWS_REGION}} ./$GITHUB_SHA.zip s3://$BUCKET_NAME/$PROJECT_NAME/$GITHUB_SHA.zip
-
-      - name: Code Deploy To EC2 instance
-        run: aws deploy create-deployment 
-                --application-name $CODE_DEPLOY_APP_NAME 
-                --deployment-config-name CodeDeployDefault.AllAtOnce
-                --deployment-group-name $DEPLOYMENT_GROUP_NAME 
-                --s3-location bucket=$BUCKET_NAME,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip
+          host: ${{ secrets.HOST_DEV }} # EC2 퍼블릭 IPv4 DNS
+          username: ${{ secrets.USERNAME }} # ubuntu
+          port: 22
+          key: ${{ secrets.PRIVATE_KEY }}
+          script: |
+            sudo docker stop $(docker ps -a -q)
+            sudo docker rm $(docker ps -a -q)
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/psr-dev
+            sudo docker run -d -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/psr-dev
+            sudo docker image prune -f
