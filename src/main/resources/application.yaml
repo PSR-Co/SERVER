@@ -24,7 +24,7 @@ jwt:
   secret: ENC(D/J3tK1EsFjPnY9dcx50UUSzNzB5tTleAlexxN3r3wkA8sqpgJRMI2FLQ42o2ULv4yRTpdHetU+chCDq6VyHldYOLo7dW2J9gtM2kRERjRhDxczv4yBK2mpVrfp5/q5KdCGqitwAjP0qWi5vX4ho6VUIoMaMiCocHDZeBCn7nWs=)
 
 redis:
-  host: ENC(7JwhPcwbNCOmhXXFSWFKpp6kzUy0amcK)
+  host: ENC(8HcjYIVnkeDGkkPUQ3+cB8wLAwqDOdPd)
   port: ENC(abmpN3SWG3scsGG4F6VJbw==)
   password: ENC(xr9ZvfQtVGCxlbymLxNPXG4Qxyl40IA9)
 
