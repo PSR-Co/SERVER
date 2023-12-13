@@ -1,4 +1,4 @@
-FROM openjdk:17-jre
+FROM openjdk:17-alpine
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Seoul
