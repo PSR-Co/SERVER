@@ -1,7 +1,7 @@
 package com.psr.psr.chat.service
 
 import com.psr.psr.chat.dto.request.ChatMessageReq
-import com.psr.psr.chat.dto.response.ChatMessagesRes
+import com.psr.psr.chat.dto.response.ChatMessageRes
 import com.psr.psr.chat.dto.response.GetChatMessagesRes
 import com.psr.psr.chat.dto.response.GetChatRoomsRes
 import com.psr.psr.chat.entity.ChatMessage
@@ -59,7 +59,7 @@ class ChatService(
     fun getChatMessages(user: User, chatRoomId: Long): GetChatMessagesRes {
         val chatRoom: ChatRoom = chatRoomRepository.findByIdAndStatus(chatRoomId, Constant.UserStatus.ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_CHATROOM)
-        val chatMessages :List<ChatMessagesRes>? = chatMessageRepository.getChatMessages(user, chatRoom)
+        val chatMessages :List<ChatMessageRes>? = chatMessageRepository.getChatMessages(user, chatRoom)
         return GetChatMessagesRes.toDto(chatRoom.order.product.name, chatMessages)
     }
 }

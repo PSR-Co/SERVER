@@ -1,7 +1,6 @@
 package com.psr.psr.chat.repository
 
 import com.psr.psr.chat.dto.response.ChatMessageRes
-import com.psr.psr.chat.dto.response.ChatMessagesRes
 import com.psr.psr.chat.dto.response.ChatRoomRes
 import com.psr.psr.chat.dto.response.GetChatRoomsRes
 import com.psr.psr.chat.entity.ChatMessage
@@ -11,7 +10,6 @@ import com.psr.psr.global.Constant.UserStatus.UserStatus.ACTIVE_STATUS
 import com.psr.psr.user.entity.User
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 
 @Component
 class ChatMessageRepositoryImpl(
@@ -54,7 +52,7 @@ class ChatMessageRepositoryImpl(
         return GetChatRoomsRes.toDto(response)
     }
 
-    override fun getChatMessages(user: User, chatRoom: ChatRoom): List<ChatMessagesRes>? {
+    override fun getChatMessages(user: User, chatRoom: ChatRoom): List<ChatMessageRes>? {
         val chatMessages: MutableList<ChatMessage>? = queryFactory
             .selectFrom(chatMessage)
             .where(
@@ -64,24 +62,12 @@ class ChatMessageRepositoryImpl(
             .orderBy(chatMessage.createdAt.asc())
             .fetch()
 
-        val response: MutableList<ChatMessagesRes> = mutableListOf()
-        val messagesOfDate: MutableList<ChatMessageRes> = mutableListOf()
-        var standardDate: LocalDate =
-            if (chatMessages?.isEmpty() == true) return null
-            else chatMessages!![0].createdAt.toLocalDate()
-
-        for (i: Int in 0 until chatMessages.size) {
-            if (standardDate == chatMessages[i].createdAt.toLocalDate()) {
-                messagesOfDate.add(ChatMessageRes.toDto(user, chatMessages[i]))
-            } else {
-                response.add(ChatMessagesRes.toDto(standardDate, messagesOfDate.toList()))
-                standardDate = chatMessages[i].createdAt.toLocalDate()
-                messagesOfDate.clear()
-                messagesOfDate.add(ChatMessageRes.toDto(user, chatMessages[i]))
-            }
-            if (i == chatMessages.size-1) response.add(ChatMessagesRes.toDto(standardDate, messagesOfDate.toList()))
+        val messages: MutableList<ChatMessageRes> = mutableListOf()
+        if (chatMessages?.isEmpty() == true) return null
+        for (i: Int in 0 until chatMessages!!.size) {
+            messages.add(ChatMessageRes.toDto(user, chatMessages[i]))
         }
-        return response
+        return messages
     }
 
 }

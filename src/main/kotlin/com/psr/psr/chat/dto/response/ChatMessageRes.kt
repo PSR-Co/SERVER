@@ -12,11 +12,11 @@ data class ChatMessageRes @QueryProjection constructor(
     @Schema(description = "본인이 보낸 메시지 여부", example = "false")
     val isSend: Boolean,
 
-    @Schema(description = "메시지", example = "안녕하세요!")
+    @Schema(description = "메시지 내용", example = "안녕하세요!")
     val message: String,
 
-    @Schema(description = "메시지 보낸 시간", example = "11:30")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:MM")
+    @Schema(description = "메시지 시간", example = "2023/11/11 11:30")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:MM")
     val date: LocalDateTime,
 
     ) {
