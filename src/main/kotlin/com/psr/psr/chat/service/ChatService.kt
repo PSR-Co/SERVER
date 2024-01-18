@@ -60,6 +60,8 @@ class ChatService(
         val chatRoom: ChatRoom = chatRoomRepository.findByIdAndStatus(chatRoomId, Constant.UserStatus.ACTIVE_STATUS)
             ?: throw BaseException(BaseResponseCode.NOT_FOUND_CHATROOM)
         val chatMessages :List<ChatMessageRes>? = chatMessageRepository.getChatMessages(user, chatRoom)
-        return GetChatMessagesRes.toDto(chatRoom.order.product.name, chatMessages)
+        var receiver: String? = chatRoom.receiverUser?.nickname
+        if (chatRoom.receiverUser == user) receiver = chatRoom.senderUser?.nickname
+        return GetChatMessagesRes.toDto(chatRoom.order.product.name, receiver, chatMessages)
     }
 }
