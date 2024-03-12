@@ -24,8 +24,12 @@
 ## Project Architecture
 <details>
 <summary>CI/CD</summary>
-    
-<img width="782" alt="스크린샷 2023-09-06 오후 7 21 59" src="https://github.com/IceButler/IceButler_Server/assets/90022940/4db4fce7-c681-424c-a0e3-e8a2661379b3">
+    <p/>
+    <h3>변경 전</h3>
+    <img width="782" alt="image" src="https://github.com/PSR-Co/SERVER/assets/62008784/8682afad-aca3-430f-b2fe-17957e0d016a">
+    <p/>
+    <h3>변경 후(현재)</h3>
+    <img width="782" alt="image" src="https://github.com/PSR-Co/SERVER/assets/62008784/d090d599-9ba1-4d47-904e-2caf47c3e06b">
 </details>
 
 <br>
